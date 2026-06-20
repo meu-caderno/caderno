@@ -1,0 +1,8 @@
+services:
+  sdk:
+    build:
+      dockerfile: ../.container/Containerfile
+      target: devcontainer
+    command: sleep infinity
+    volumes:
+      - ..:/workspace:cached

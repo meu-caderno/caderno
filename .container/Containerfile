@@ -1,0 +1,6 @@
+FROM docker.io/debian:trixie-slim AS base
+
+FROM base as devcontainer
+
+ARG BUN_VERSION=bun-v1.3
+RUN curl -fsSL https://bun.com/install | bash -s "${BUN_VERSION}"
