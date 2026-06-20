@@ -51,7 +51,7 @@ jobs:
           target: runtime
           push: false
 
-          context: ./src/
+          context: .
           file: .container/Containerfile
 
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_BASENAME }}/${{ env.IMAGE_SERVICE }}:development
