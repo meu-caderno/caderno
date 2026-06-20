@@ -1,6 +1,6 @@
 # Caderno
 
-> App de estudo **local-first / offline-first** para controlar faltas, presença, atividades e agenda — que cresce, no seu ritmo, até virar um sistema de conhecimento pessoal (PKM).
+> App de estudo **local-first / offline-first** para organizar o que você estuda — notas, conhecimento e acervo, faltas, presença, atividades — que cresce, no seu ritmo, até virar um sistema de conhecimento pessoal (PKM).
 
 Acolhedor para quem está começando, poderoso para quem quer ir fundo — **o mesmo sistema em profundidades diferentes**, nunca dois apps.
 
