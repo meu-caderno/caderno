@@ -96,3 +96,5 @@ RUN mkdir -p ${HOME}/.vscode-server/
 
 USER ${USERNAME}
 ########
+
+FROM base AS runtime
