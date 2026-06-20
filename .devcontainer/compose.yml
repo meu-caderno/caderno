@@ -1,8 +1,39 @@
 services:
   sdk:
     build:
-      dockerfile: ../.container/Containerfile
+      dockerfile: .container/Containerfile
       target: devcontainer
+      context: ..
+    user: "1000"
     command: sleep infinity
     volumes:
       - ..:/workspace:cached
+      - bun-cache:/tmp/bun-cache:z
+      - git-config:/home/happy/.config/git:z
+      - vscode-server:/home/happy/.vscode-server:z
+      - jetbrains-cache:/home/happy/.cache/JetBrains:z
+      - jetbrains-config:/home/happy/.config/JetBrains:z
+    tty: true
+    stdin_open: true
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+      - seccomp:unconfined
+    environment:
+      - NODE_ENV=development
+      - DEBUG=*
+      - VSCODE_IPC_HOOK_CLI=/tmp/vscode-ipc.sock
+      - NODE_OPTIONS=--inspect=0.0.0.0:9229
+
+volumes:
+  bun-cache:
+    driver: local
+  git-config:
+    driver: local
+  vscode-server:
+    driver: local
+  jetbrains-cache:
+    driver: local
+  jetbrains-config:
+    driver: local
