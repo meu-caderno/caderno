@@ -1,5 +1,9 @@
 # Caderno
 
+[![CodeQL][badge-codeql-src]][badge-codeql-href]
+[![Dependabot Updates][badge-dependabot-src]][badge-dependabot-href]
+[![CI - Build][badge-ci-src]][badge-ci-href]
+
 Aplicativo de estudos local-first para organizar disciplinas, cursos, projetos de aprendizado e conhecimento pessoal em um único lugar.
 
 O objetivo é reunir aquilo que normalmente fica espalhado entre anotações, calendários, planilhas e aplicativos diferentes: presença, faltas, atividades, notas, materiais de estudo e conhecimento acumulado ao longo do tempo.
@@ -58,3 +62,16 @@ Se alguma resposta for negativa, provavelmente a proposta precisa ser revisada.
 ## Licença
 
 AGPL-3.0
+
+Você deve ter recebido uma cópia em [LICENSE](./LICENSE). Caso não, veja em <https://www.gnu.org/licenses/agpl-3.0.html>.
+
+<!-- 00 -->
+
+[badge-codeql-src]: https://github.com/meu-caderno/caderno/actions/workflows/github-code-scanning/codeql/badge.svg
+[badge-codeql-href]: https://github.com/meu-caderno/caderno/actions/workflows/github-code-scanning/codeql
+
+[badge-dependabot-src]: https://github.com/meu-caderno/caderno/actions/workflows/dependabot/dependabot-updates/badge.svg
+[badge-dependabot-href]: https://github.com/meu-caderno/caderno/actions/workflows/dependabot/dependabot-updates
+
+[badge-ci-src]: https://github.com/meu-caderno/caderno/actions/workflows/ci.yml/badge.svg
+[badge-ci-href]: https://github.com/meu-caderno/caderno/actions/workflows/ci.yml
