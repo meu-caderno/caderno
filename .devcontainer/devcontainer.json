@@ -6,7 +6,9 @@ https://github.com/devcontainers/templates/tree/main/src/debian
   "name": "Caderno SDK",
 
   // https://containers.dev/guide/dockerfile
-  "dockerComposeFile": "compose.yml",
+  "dockerComposeFile": [
+    "compose.yml"
+  ],
   "service": "sdk",
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
@@ -26,8 +28,6 @@ https://github.com/devcontainers/templates/tree/main/src/debian
     }
   },
 
-  // "customizations": {},
-
   // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
   "remoteUser": "happy",
   "containerUser": "happy",
@@ -42,6 +42,8 @@ https://github.com/devcontainers/templates/tree/main/src/debian
         "typespec.typespec-vscode"
       ],
       "settings": {
+        "typespec.tsp-server.path": "${workspaceFolder}/src/pkgs/schemas/node_modules/@typespec/compiler",
+
         "js/ts.preferences.importModuleSpecifier": "relative",
         "js/ts.suggest.autoImports": true,
         "editor.formatOnSave": true,
@@ -53,9 +55,15 @@ https://github.com/devcontainers/templates/tree/main/src/debian
         "files.associations": {
           "*.env*": "dotenv"
         },
-        "terminal.integrated.defaultProfile.linux": "custom",
+        "terminal.integrated.defaultProfile.linux": "zsh",
         "terminal.integrated.profiles.linux": {
-          "custom": {
+          "zsh": {
+            "path": "/bin/zsh"
+          }
+        },
+        "terminal.integrated.defaultProfile.osx": "zsh",
+        "terminal.integrated.profiles.osx": {
+          "zsh": {
             "path": "/bin/zsh"
           }
         }
