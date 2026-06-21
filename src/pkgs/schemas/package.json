@@ -1,0 +1,13 @@
+{
+  "name": "@meu-caderno/caderno.schemas",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "@typespec/compiler": "^1.13.0",
+    "@typespec/json-schema": "^1.13.0"
+  },
+  "scripts": {
+    "generate": "tsp compile . --output-dir ./dist"
+  }
+}
