@@ -97,4 +97,20 @@ RUN mkdir -p ${HOME}/.vscode-server/
 USER ${USERNAME}
 ########
 
+FROM base AS source-with-dependencies
+
+WORKDIR /caderno/source
+
+ARG USER_ID
+ARG GROUP_ID
+ARG BUN_INSTALL_CACHE_DIR
+
+COPY --chown=${USER_ID}:${GROUP_ID} src/package.json src/bun.lock src/bunfig.toml ./
+
+RUN --mount=type=cache,id=bun,uid=${USER_ID},gid=${GROUP_ID},target=${BUN_INSTALL_CACHE_DIR} \
+    bun install --frozen-lockfile # --production
+
+COPY --chown=${USER_ID}:${GROUP_ID} src/ ./
+
 FROM base AS runtime
+COPY --from=source-with-dependencies /caderno/source/ /caderno/source/
