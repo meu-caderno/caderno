@@ -9,3 +9,5 @@ options:
     emitAllModels: true
     emitAllRefs: true
     seal-object-schemas: true
+    bundleId: "caderno.schemas.json"
+

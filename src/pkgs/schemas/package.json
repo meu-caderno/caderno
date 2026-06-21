@@ -8,6 +8,31 @@
     "@typespec/json-schema": "^1.13.0"
   },
   "scripts": {
-    "generate": "tsp compile . --output-dir ./dist"
+    "build": "nx build"
+  },
+  "nx": {
+    "includedScripts": [],
+    "namedInputs": {
+      "default": [
+        "{projectRoot}/src/**/*",
+        "{projectRoot}/tspconfig.yaml"
+      ]
+    },
+    "targets": {
+      "build": {
+        "inputs": [
+          "default"
+        ],
+        "outputs": [
+          "{projectRoot}/dist"
+        ],
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "command": "tsp compile src/main.tsp --output-dir ./dist"
+        },
+        "cache": true
+      }
+    }
   }
 }
