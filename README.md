@@ -61,7 +61,9 @@ Se alguma resposta for negativa, provavelmente a proposta precisa ser revisada.
 
 ## Licença
 
-AGPL-3.0
+[![GNU AGPLv3 Image](https://www.gnu.org/graphics/agplv3-with-text-162x68.png)](https://www.gnu.org/licenses/agpl-3.0.html)
+
+This project is a Free Software: You can use, study share and improve it at your will. Specifically you can redistribute and/or modify it under the terms of the [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
 Você deve ter recebido uma cópia em [LICENSE](./LICENSE). Caso não, veja em <https://www.gnu.org/licenses/agpl-3.0.html>.
 
