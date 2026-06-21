@@ -59,6 +59,15 @@ Antes de propor uma funcionalidade, considere:
 
 Se alguma resposta for negativa, provavelmente a proposta precisa ser revisada.
 
+### Desenvolvimento
+
+```sh
+git clone https://github.com/meu-caderno/caderno.git
+cd caderno
+```
+
+Utilize DevContainer no VSCode ou sua IDE JetBrains para conectar ao Caderno SDK.
+
 ## Licença
 
 [![GNU AGPLv3 Image](https://www.gnu.org/graphics/agplv3-with-text-162x68.png)](https://www.gnu.org/licenses/agpl-3.0.html)
