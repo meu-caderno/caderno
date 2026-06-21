@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: "[CI] Checkout do código-fonte"
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v7.0.0
 
       - name: "[CI] Set up QEMU"
         uses: docker/setup-qemu-action@06116385d9baf250c9f4dcb4858b16962ea869c3
