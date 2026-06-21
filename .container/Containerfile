@@ -21,18 +21,16 @@ ARG GROUP_ID
 ARG BUN_VERSION
 
 USER root
-
 RUN groupadd -g ${GROUP_ID} ${USERNAME} && \
     useradd -m -u ${USER_ID} -s /bin/bash -g ${GROUP_ID} ${USERNAME}
-
 RUN chown -R ${USER_ID}:${GROUP_ID} ${HOME}
-
-RUN apt-get update && \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
     curl \
     unzip \
-    ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+    ca-certificates
 
 ENV BUN_INSTALL="/opt/bun"
 ENV BUN_INSTALL_CACHE_DIR="/tmp/bun-cache"
@@ -58,23 +56,23 @@ ARG GROUP_ID
 ARG HOME
 
 USER root
-
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update -y && apt-get install -y git vim zsh && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get update -y && apt-get install -y \
+    git \
+    vim \
+    zsh
 
 RUN mkdir -p /container/shell-history/root /container/shell-history/${USERNAME} \
     && chown -R ${USER_ID}:${GROUP_ID} /container/shell-history/${USERNAME} \
     && chmod 700 /container/shell-history/root /container/shell-history/${USERNAME}
-
 # .profile do root com HISTFILE
 RUN printf '# Shell history via managed Docker volume\n\
     _histdir="/container/shell-history/$(id -un)"\n\
     if [ -n "$ZSH_VERSION" ]; then\n\
-        HISTFILE="$_histdir/.zsh_history"\n\
+    HISTFILE="$_histdir/.zsh_history"\n\
     elif [ -n "$BASH_VERSION" ]; then\n\
-        HISTFILE="$_histdir/.bash_history"\n\
+    HISTFILE="$_histdir/.bash_history"\n\
     fi\n\
     export HISTFILE\n\
     unset _histdir\n' > /root/.profile
@@ -97,7 +95,6 @@ USER ${USER_ID}:${GROUP_ID}
 
 RUN grep -qxF '[ -f ~/.profile ] && . ~/.profile' ${HOME}/.zshrc || \
     echo '[ -f ~/.profile ] && . ~/.profile' >> ${HOME}/.zshrc
-
 RUN grep -qxF '[ -f ~/.profile ] && . ~/.profile' ${HOME}/.bashrc || \
     echo '[ -f ~/.profile ] && . ~/.profile' >> ${HOME}/.bashrc
 

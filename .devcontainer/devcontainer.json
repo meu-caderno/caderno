@@ -4,13 +4,11 @@ https://github.com/devcontainers/templates/tree/main/src/debian
 */
 {
   "name": "Caderno SDK",
-
   // https://containers.dev/guide/dockerfile
   "dockerComposeFile": ["compose.yml"],
   "service": "sdk",
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
-
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
     "ghcr.io/devcontainers/features/git:1": {},
@@ -21,7 +19,6 @@ https://github.com/devcontainers/templates/tree/main/src/debian
       "npmVersion": "none"
     }
   },
-
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [5173],
   "portsAttributes": {
@@ -30,25 +27,21 @@ https://github.com/devcontainers/templates/tree/main/src/debian
       "onAutoForward": "notify"
     }
   },
-
   // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
   "remoteUser": "happy",
   "containerUser": "happy",
   "updateRemoteUserUID": true,
-
   // "postCreateCommand": "cd src",
   "postStartCommand": "echo 'Devcontainer iniciado com sucesso!'",
-
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
       "extensions": ["typespec.typespec-vscode"],
       "settings": {
         "typespec.tsp-server.path": "${workspaceFolder}/src/pkgs/schemas/node_modules/@typespec/compiler",
-
         "js/ts.preferences.importModuleSpecifier": "relative",
         "js/ts.suggest.autoImports": true,
-        "editor.formatOnSave": true,
+        "editor.formatOnSave": false,
         // "editor.defaultFormatter": "biomejs.biome",
         "editor.codeActionsOnSave": {
           "source.organizeImports": "explicit",
