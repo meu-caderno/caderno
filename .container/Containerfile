@@ -1,10 +1,10 @@
 # configuracoes de usuario
 ARG USERNAME=happy
+ARG HOME=/home/happy
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 # configurações do bun
 ARG BUN_VERSION=bun-v1.3.3
-ARG HOME=/home/${USERNAME}
 
 ########
 # LAYER: Base OS
@@ -26,18 +26,18 @@ RUN groupadd -g ${GROUP_ID} ${USERNAME} && \
 RUN chown -R ${USER_ID}:${GROUP_ID} ${HOME}
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
+    apt-get update \
+    && apt-get install -y --no-install-recommends \
     curl \
     unzip \
-    ca-certificates
+    ca-certificates \
+    ;
 
 ENV BUN_INSTALL="/opt/bun"
 ENV BUN_INSTALL_CACHE_DIR="/tmp/bun-cache"
-ENV TMPDIR=/tmp/bun-tmp
 
-RUN mkdir -p "${BUN_INSTALL}/bin" "${BUN_INSTALL_CACHE_DIR}" "${TMPDIR}" \
-    && chmod -R 777 "${BUN_INSTALL_CACHE_DIR}" "${TMPDIR}"
+RUN mkdir -p "${BUN_INSTALL}/bin" "${BUN_INSTALL_CACHE_DIR}" \
+    && chmod -R 777 "${BUN_INSTALL_CACHE_DIR}"
 
 RUN curl -fsSL https://bun.com/install | bash -s -- ${BUN_VERSION}
 ENV PATH="${BUN_INSTALL}/bin:$PATH"
@@ -98,10 +98,21 @@ RUN grep -qxF '[ -f ~/.profile ] && . ~/.profile' ${HOME}/.zshrc || \
 RUN grep -qxF '[ -f ~/.profile ] && . ~/.profile' ${HOME}/.bashrc || \
     echo '[ -f ~/.profile ] && . ~/.profile' >> ${HOME}/.bashrc
 
-RUN mkdir -p ${HOME}/.vscode-server/
+USER root
+
 RUN install -d -o ${USER_ID} -g ${GROUP_ID} \
+    ${HOME}/.vscode-server/ \
     ${HOME}/.cache \
-    ${HOME}/.config
+    ${HOME}/.config \
+    ;
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update \
+    && apt-get install -y --no-install-recommends sudo \
+    && usermod -aG sudo ${USERNAME} \
+    && echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} \
+    && chmod 0440 /etc/sudoers.d/${USERNAME}
 
 USER ${USERNAME}
 ########

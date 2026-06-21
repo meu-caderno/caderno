@@ -19,8 +19,6 @@ services:
     environment:
       - NODE_ENV=development
       - DEBUG=*
-      - VSCODE_IPC_HOOK_CLI=/tmp/vscode-ipc.sock
-      - NODE_OPTIONS=--inspect=0.0.0.0:9229
 
 volumes:
   bun-cache:

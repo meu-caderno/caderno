@@ -5,7 +5,9 @@ https://github.com/devcontainers/templates/tree/main/src/debian
 {
   "name": "Caderno SDK",
   // https://containers.dev/guide/dockerfile
-  "dockerComposeFile": ["compose.yml"],
+  "dockerComposeFile": [
+    "compose.yml"
+  ],
   "service": "sdk",
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
@@ -17,10 +19,16 @@ https://github.com/devcontainers/templates/tree/main/src/debian
       "version": "lts",
       "pnpmVersion": "none",
       "npmVersion": "none"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker": {
+      "version": "latest",
+      "moby": false
     }
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [5173],
+  "forwardPorts": [
+    5173
+  ],
   "portsAttributes": {
     "5173": {
       "label": "Application",
@@ -36,7 +44,9 @@ https://github.com/devcontainers/templates/tree/main/src/debian
   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
-      "extensions": ["typespec.typespec-vscode"],
+      "extensions": [
+        "typespec.typespec-vscode"
+      ],
       "settings": {
         "typespec.tsp-server.path": "${workspaceFolder}/src/pkgs/schemas/node_modules/@typespec/compiler",
         "js/ts.preferences.importModuleSpecifier": "relative",
@@ -53,13 +63,13 @@ https://github.com/devcontainers/templates/tree/main/src/debian
         "terminal.integrated.defaultProfile.linux": "zsh",
         "terminal.integrated.profiles.linux": {
           "zsh": {
-            "path": "/bin/zsh"
+            "path": "/usr/bin/zsh"
           }
         },
         "terminal.integrated.defaultProfile.osx": "zsh",
         "terminal.integrated.profiles.osx": {
           "zsh": {
-            "path": "/bin/zsh"
+            "path": "/usr/bin/zsh"
           }
         }
       }
