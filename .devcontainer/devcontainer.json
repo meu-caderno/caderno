@@ -57,7 +57,7 @@ https://github.com/devcontainers/templates/tree/main/src/debian
         "terminal.integrated.defaultProfile.linux": "shell",
         "terminal.integrated.profiles.linux": {
           "shell": {
-            "path": "/bin/bash"
+            "path": "/bin/zsh"
           }
         }
       }
