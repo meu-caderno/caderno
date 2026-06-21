@@ -1,38 +1,59 @@
 # Caderno
 
-> App de estudo **local-first / offline-first** para organizar o que você estuda — notas, conhecimento e acervo, faltas, presença, atividades — que cresce, no seu ritmo, até virar um sistema de conhecimento pessoal (PKM).
+Aplicativo de estudos local-first para organizar disciplinas, cursos, projetos de aprendizado e conhecimento pessoal em um único lugar.
 
-Acolhedor para quem está começando, poderoso para quem quer ir fundo — **o mesmo sistema em profundidades diferentes**, nunca dois apps.
+O objetivo é reunir aquilo que normalmente fica espalhado entre anotações, calendários, planilhas e aplicativos diferentes: presença, faltas, atividades, notas, materiais de estudo e conhecimento acumulado ao longo do tempo.
 
-## Por que existe
+O projeto funciona offline e mantém os dados no dispositivo do usuário. Sincronização, quando existir, será um recurso opcional.
 
-Organizar a vida de estudo hoje é fragmentado: planilha de faltas aqui, calendário ali, anotações em outro lugar — seja na faculdade, num concurso, num curso livre ou estudando por conta própria. O Caderno reúne isso num só lugar **que é seu** — roda offline, guarda os dados no seu aparelho e nunca te prende.
+## O que é
 
-Você diz o que está estudando (faculdade, concurso/ENEM, curso livre, estudo livre) e o app se molda: quem tem aula presencial ganha controle de faltas; quem estuda para um concurso ganha edital e revisão; quem faz um curso livre acompanha módulos e certificado; quem estuda solto vive de metas, hábito e horas. Tudo é preset e ajustável — nunca uma prisão.
+O Caderno se adapta ao tipo de estudo que você está fazendo.
 
-A tela **nasce limpa**. Cada poder a mais aparece quando você precisa dele, revelado por um gesto seu — nunca empurrado. Você começa marcando uma presença e, com o tempo, o app se revela: simulador de faltas, notas, conhecimento em rede, acervo. Sempre reversível, sempre no seu controle.
+* Faculdade e ensino formal: controle de presença, faltas, notas e atividades.
+* Concursos e vestibulares: edital, planejamento e revisões.
+* Cursos livres: acompanhamento de módulos, progresso e certificados.
+* Estudo independente: metas, hábitos, horas estudadas e organização de conhecimento.
+
+A ideia não é criar aplicativos diferentes para cada caso, mas oferecer uma base comum que pode crescer conforme a necessidade.
 
 ## Princípios
 
-O Caderno é guiado por uma constituição de produto. Os pilares:
+### Local-first
 
-- **Local-first / offline-first** — seus dados moram no seu aparelho. Sem internet, o app continua útil. Sync (quando existir) é conveniência, nunca controle.
-- **Você é soberano** — o sistema aconselha, explica, alerta. Nunca impõe, bloqueia ou infantiliza. Toda ação importante é reversível.
-- **Liberdade progressivamente revelada** — todo poder pode existir desde o início; nem todo poder deve ser *exposto* desde o início. Esconder por encapsulamento, nunca amputar capacidade.
-- **Consentimento acima de conveniência** — nada relevante acontece sem consentimento proporcional ao impacto.
-- **Sem lock-in** — exportação sempre disponível; importação sempre possível. Os dados (e a chave, quando houver cifra) são seus.
+Os dados pertencem ao usuário e permanecem disponíveis mesmo sem conexão com a internet.
 
+### Controle do usuário
+
+O sistema pode sugerir, alertar e explicar, mas não deve impor decisões. Ações importantes precisam ser reversíveis.
+
+### Complexidade gradual
+
+Quem está começando não precisa lidar com todos os recursos de uma vez. Funcionalidades mais avançadas aparecem conforme fazem sentido para cada pessoa.
+
+### Consentimento
+
+Mudanças relevantes devem acontecer de forma explícita e compreensível.
+
+### Sem lock-in
+
+Exportação e importação de dados são partes fundamentais do projeto.
 
 ## Status
 
-🚧 **Em desenvolvimento — MVP1.**
-
+Em desenvolvimento. Atualmente na fase de MVP.
 
 ## Contribuindo
 
-Antes de propor uma feature, passe-a pela **regra de ouro**: é reversível? o consentimento é proporcional? esconde por encapsulamento (sem amputar)? funciona sem e com customização? respeita offline/exportável? aparece na profundidade certa?
+Antes de propor uma funcionalidade, considere:
 
-Se a resposta a qualquer uma for "não", provavelmente a implementação precisa mudar.
+* Ela funciona offline?
+* O usuário continua no controle?
+* É reversível?
+* Mantém os dados portáveis?
+* Faz sentido para iniciantes sem limitar usuários avançados?
+
+Se alguma resposta for negativa, provavelmente a proposta precisa ser revisada.
 
 ## Licença
 
