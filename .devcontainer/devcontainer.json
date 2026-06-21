@@ -26,7 +26,6 @@ https://github.com/devcontainers/templates/tree/main/src/debian
     }
   },
 
-  // Configure tool-specific properties.
   // "customizations": {},
 
   // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
@@ -36,11 +35,11 @@ https://github.com/devcontainers/templates/tree/main/src/debian
   // "postCreateCommand": "cd src",
   "postStartCommand": "echo 'Devcontainer iniciado com sucesso!'",
 
-   // Configurações para VS Code
+   // Configure tool-specific properties.
   "customizations": {
     "vscode": {
       "extensions": [
-        
+        "typespec.typespec-vscode"
       ],
       "settings": {
         "js/ts.preferences.importModuleSpecifier": "relative",
