@@ -43,10 +43,10 @@ https://github.com/devcontainers/templates/tree/main/src/debian
         
       ],
       "settings": {
-        "typescript.preferences.importModuleSpecifier": "relative",
-        "typescript.suggest.autoImports": true,
+        "js/ts.preferences.importModuleSpecifier": "relative",
+        "js/ts.suggest.autoImports": true,
         "editor.formatOnSave": true,
-        "editor.defaultFormatter": "biomejs.biome",
+        // "editor.defaultFormatter": "biomejs.biome",
         "editor.codeActionsOnSave": {
           "source.organizeImports": "explicit",
           "source.fixAll": "explicit"
@@ -54,13 +54,13 @@ https://github.com/devcontainers/templates/tree/main/src/debian
         "files.associations": {
           "*.env*": "dotenv"
         },
-        "terminal.integrated.defaultProfile.linux": "shell",
+        "terminal.integrated.defaultProfile.linux": "custom",
         "terminal.integrated.profiles.linux": {
-          "shell": {
+          "custom": {
             "path": "/bin/zsh"
           }
         }
       }
     }
-  },
+  }
 }

@@ -13,6 +13,7 @@ services:
       - vscode-server:/home/happy/.vscode-server:z
       - jetbrains-cache:/home/happy/.cache/JetBrains:z
       - jetbrains-config:/home/happy/.config/JetBrains:z
+      - shell-history:/container/shell-history
     tty: true
     stdin_open: true
     cap_add:
@@ -36,4 +37,6 @@ volumes:
   jetbrains-cache:
     driver: local
   jetbrains-config:
+    driver: local
+  shell-history:
     driver: local

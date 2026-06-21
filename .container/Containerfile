@@ -93,6 +93,8 @@ RUN sed -i '1i\[ -f ~/.profile ] && . ~/.profile' ~/.zshrc
 RUN printf '[ -f ~/.profile ] && . ~/.profile\n' >> ${HOME}/.bashrc
 
 RUN mkdir -p ${HOME}/.vscode-server/
+RUN mkdir -p ${HOME}/.cache && chown ${USER_ID}:${GROUP_ID} ${HOME}/.cache
+RUN mkdir -p ${HOME}/.config && chown ${USER_ID}:${GROUP_ID} ${HOME}/.config
 
 USER ${USERNAME}
 ########
