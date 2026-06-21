@@ -1,0 +1,33 @@
+version: 2
+
+updates:
+
+  - package-ecosystem: docker
+    directory: "/.container"
+    schedule:
+      interval: "daily"
+    cooldown: 
+      default-days: 3
+
+  - package-ecosystem: github-actions
+    directory: "/.github/workflows"
+    schedule:
+      interval: "daily"
+    cooldown: 
+      default-days: 3
+
+  - package-ecosystem: bun
+    directory: "/src"
+    schedule:
+      interval: "daily"
+    cooldown: 
+      default-days: 3
+    groups:
+      dev-dependencies:
+        dependency-type: development
+
+      prod-non-major:
+        dependency-type: production
+        update-types:
+          - "minor"
+          - "patch"
