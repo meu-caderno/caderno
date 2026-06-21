@@ -6,9 +6,7 @@ https://github.com/devcontainers/templates/tree/main/src/debian
   "name": "Caderno SDK",
 
   // https://containers.dev/guide/dockerfile
-  "dockerComposeFile": [
-    "compose.yml"
-  ],
+  "dockerComposeFile": ["compose.yml"],
   "service": "sdk",
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
@@ -16,7 +14,12 @@ https://github.com/devcontainers/templates/tree/main/src/debian
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
     "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {}
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/node:2": {
+      "version": "lts",
+      "pnpmVersion": "none",
+      "npmVersion": "none"
+    }
   },
 
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
@@ -31,16 +34,15 @@ https://github.com/devcontainers/templates/tree/main/src/debian
   // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
   "remoteUser": "happy",
   "containerUser": "happy",
+  "updateRemoteUserUID": true,
 
   // "postCreateCommand": "cd src",
   "postStartCommand": "echo 'Devcontainer iniciado com sucesso!'",
 
-   // Configure tool-specific properties.
+  // Configure tool-specific properties.
   "customizations": {
     "vscode": {
-      "extensions": [
-        "typespec.typespec-vscode"
-      ],
+      "extensions": ["typespec.typespec-vscode"],
       "settings": {
         "typespec.tsp-server.path": "${workspaceFolder}/src/pkgs/schemas/node_modules/@typespec/compiler",
 

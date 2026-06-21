@@ -4,6 +4,7 @@ ARG USER_ID=1000
 ARG GROUP_ID=1000
 # configurações do bun
 ARG BUN_VERSION=bun-v1.3.3
+ARG HOME=/home/${USERNAME}
 
 ########
 # LAYER: Base OS
@@ -22,8 +23,9 @@ ARG BUN_VERSION
 USER root
 
 RUN groupadd -g ${GROUP_ID} ${USERNAME} && \
-    useradd -m -u ${USER_ID} -g ${GROUP_ID} ${USERNAME}
-ENV HOME=/home/${USERNAME}
+    useradd -m -u ${USER_ID} -s /bin/bash -g ${GROUP_ID} ${USERNAME}
+
+RUN chown -R ${USER_ID}:${GROUP_ID} ${HOME}
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -53,6 +55,7 @@ FROM base AS devcontainer
 ARG USERNAME
 ARG USER_ID
 ARG GROUP_ID
+ARG HOME
 
 USER root
 
@@ -69,32 +72,39 @@ RUN mkdir -p /container/shell-history/root /container/shell-history/${USERNAME} 
 RUN printf '# Shell history via managed Docker volume\n\
     _histdir="/container/shell-history/$(id -un)"\n\
     if [ -n "$ZSH_VERSION" ]; then\n\
-    HISTFILE="$_histdir/.zsh_history"\n\
+        HISTFILE="$_histdir/.zsh_history"\n\
     elif [ -n "$BASH_VERSION" ]; then\n\
-    HISTFILE="$_histdir/.bash_history"\n\
+        HISTFILE="$_histdir/.bash_history"\n\
     fi\n\
     export HISTFILE\n\
     unset _histdir\n' > /root/.profile
 
-RUN printf '[ -f ~/.profile ] && . ~/.profile\n' > /root/.zshrc \
-    && printf '[ -f ~/.profile ] && . ~/.profile\n' >> /root/.bashrc
+RUN grep -qxF '[ -f ~/.profile ] && . ~/.profile' /root/.zshrc || \
+    echo '[ -f ~/.profile ] && . ~/.profile' >> /root/.zshrc \
+    && \
+    grep -qxF '[ -f ~/.profile ] && . ~/.profile' /root/.bashrc || \
+    echo '[ -f ~/.profile ] && . ~/.profile' >> /root/.bashrc
 
 USER ${USER_ID}:${GROUP_ID}
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 RUN sed -i 's/^ZSH_THEME=.*/ZSH_THEME="josh"/' ~/.zshrc
 
 USER root
+RUN chsh -s /bin/zsh ${USERNAME}
 RUN cp /root/.profile ${HOME}/.profile \
     && chown ${USER_ID}:${GROUP_ID} ${HOME}/.profile
-
 USER ${USER_ID}:${GROUP_ID}
 
-RUN sed -i '1i\[ -f ~/.profile ] && . ~/.profile' ~/.zshrc
-RUN printf '[ -f ~/.profile ] && . ~/.profile\n' >> ${HOME}/.bashrc
+RUN grep -qxF '[ -f ~/.profile ] && . ~/.profile' ${HOME}/.zshrc || \
+    echo '[ -f ~/.profile ] && . ~/.profile' >> ${HOME}/.zshrc
+
+RUN grep -qxF '[ -f ~/.profile ] && . ~/.profile' ${HOME}/.bashrc || \
+    echo '[ -f ~/.profile ] && . ~/.profile' >> ${HOME}/.bashrc
 
 RUN mkdir -p ${HOME}/.vscode-server/
-RUN mkdir -p ${HOME}/.cache && chown ${USER_ID}:${GROUP_ID} ${HOME}/.cache
-RUN mkdir -p ${HOME}/.config && chown ${USER_ID}:${GROUP_ID} ${HOME}/.config
+RUN install -d -o ${USER_ID} -g ${GROUP_ID} \
+    ${HOME}/.cache \
+    ${HOME}/.config
 
 USER ${USERNAME}
 ########
