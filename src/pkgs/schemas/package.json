@@ -31,8 +31,10 @@
           "cwd": "{projectRoot}",
           "commands": [
             "rm -rf ./dist",
+            "mkdir -p ./dist/schemas",
             "tsp compile src/main.tsp --output-dir ./dist",
-            "cp ./dist/* ./lib/"
+            "cp ./dist/schemas/schemas.json ./lib/schemas.json",
+            "bunx --package quicktype@23.2.6 quicktype --src-lang schema './dist/schemas/schemas.json#/$defs/' --lang typescript-zod -o \"./lib/schemas.ts\""
           ],
           "parallel": false
         },
