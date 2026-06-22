@@ -3,7 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "workspaces": [
-    "pkgs/apps/pwa"
+    "pkgs/apps/pwa",
+    "pkgs/core"
   ],
   "devDependencies": {
     "nx": "23.0.0"

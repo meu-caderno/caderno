@@ -1,0 +1,6 @@
+{
+  "name": "@meu-caderno/core",
+  "dependencies": {
+    "zod": "^4.4.3"
+  }
+}
