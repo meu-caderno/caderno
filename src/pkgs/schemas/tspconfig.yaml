@@ -3,7 +3,7 @@ emit:
   - "@typespec/json-schema"
 options:
   "@typespec/json-schema":
-    emitter-output-dir: "{output-dir}/schema"
+    emitter-output-dir: "{output-dir}"
     file-type: "json"
     int64-strategy: "string"
     emitAllModels: true

@@ -29,7 +29,12 @@
         "executor": "nx:run-commands",
         "options": {
           "cwd": "{projectRoot}",
-          "command": "tsp compile src/main.tsp --output-dir ./dist"
+          "commands": [
+            "rm -rf ./dist",
+            "tsp compile src/main.tsp --output-dir ./dist",
+            "cp ./dist/* ./lib/"
+          ],
+          "parallel": false
         },
         "cache": true
       }
