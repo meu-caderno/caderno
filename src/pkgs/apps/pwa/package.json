@@ -1,0 +1,58 @@
+{
+  "name": "@meu-caderno/apps.pwa",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nx run build",
+    "dev": "nx run dev",
+    "generate": "nx run generate",
+    "preview": "nx run preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "nuxt": "^4.4.8",
+    "vue": "^3.5.38",
+    "vue-router": "^5.1.0"
+  },
+  "nx": {
+    "includedScripts": [],
+    "namedInputs": {
+      "default": [
+        "{projectRoot}/app",
+        "{projectRoot}/public",
+        "{projectRoot}/nuxt.config.ts",
+        "{projectRoot}/tsconfig.json"
+      ]
+    },
+    "targets": {
+      "build": {
+        "inputs": [
+          "default"
+        ],
+        "outputs": [
+          "{projectRoot}/dist",
+          "{projectRoot}/.nuxt"
+        ],
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "nuxt build"
+          ],
+          "parallel": false
+        },
+        "cache": true
+      },
+      "dev": {
+        "command": "nuxt dev",
+        "continuos": true
+      },
+      "generate": {
+        "command": "nuxt generate"
+      },
+      "preview": {
+        "command": "nuxt preview"
+      }
+    }
+  }
+}
