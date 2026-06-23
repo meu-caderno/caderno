@@ -45,7 +45,8 @@ https://github.com/devcontainers/templates/tree/main/src/debian
   "customizations": {
     "vscode": {
       "extensions": [
-        "typespec.typespec-vscode"
+        "typespec.typespec-vscode",
+        "biomejs.biome"
       ],
       "settings": {
         "typespec.tsp-server.path": "${workspaceFolder}/src/pkgs/schemas/node_modules/@typespec/compiler",
@@ -71,6 +72,16 @@ https://github.com/devcontainers/templates/tree/main/src/debian
           "zsh": {
             "path": "/usr/bin/zsh"
           }
+        },
+        "json.schemaDownload.trustedDomains": {
+          "https://biomejs.dev/schemas/2.5.0/schema.json": true,
+          "https://developer.microsoft.com/json-schemas/": true,
+          "https://json-schema.org/": true,
+          "https://json.schemastore.org/": true,
+          "https://raw.githubusercontent.com/devcontainers/spec/": true,
+          "https://raw.githubusercontent.com/microsoft/vscode/": true,
+          "https://schemastore.azurewebsites.net/": true,
+          "https://www.schemastore.org/": true
         }
       }
     }
