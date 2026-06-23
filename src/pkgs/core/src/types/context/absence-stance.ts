@@ -1,0 +1,5 @@
+export enum AbsenceStance {
+  NONE = "NONE",
+  PLAN_ABSENCES = "PLAN_ABSENCES",
+  FOCUS_ON_NOT_MISSING = "FOCUS_ON_NOT_MISSING",
+}

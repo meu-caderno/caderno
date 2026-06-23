@@ -1,0 +1,5 @@
+export enum BucketUnit {
+  CREDITS = "CREDITS",
+  HOURS = "HOURS",
+  EXTRACURRICULARS = "EXTRACURRICULARS",
+}

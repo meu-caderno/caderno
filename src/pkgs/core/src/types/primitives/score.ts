@@ -1,0 +1,2 @@
+
+export type Score = string;
