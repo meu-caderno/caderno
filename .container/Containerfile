@@ -61,7 +61,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     apt-get update -y && apt-get install -y \
     git \
     vim \
-    zsh
+    zsh \
+    reuse
 
 RUN mkdir -p /container/shell-history/root /container/shell-history/${USERNAME} \
     && chown -R ${USER_ID}:${GROUP_ID} /container/shell-history/${USERNAME} \
