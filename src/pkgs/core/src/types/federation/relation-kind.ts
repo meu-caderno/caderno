@@ -1,0 +1,6 @@
+export enum RelationKind {
+  ONE_WAY = "ONE_WAY",
+  TWO_WAY = "TWO_WAY",
+  BACKUP = "BACKUP",
+  OWNERSHIP_HANDOFF = "OWNERSHIP_HANDOFF"
+}
