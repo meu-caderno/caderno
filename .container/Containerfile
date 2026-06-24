@@ -127,7 +127,8 @@ ARG GROUP_ID
 ARG BUN_INSTALL_CACHE_DIR
 
 COPY --chown=${USER_ID}:${GROUP_ID} src/package.json src/bun.lock src/bunfig.toml ./
-COPY --chown=${USER_ID}:${GROUP_ID} src/pkgs/schemas/package.json ./pkgs/schemas/
+COPY --chown=${USER_ID}:${GROUP_ID} src/pkgs/core/package.json ./pkgs/core/
+COPY --chown=${USER_ID}:${GROUP_ID} src/pkgs/apps/pwa/package.json ./pkgs/apps/pwa/
 
 RUN --mount=type=cache,id=bun,uid=${USER_ID},gid=${GROUP_ID},target=${BUN_INSTALL_CACHE_DIR} \
     bun install --frozen-lockfile # --production
