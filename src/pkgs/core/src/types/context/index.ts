@@ -8,4 +8,3 @@ export * from "./link";
 export * from "./modules";
 export * from "./term";
 export * from "./vocabulary";
-

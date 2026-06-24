@@ -4,7 +4,6 @@ import { Density } from "./density";
 import { Immersion } from "./immersion";
 import { WidgetPref } from "./widget-pref";
 
-
 export interface Mood {
   id: Id;
 

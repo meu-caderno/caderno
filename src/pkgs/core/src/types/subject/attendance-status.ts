@@ -5,5 +5,5 @@ export enum AttendanceStatus {
   MEDICAL = "MEDICAL",
   WAIVED = "WAIVED",
   HOLIDAY = "HOLIDAY",
-  CANCELED = "CANCELED"
+  CANCELED = "CANCELED",
 }
