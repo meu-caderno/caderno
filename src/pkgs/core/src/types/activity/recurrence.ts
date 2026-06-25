@@ -1,2 +1,6 @@
 // TODO
-export type Recurrence = "none" | "weekly" | "biweekly";
+export enum Recurrence {
+  NONE,
+  WEEKLY,
+  BIWEEKLY,
+};
