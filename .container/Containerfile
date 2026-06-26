@@ -135,5 +135,38 @@ RUN --mount=type=cache,id=bun,uid=${USER_ID},gid=${GROUP_ID},target=${BUN_INSTAL
 
 COPY --chown=${USER_ID}:${GROUP_ID} src/ ./
 
-FROM base AS runtime
-COPY --from=source-with-dependencies /caderno/source/ /caderno/source/
+########
+FROM source-with-dependencies AS pwa-builder-spa
+WORKDIR /caderno/source/pkgs/apps/pwa
+RUN bun run build:spa
+########
+
+########
+FROM source-with-dependencies AS pwa-builder-ssr
+WORKDIR /caderno/source/pkgs/apps/pwa
+RUN bun run build:ssr
+########
+
+########
+FROM scratch AS pwa-assets
+COPY --from=pwa-builder-spa /caderno/source/pkgs/apps/pwa/.output/public/ /
+########
+
+########
+FROM docker.io/nginx:1.27-alpine AS runtime-spa
+COPY .container/nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=pwa-builder-spa /caderno/source/pkgs/apps/pwa/.output/public/ /usr/share/nginx/html/
+EXPOSE 80
+########
+
+########
+FROM base AS runtime-ssr
+WORKDIR /caderno/app
+COPY --from=pwa-builder-ssr /caderno/source/pkgs/apps/pwa/.output/ ./.output/
+
+ENV HOST=0.0.0.0
+ENV PORT=3000
+EXPOSE 3000
+
+CMD ["bun", "run", ".output/server/index.mjs"]
+########

@@ -1,4 +1,4 @@
-name: "CI - Build"
+name: "CI"
 
 on:
   workflow_dispatch:
@@ -8,6 +8,7 @@ on:
     paths:
       - src/**/*
       - .container/**/*
+      - .github/workflows/ci.yml
 
 concurrency:
   group: ci
@@ -17,11 +18,26 @@ env:
   REGISTRY_USERNAME: ${{ github.actor }}
   REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   IMAGE_BASENAME: ${{ github.repository }}
-  IMAGE_SERVICE: caderno-app
+  IMAGE_SERVICE_SSR: caderno-app-ssr
+  IMAGE_SERVICE_SPA: caderno-app-spa
+
+  CACHE_ENABLED: "true"
+  CACHE_FROM_SSR: |
+    type=gha,scope=caderno-app-ssr
+    type=registry,ref=ghcr.io/${{ github.repository }}/caderno-app-ssr:cache-development
+  CACHE_TO_SSR: |
+    type=gha,scope=caderno-app-ssr,mode=max
+    type=registry,ref=ghcr.io/${{ github.repository }}/caderno-app-ssr:cache-development,mode=max
+  CACHE_FROM_SPA: |
+    type=gha,scope=caderno-app-spa
+    type=registry,ref=ghcr.io/${{ github.repository }}/caderno-app-spa:cache-development
+  CACHE_TO_SPA: |
+    type=gha,scope=caderno-app-spa,mode=max
+    type=registry,ref=ghcr.io/${{ github.repository }}/caderno-app-spa:cache-development,mode=max
 
 jobs:
   ci:
-    name: "Build container image"
+    name: "Build container images (SSR + SPA)"
     runs-on: ubuntu-latest
 
     permissions:
@@ -45,24 +61,65 @@ jobs:
           username: ${{ env.REGISTRY_USERNAME }}
           password: ${{ env.REGISTRY_TOKEN }}
 
-      - name: "[CI] Construção e publicação da imagem de contêiner"
+      - name: "[CI] Build da imagem SPA (nginx)"
         uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf
         with:
-          target: runtime
+          target: runtime-spa
           push: false
 
           context: .
           file: .container/Containerfile
 
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_BASENAME }}/${{ env.IMAGE_SERVICE }}:development
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_BASENAME }}/${{ env.IMAGE_SERVICE_SPA }}:development
 
           build-args: |
             BUILD_TIME=${{ github.event.head_commit.timestamp }}
             GIT_COMMIT_HASH=${{ github.sha }}
 
-          cache-from: |
-            type=gha,scope=${{ env.IMAGE_SERVICE }}-dev
-            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_BASENAME }}/${{ env.IMAGE_SERVICE }}:cache-development
-          cache-to: |
-            type=gha,scope=${{ env.IMAGE_SERVICE }}-dev,mode=max
-            type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_BASENAME }}/${{ env.IMAGE_SERVICE }}:cache-development,mode=max
+          cache-from: ${{ env.CACHE_ENABLED == 'true' && env.CACHE_FROM_SPA || '' }}
+          cache-to: ${{ env.CACHE_ENABLED == 'true' && env.CACHE_TO_SPA || '' }}
+
+      - name: "[CI] Build da imagem SSR (bun)"
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf
+        with:
+          target: runtime-ssr
+          push: false
+
+          context: .
+          file: .container/Containerfile
+
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_BASENAME }}/${{ env.IMAGE_SERVICE_SSR }}:development
+
+          build-args: |
+            BUILD_TIME=${{ github.event.head_commit.timestamp }}
+            GIT_COMMIT_HASH=${{ github.sha }}
+
+          cache-from: ${{ env.CACHE_ENABLED == 'true' && env.CACHE_FROM_SSR || '' }}
+          cache-to: ${{ env.CACHE_ENABLED == 'true' && env.CACHE_TO_SSR || '' }}
+
+      - name: "[CI] Exportação dos assets estáticos do SPA/PWA"
+        uses: docker/build-push-action@f9f3042f7e2789586610d6e8b85c8f03e5195baf
+        with:
+          target: pwa-assets
+
+          context: .
+          file: .container/Containerfile
+
+          outputs: type=local,dest=pwa-assets
+
+          build-args: |
+            BUILD_TIME=${{ github.event.head_commit.timestamp }}
+            GIT_COMMIT_HASH=${{ github.sha }}
+
+          cache-from: ${{ env.CACHE_ENABLED == 'true' && env.CACHE_FROM_SPA || '' }}
+
+      - name: "[CI] Empacotamento dos assets em .zip"
+        working-directory: pwa-assets
+        run: zip -r "${GITHUB_WORKSPACE}/caderno-pwa-assets.zip" .
+
+      - name: "[CI] Publicação do artefato (.zip)"
+        uses: actions/upload-artifact@v4
+        with:
+          name: caderno-pwa-assets
+          path: caderno-pwa-assets.zip
+          if-no-files-found: error

@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "build": "nx run build",
+    "build:ssr": "nx run build:ssr",
+    "build:spa": "nx run build:spa",
     "dev": "nx run dev",
     "generate": "nx run generate",
     "preview": "nx run preview",
@@ -36,7 +38,7 @@
           "default"
         ],
         "outputs": [
-          "{projectRoot}/dist",
+          "{projectRoot}/.output",
           "{projectRoot}/.nuxt"
         ],
         "executor": "nx:run-commands",
@@ -44,6 +46,42 @@
           "cwd": "{projectRoot}",
           "commands": [
             "nuxt build"
+          ],
+          "parallel": false
+        },
+        "cache": true
+      },
+      "build:ssr": {
+        "inputs": [
+          "default"
+        ],
+        "outputs": [
+          "{projectRoot}/.output",
+          "{projectRoot}/.nuxt"
+        ],
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "NUXT_SSR=true nuxt build"
+          ],
+          "parallel": false
+        },
+        "cache": true
+      },
+      "build:spa": {
+        "inputs": [
+          "default"
+        ],
+        "outputs": [
+          "{projectRoot}/.output",
+          "{projectRoot}/.nuxt"
+        ],
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "NUXT_SSR=false nuxt generate"
           ],
           "parallel": false
         },
@@ -61,6 +99,10 @@
         "continuos": true
       },
       "generate": {
+        "outputs": [
+          "{projectRoot}/.output",
+          "{projectRoot}/.nuxt"
+        ],
         "executor": "nx:run-commands",
         "options": {
           "cwd": "{projectRoot}",
