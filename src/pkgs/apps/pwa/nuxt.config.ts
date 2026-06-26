@@ -6,19 +6,16 @@ export default defineNuxtConfig({
 
   srcDir: './app',
 
-  modules: [
-    "@vite-pwa/nuxt"
-  ],
-
-  pwa: {
+  nitro: {
+    preset: 'bun'
   },
 
   typescript: {
-    typeCheck: true,
+    typeCheck: false,
+    strict: true,
   },
 
   devtools: {
     enabled: true
   },
-
 });

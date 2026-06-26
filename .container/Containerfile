@@ -139,7 +139,8 @@ COPY --chown=${USER_ID}:${GROUP_ID} src/ ./
 ARG BUILD_DEBUG
 FROM source-with-dependencies AS pwa-builder
 WORKDIR /caderno/source/pkgs/apps/pwa
-RUN DEBUG=${BUILD_DEBUG} NODE_OPTIONS="--trace-exit" bun run build --verbose
+# RUN DEBUG=${BUILD_DEBUG} NODE_OPTIONS="--trace-exit" bun run build --verbose
+RUN bun run build
 ########
 
 ########

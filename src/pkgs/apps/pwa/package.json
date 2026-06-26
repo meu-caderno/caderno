@@ -8,7 +8,8 @@
     "generate": "nx run generate",
     "preview": "nx run preview",
     "prepare": "nx run prepare",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck"
   },
   "dependencies": {
     "@tanstack/vue-query": "^5.101.0",

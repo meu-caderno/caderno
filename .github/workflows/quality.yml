@@ -1,0 +1,21 @@
+name: "Quality"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - src/**/*
+      - .container/**/*
+
+jobs:
+  job:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: "Checkout do código-fonte"
+        uses: actions/checkout@v7.0.0

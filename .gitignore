@@ -97,7 +97,6 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 **/.git
 **/.husky
-**/.github
 
 **/*.env
 **/*.env*
