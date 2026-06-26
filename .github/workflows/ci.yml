@@ -118,7 +118,7 @@ jobs:
         run: zip -r "${GITHUB_WORKSPACE}/caderno-pwa-assets.zip" .
 
       - name: "[CI] Publicação do artefato (.zip)"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: caderno-pwa-assets
           path: caderno-pwa-assets.zip
