@@ -19,6 +19,7 @@ runs:
       - name: "Build PWA in DevContainer"
         uses: devcontainers/ci@v0.3
         with:
+          configFile: ./.devcontainer/ci/devcontainer.json
           cacheFrom: ${{ inputs.imageName }}
           push: never
           runCmd: |

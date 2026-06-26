@@ -1,0 +1,23 @@
+/*
+https://aka.ms/devcontainer.json
+https://containers.dev/guide/dockerfile
+https://github.com/devcontainers/templates/tree/main/src/debian
+https://aka.ms/dev-containers-non-root
+*/
+{
+  "name": "Caderno CI",
+  // =================================================================
+  // INICIO COMPARTILHADO
+  "dockerComposeFile": [
+    "../base/compose.yml"
+  ],
+  "service": "sdk",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "happy",
+  "containerUser": "happy",
+  "updateRemoteUserUID": true,
+  // FIM COMPARTILHADO
+  // =================================================================
+  "containerEnv": {
+  }
+}

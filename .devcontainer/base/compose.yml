@@ -3,13 +3,13 @@ services:
     build:
       dockerfile: .container/Containerfile
       target: devcontainer
-      context: ..
+      context: ../..
     user: "1000"
     command: sleep infinity
     tty: true
     stdin_open: true
     volumes:
-      - ..:/workspace:cached
+      - ../..:/workspace:cached
       - bun-cache:/tmp/bun-cache:z
       - git-config:/home/happy/.config/git:z
       - vscode-server:/home/happy/.vscode-server:z

@@ -1,20 +1,26 @@
 /*
 https://aka.ms/devcontainer.json
+https://containers.dev/guide/dockerfile
 https://github.com/devcontainers/templates/tree/main/src/debian
+https://aka.ms/dev-containers-non-root
 */
 {
   "name": "Caderno SDK",
-  // https://containers.dev/guide/dockerfile
+  // =================================================================
+  // INICIO COMPARTILHADO
   "dockerComposeFile": [
-    "compose.yml"
+    "../base/compose.yml"
   ],
-  "containerEnv": {
-    "DEBUG": "*",
-    "NODE_ENV": "development"
-  },
   "service": "sdk",
   "workspaceFolder": "/workspace",
+  "remoteUser": "happy",
+  "containerUser": "happy",
+  "updateRemoteUserUID": true,
+  // FIM COMPARTILHADO
+  // =================================================================
   "shutdownAction": "stopCompose",
+  // "postCreateCommand": "cd src",
+  "postStartCommand": "echo 'Devcontainer iniciado com sucesso!'",
   // Features to add to the dev container. More info: https://containers.dev/features.
   "features": {
     "ghcr.io/devcontainers/features/git:1": {},
@@ -29,7 +35,6 @@ https://github.com/devcontainers/templates/tree/main/src/debian
       "moby": false
     }
   },
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [
     3000
   ],
@@ -39,13 +44,10 @@ https://github.com/devcontainers/templates/tree/main/src/debian
       "onAutoForward": "notify"
     }
   },
-  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-  "remoteUser": "happy",
-  "containerUser": "happy",
-  "updateRemoteUserUID": true,
-  // "postCreateCommand": "cd src",
-  "postStartCommand": "echo 'Devcontainer iniciado com sucesso!'",
-  // Configure tool-specific properties.
+  "containerEnv": {
+    "DEBUG": "*",
+    "NODE_ENV": "development"
+  },
   "customizations": {
     "vscode": {
       "extensions": [
