@@ -55,6 +55,7 @@ jobs:
           build-args: |
             BUILD_TIME=${{ github.event.head_commit.timestamp }}
             GIT_COMMIT_HASH=${{ github.sha }}
+            BUILD_DEBUG=*
 
           push: false
 

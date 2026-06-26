@@ -136,18 +136,21 @@ RUN --mount=type=cache,id=bun,uid=${USER_ID},gid=${GROUP_ID},target=${BUN_INSTAL
 COPY --chown=${USER_ID}:${GROUP_ID} src/ ./
 
 ########
+ARG BUILD_DEBUG
 FROM source-with-dependencies AS pwa-builder
 WORKDIR /caderno/source/pkgs/apps/pwa
-RUN bun run build
+RUN DEBUG=${BUILD_DEBUG} bun run build
 ########
 
 ########
 FROM base AS runtime
+
 WORKDIR /caderno/app
 COPY --from=pwa-builder /caderno/source/pkgs/apps/pwa/.output/ ./.output/
 
 ENV HOST=0.0.0.0
 ENV PORT=3000
+
 EXPOSE 3000
 
 CMD ["bun", "run", ".output/server/index.mjs"]
