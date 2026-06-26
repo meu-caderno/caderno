@@ -2,21 +2,18 @@
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
 
-  ssr: process.env.NUXT_SSR !== "false",
-
-  devtools: {
-    enabled: true
-  },
-  modules: ["@vite-pwa/nuxt"],
-
-  pwa: {
-  },
-
   srcDir: './app',
+
+  modules: ["@vite-pwa/nuxt"],
 
   typescript: {
     typeCheck: true,
   },
 
+  devtools: {
+    enabled: true
+  },
 
+  pwa: {
+  },
 });
