@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "workspaces": [
+    ".",
     "pkgs/apps/pwa",
     "pkgs/core"
   ],
@@ -11,12 +12,12 @@
     "nx": "23.0.0"
   },
   "scripts": {
-    "format:check": "nx run format:check",
-    "format:fix": "nx run format:fix",
-    "lint:check": "nx run lint:check",
-    "lint:fix": "nx run lint:fix",
-    "check:ci:biome": "nx run check:ci:biome",
-    "check:ci": "nx run check:ci"
+    "format:check": "nx run @meu-caderno/src:format:check",
+    "format:fix": "nx run @meu-caderno/src:format:fix",
+    "lint:check": "nx run @meu-caderno/src:lint:check",
+    "lint:fix": "nx run @meu-caderno/src:lint:fix",
+    "check:ci:biome": "nx run @meu-caderno/src:check:ci:biome",
+    "check:ci": "nx run @meu-caderno/src:check:ci:biome"
   },
   "nx": {
     "includedScripts": [],
