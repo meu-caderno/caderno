@@ -1,28 +1,19 @@
-name: "CI - Build"
+name: "Flow - Build"
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - src/**/*
-      - .container/**/*
-
-concurrency:
-  group: ci
-
-env:
-  REGISTRY: ghcr.io
-  REGISTRY_USERNAME: ${{ github.actor }}
-  REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  IMAGE_BASENAME: ${{ github.repository }}
-  IMAGE_SERVICE: caderno-app
+  workflow_run:
+    workflows: 
+      - quality
+    types:
+      - completed
 
 jobs:
-  ci:
+  build:
     name: "Build container image"
+    
     runs-on: ubuntu-latest
+
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     permissions:
       contents: read

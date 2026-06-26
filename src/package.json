@@ -17,7 +17,8 @@
     "lint:check": "nx run @meu-caderno/src:lint:check",
     "lint:fix": "nx run @meu-caderno/src:lint:fix",
     "check:ci:biome": "nx run @meu-caderno/src:check:ci:biome",
-    "check:ci": "nx run @meu-caderno/src:check:ci:biome"
+    "check:ci": "nx run @meu-caderno/src:check:ci:biome",
+    "all:build": "nx run @meu-caderno/src:all:build"
   },
   "nx": {
     "includedScripts": [],
@@ -81,6 +82,15 @@
         },
         "cache": false,
         "continuous": false
+      },
+      "all:build": {
+        "executor": "nx:run-commands",
+        "options": {
+          "parallel": true,
+          "commands": [
+            "nx run @meu-caderno/apps.pwa:build"
+          ]
+        }
       }
     }
   }

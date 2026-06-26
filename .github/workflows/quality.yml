@@ -1,8 +1,8 @@
-name: "Quality"
+name: "Flow - Quality"
 
 on:
-  workflow_dispatch:
   pull_request:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -15,7 +15,7 @@ jobs:
       contents: read
 
     steps:
-      - name: "Checkout do código-fonte"
+      - name: "Checkout source-code"
         uses: actions/checkout@v7.0.0
 
       - name: "Check for format and lint issues"
@@ -29,5 +29,5 @@ jobs:
         uses: ./.github/actions/run-in-devcontainer
         with:
           command: |
-            cd src/pkgs/apps/pwa;
-            bun run build;
+            cd src;
+            bun run all:build;
