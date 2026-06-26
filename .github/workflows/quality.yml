@@ -21,7 +21,6 @@ jobs:
       - name: "Check for format and lint issues"
         uses: ./.github/actions/run-in-devcontainer
         with:
-          imageName: ${{ env.REGISTRY }}/${{ env.IMAGE_BASENAME }}/${{ env.IMAGE_SERVICE }}
           command: |
             bun install;
             bun run check:ci;
@@ -29,7 +28,6 @@ jobs:
       - name: "Build PWA in DevContainer"
         uses: ./.github/actions/run-in-devcontainer
         with:
-          imageName: ${{ env.REGISTRY }}/${{ env.IMAGE_BASENAME }}/${{ env.IMAGE_SERVICE }}
           command: |
             cd src/pkgs/apps/pwa;
             bun install;
