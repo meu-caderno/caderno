@@ -9,6 +9,7 @@ on:
       - src/**/*
       - .container/**/*
       - .devcontainer/**/*
+      - .github/workflows/cd.yml
 
 concurrency:
   group: cd
@@ -50,9 +51,9 @@ jobs:
 
           push: never
           runCmd: |
+            cd src/pkgs/apps/pwa;
             pwd;
             ls;
 
-            # cd src/pkgs/app/pwa;
             # bun install;
             # bun run build;
