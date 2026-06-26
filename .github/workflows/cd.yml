@@ -18,12 +18,10 @@ concurrency:
 
 env:
   REGISTRY: ghcr.io
-
-  REGISTRY_USERNAME: ${{ github.actor }}
-  REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   IMAGE_BASENAME: ${{ github.repository }}
   IMAGE_SERVICE: caderno-app-devcontainer
+
+  REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   ci:

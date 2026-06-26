@@ -11,9 +11,76 @@
     "nx": "23.0.0"
   },
   "scripts": {
-    "format": "biome format --fix .",
-    "format:check": "biome format .",
-    "lint": "biome check .",
-    "lint:fix": "biome check --fix ."
+    "format:check": "nx run format:check",
+    "format:fix": "nx run format:fix",
+    "lint:check": "nx run lint:check",
+    "lint:fix": "nx run lint:fix",
+    "check:ci:biome": "nx run check:ci:biome",
+    "check:ci": "nx run check:ci"
+  },
+  "nx": {
+    "includedScripts": [],
+    "targets": {
+      "format:fix": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "biome format --fix ."
+          ],
+          "parallel": false
+        },
+        "cache": false,
+        "continuous": false
+      },
+      "format:check": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "biome format ."
+          ],
+          "parallel": false
+        },
+        "cache": false,
+        "continuous": false
+      },
+      "lint:check": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "biome check ."
+          ],
+          "parallel": false
+        },
+        "cache": false,
+        "continuous": false
+      },
+      "lint:fix": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "biome check --fix ."
+          ],
+          "parallel": false
+        },
+        "cache": false,
+        "continuous": false
+      },
+      "check:ci:biome": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "biome ci ."
+          ],
+          "parallel": false
+        },
+        "cache": false,
+        "continuous": false
+      }
+    }
   }
 }

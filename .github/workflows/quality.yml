@@ -2,12 +2,10 @@ name: "Quality"
 
 on:
   workflow_dispatch:
+  pull_request:
   push:
     branches:
       - main
-    paths:
-      - src/**/*
-      - .container/**/*
 
 jobs:
   job:
@@ -19,3 +17,20 @@ jobs:
     steps:
       - name: "Checkout do código-fonte"
         uses: actions/checkout@v7.0.0
+
+      - name: "Check for format and lint issues"
+        uses: ./.github/actions/run-in-devcontainer
+        with:
+          imageName: ${{ env.REGISTRY }}/${{ env.IMAGE_BASENAME }}/${{ env.IMAGE_SERVICE }}
+          command: |
+            bun install;
+            bun run check:ci;
+
+      - name: "Build PWA in DevContainer"
+        uses: ./.github/actions/run-in-devcontainer
+        with:
+          imageName: ${{ env.REGISTRY }}/${{ env.IMAGE_BASENAME }}/${{ env.IMAGE_SERVICE }}
+          command: |
+            cd src/pkgs/apps/pwa;
+            bun install;
+            bun run build;

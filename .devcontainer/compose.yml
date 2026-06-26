@@ -16,9 +16,6 @@ services:
       - jetbrains-cache:/home/happy/.cache/JetBrains:z
       - jetbrains-config:/home/happy/.config/JetBrains:z
       - shell-history:/container/shell-history
-    environment:
-      - NODE_ENV=development
-      - DEBUG=*
 
 volumes:
   bun-cache:

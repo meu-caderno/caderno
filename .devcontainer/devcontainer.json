@@ -8,6 +8,10 @@ https://github.com/devcontainers/templates/tree/main/src/debian
   "dockerComposeFile": [
     "compose.yml"
   ],
+  "containerEnv": {
+    "DEBUG": "*",
+    "NODE_ENV": "development"
+  },
   "service": "sdk",
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
