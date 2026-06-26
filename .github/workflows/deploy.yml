@@ -13,7 +13,7 @@ concurrency:
   group: deploy
   cancel-in-progress: true
 
-env:
+# env:
   # REGISTRY: ghcr.io
   # IMAGE_BASENAME: ${{ github.repository }}
   # IMAGE_SERVICE: caderno-app-devcontainer
