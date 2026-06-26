@@ -11,12 +11,10 @@ inputs:
 runs:
   using: composite
   steps:
-      - name: "Pre-build DevContainer image"
-        uses: devcontainers/ci@v0.3
+      - name: "Prepare DevContainer"
+        uses: .github/actions/prepare-devcontainer
         with:
           imageName: ${{ inputs.imageName }}
-          cacheFrom: ${{ inputs.imageName }}
-          push: never
 
       - name: "Build PWA in DevContainer"
         uses: devcontainers/ci@v0.3

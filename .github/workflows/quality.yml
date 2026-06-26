@@ -22,7 +22,7 @@ jobs:
         uses: ./.github/actions/run-in-devcontainer
         with:
           command: |
-            bun install;
+            cd src;
             bun run check:ci;
 
       - name: "Build PWA in DevContainer"
@@ -30,5 +30,4 @@ jobs:
         with:
           command: |
             cd src/pkgs/apps/pwa;
-            bun install;
             bun run build;

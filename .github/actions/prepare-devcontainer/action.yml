@@ -1,0 +1,30 @@
+name: "Prepare DevContainer"
+description: ""
+
+inputs:
+  imageName:
+    required: true
+    default: "ci.caderno.meu-caderno.local/devcontainer"
+  installDependencies:
+    required: true
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+      - name: "Pre-build DevContainer image"
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: ${{ inputs.imageName }}
+          cacheFrom: ${{ inputs.imageName }}
+          push: never
+
+      - name: "Install dependencies"
+        uses: devcontainers/ci@v0.3
+        if: ${{ fromJSON(inputs.installDependencies) == true }}
+        with:
+          cacheFrom: ${{ inputs.imageName }}
+          push: never
+          runCmd: |
+            cd src;
+            bun install;
