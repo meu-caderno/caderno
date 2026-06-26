@@ -4,7 +4,7 @@ description: "Run any command inside a DevContainer"
 inputs:
   imageName:
     required: true
-    default: "ci.caderno.meu-caderno.local/devcontainer:now"
+    default: "ci.caderno.meu-caderno.local/devcontainer"
   command:
     required: true
 
