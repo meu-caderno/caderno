@@ -7,6 +7,7 @@
     "dev": "nx run dev",
     "generate": "nx run generate",
     "preview": "nx run preview",
+    "prepare": "nx run prepare",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
@@ -47,6 +48,9 @@
           ],
           "parallel": false
         },
+        "dependsOn": [
+          "prepare"
+        ],
         "cache": true
       },
       "dev": {
@@ -58,7 +62,7 @@
           ],
           "parallel": false
         },
-        "continuos": true
+        "continuous": true
       },
       "generate": {
         "executor": "nx:run-commands",
@@ -68,7 +72,10 @@
             "nuxt generate"
           ],
           "parallel": false
-        }
+        },
+        "dependsOn": [
+          "prepare"
+        ]
       },
       "preview": {
         "executor": "nx:run-commands",
@@ -78,7 +85,19 @@
             "nuxt preview"
           ],
           "parallel": false
-        }
+        },
+        "continuous": true
+      },
+      "prepare": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "nuxt prepare"
+          ],
+          "parallel": false
+        },
+        "continuous": false
       }
     }
   }
