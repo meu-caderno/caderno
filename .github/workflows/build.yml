@@ -3,7 +3,7 @@ name: "Flow - Build"
 on:
   workflow_run:
     workflows: 
-      - quality
+      - "Flow - Quality"
     types:
       - completed
 
