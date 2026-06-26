@@ -10,6 +10,7 @@ on:
       - .container/**/*
       - .devcontainer/**/*
       - .github/workflows/cd.yml
+      - .github/actions/run-in-devcontainer/**/*
 
 concurrency:
   group: cd
@@ -37,20 +38,11 @@ jobs:
       - name: "Checkout do código-fonte"
         uses: actions/checkout@v7.0.0
 
-      - name: "Pre-build dev container image"
-        uses: devcontainers/ci@v0.3
+      - name: "Build PWA in DevContainer"
+        uses: ./.github/actions/run-in-devcontainer
         with:
           imageName: ${{ env.REGISTRY }}/${{ env.IMAGE_BASENAME }}/${{ env.IMAGE_SERVICE }}
-          cacheFrom: ${{ env.REGISTRY }}/${{ env.IMAGE_BASENAME }}/${{ env.IMAGE_SERVICE }}
-          push: never
-
-      - name: "Build PWA in DevContainer"
-        uses: devcontainers/ci@v0.3
-        with:
-          cacheFrom: ${{ env.REGISTRY }}/${{ env.IMAGE_BASENAME }}/${{ env.IMAGE_SERVICE }}
-
-          push: never
-          runCmd: |
+          command: |
             cd src/pkgs/apps/pwa;
             bun install;
             bun run build;

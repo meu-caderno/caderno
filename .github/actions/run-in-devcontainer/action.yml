@@ -1,0 +1,26 @@
+name: "Run command in DevContainer"
+description: "Run any command inside a DevContainer"
+
+inputs:
+  imageName:
+    required: true
+  command:
+    required: true
+
+runs:
+  using: composite
+  steps:
+      - name: "Pre-build DevContainer image"
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: ${{ inputs.imageName }}
+          cacheFrom: ${{ inputs.imageName }}
+          push: never
+
+      - name: "Build PWA in DevContainer"
+        uses: devcontainers/ci@v0.3
+        with:
+          cacheFrom: ${{ inputs.imageName }}
+          push: never
+          runCmd: |
+            ${{ inputs.command }}
