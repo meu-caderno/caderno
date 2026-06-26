@@ -12,7 +12,7 @@ runs:
   using: composite
   steps:
       - name: "Prepare DevContainer"
-        uses: .github/actions/prepare-devcontainer
+        uses: ./.github/actions/prepare-devcontainer
         with:
           imageName: ${{ inputs.imageName }}
 
