@@ -1,3 +1,2 @@
-export * from "./json-schema/registry"
-export * from "./schemas"
-
+export * from "./json-schema/registry";
+export * from "./schemas";

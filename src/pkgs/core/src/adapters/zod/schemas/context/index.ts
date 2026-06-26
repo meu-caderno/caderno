@@ -8,4 +8,3 @@ export * from "./link.schema";
 export * from "./modules.schema";
 export * from "./term.schema";
 export * from "./vocabulary.schema";
-

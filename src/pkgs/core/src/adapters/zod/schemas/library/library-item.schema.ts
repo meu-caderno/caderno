@@ -10,4 +10,4 @@ export const LibraryItemSchema = z.object({
 
   progress: z.number().optional(),
   stars: z.number().optional(),
-})
+});

@@ -1,5 +1,5 @@
-import { DateIso, Id } from "../primitives";
-import { AttendanceStatus } from "./attendance-status";
+import type { DateIso, Id } from "../primitives";
+import type { AttendanceStatus } from "./attendance-status";
 
 export interface Record {
   id: Id;

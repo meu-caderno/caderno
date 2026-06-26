@@ -1,5 +1,5 @@
 import type { Id } from "../primitives";
-import { EdgeKind } from "./edge-kind";
+import type { EdgeKind } from "./edge-kind";
 
 export interface Edge {
   id: Id;

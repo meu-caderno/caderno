@@ -5,4 +5,4 @@ export const SubtaskSchema = z.object({
   id: IdSchema,
   text: z.string(),
   done: z.boolean(),
-})
+});

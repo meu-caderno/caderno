@@ -5,4 +5,4 @@ export const VocabularySchema = z.object({
   subject: z.string(),
   activity: z.string(),
   term: z.string(),
-})
+});

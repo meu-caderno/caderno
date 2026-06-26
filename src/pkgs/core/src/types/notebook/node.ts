@@ -1,6 +1,6 @@
 import type { ActivityStatus, Root } from "../activity";
 import type { DateIso, Id } from "../primitives";
-import { Aspect } from "./aspect";
+import type { Aspect } from "./aspect";
 
 export interface Node {
   id: Id;

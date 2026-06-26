@@ -1,5 +1,5 @@
 import type { Id } from "../primitives";
-import { RelationKind } from "./relation-kind";
+import type { RelationKind } from "./relation-kind";
 
 export interface FederationRelation {
   target: Id;

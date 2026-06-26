@@ -20,6 +20,6 @@ export const getJsonSchema = () => {
   const registry = z.registry<RegistryMeta>();
   register(registry);
   return z.toJSONSchema(registry, {
-    uri: id => `#/$defs/${id}`
+    uri: (id) => `#/$defs/${id}`,
   });
 };

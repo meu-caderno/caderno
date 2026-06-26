@@ -7,4 +7,4 @@ export const EdgeSchema = z.object({
   from: IdSchema,
   to: IdSchema,
   kind: EdgeKindSchema,
-})
+});

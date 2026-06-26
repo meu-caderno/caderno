@@ -1,4 +1,4 @@
-import { Id, Score } from "../primitives";
+import type { Id, Score } from "../primitives";
 
 export interface Assessment {
   id: Id;

@@ -1,9 +1,9 @@
 import type { Color, Id } from "../primitives";
-import { Background } from "./background";
-import { ContextMode } from "./context-mode";
-import { Density } from "./density";
-import { Immersion } from "./immersion";
-import { WidgetPref } from "./widget-pref";
+import type { Background } from "./background";
+import type { ContextMode } from "./context-mode";
+import type { Density } from "./density";
+import type { Immersion } from "./immersion";
+import type { WidgetPref } from "./widget-pref";
 
 export interface Profile {
   id: Id;

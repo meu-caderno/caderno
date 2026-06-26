@@ -7,12 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": [
-      "**/*",
-      "!**/.nx/*",
-      "!**/.nuxt/*",
-      "!**/.output/*"
-    ]
+    "includes": ["**/*", "!**/.nx/*", "!**/.nuxt/*", "!**/.output/*"]
   },
   "formatter": {
     "enabled": true,
@@ -21,7 +16,16 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "preset": "recommended"
+      "preset": "recommended",
+      "correctness": {
+        "noUnusedVariables": {
+          "level": "error",
+          "fix": "unsafe",
+          "options": {
+            "ignoreRestSiblings": true
+          }
+        }
+      }
     }
   },
   "javascript": {
@@ -36,5 +40,32 @@
         "organizeImports": "on"
       }
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": ["**/pages/**/*.vue"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useVueMultiWordComponentNames": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/*.svelte", "**/*.astro", "**/*.vue"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useConst": "off",
+            "useImportType": "off"
+          },
+          "correctness": {
+            "noUnusedVariables": "off",
+            "noUnusedImports": "off"
+          }
+        }
+      }
+    }
+  ]
 }

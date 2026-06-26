@@ -22,4 +22,4 @@ export const ProfileSchema = z.object({
   widgets: z.array(WidgetPrefSchema).optional(),
 
   headingFont: z.string().optional(),
-})
+});

@@ -1,7 +1,7 @@
-import { Color, Id } from "../primitives";
-import { Assessment } from "./assessment";
-import { Record } from "./record";
-import { Schedule } from "./schedule";
+import type { Color, Id } from "../primitives";
+import type { Assessment } from "./assessment";
+import type { Record } from "./record";
+import type { Schedule } from "./schedule";
 
 export interface Subject {
   id: Id;

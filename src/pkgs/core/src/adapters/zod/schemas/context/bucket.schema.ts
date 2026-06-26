@@ -11,5 +11,5 @@ export const BucketSchema = z.object({
   done: z.number(),
   goal: z.number(),
 
-  unit: z.union([BucketUnitSchema, z.string()])
-})
+  unit: z.union([BucketUnitSchema, z.string()]),
+});

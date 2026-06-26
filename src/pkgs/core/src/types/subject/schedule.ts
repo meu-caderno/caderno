@@ -1,6 +1,6 @@
-import { DateIso } from "../primitives";
-import { ScheduleKind } from "./schedule-kind";
-import { TimeBlock } from "./time-block";
+import type { DateIso } from "../primitives";
+import type { ScheduleKind } from "./schedule-kind";
+import type { TimeBlock } from "./time-block";
 
 export interface Schedule {
   kind: ScheduleKind;

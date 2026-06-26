@@ -23,7 +23,7 @@ jobs:
         with:
           command: |
             cd src;
-            bun run check:ci;
+            bun run quality:check:ci;
 
       - name: "Build PWA in DevContainer"
         uses: ./.github/actions/run-in-devcontainer

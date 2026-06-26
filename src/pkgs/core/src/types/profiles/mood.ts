@@ -1,8 +1,8 @@
 import type { Color, Id } from "../primitives";
-import { Background } from "./background";
-import { Density } from "./density";
-import { Immersion } from "./immersion";
-import { WidgetPref } from "./widget-pref";
+import type { Background } from "./background";
+import type { Density } from "./density";
+import type { Immersion } from "./immersion";
+import type { WidgetPref } from "./widget-pref";
 
 export interface Mood {
   id: Id;

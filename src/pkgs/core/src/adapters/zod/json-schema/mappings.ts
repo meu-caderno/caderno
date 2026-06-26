@@ -1,5 +1,11 @@
-import * as z from "zod";
-import { ColorSchema, DateIsoSchema, IdSchema, InstantSchema, ScoreSchema } from "../schemas";
+import type * as z from "zod";
+import {
+  ColorSchema,
+  DateIsoSchema,
+  IdSchema,
+  InstantSchema,
+  ScoreSchema,
+} from "../schemas";
 
 export const mappings: [z.ZodType, string][] = [
   [ColorSchema, "Color"],

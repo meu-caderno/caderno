@@ -1,5 +1,5 @@
 import type { Id } from "../primitives";
-import { FederationRelation } from "./federation-relation";
+import type { FederationRelation } from "./federation-relation";
 
 export interface Federation {
   id: Id;

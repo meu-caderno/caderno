@@ -52,7 +52,8 @@ https://aka.ms/dev-containers-non-root
     "vscode": {
       "extensions": [
         "typespec.typespec-vscode",
-        "biomejs.biome"
+        "biomejs.biome",
+        "Vue.volar"
       ],
       "settings": {
         "typespec.tsp-server.path": "${workspaceFolder}/src/pkgs/schemas/node_modules/@typespec/compiler",

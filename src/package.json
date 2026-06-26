@@ -16,8 +16,9 @@
     "format:fix": "nx run @meu-caderno/src:format:fix",
     "lint:check": "nx run @meu-caderno/src:lint:check",
     "lint:fix": "nx run @meu-caderno/src:lint:fix",
-    "check:ci:biome": "nx run @meu-caderno/src:check:ci:biome",
-    "check:ci": "nx run @meu-caderno/src:check:ci:biome",
+    "quality:check": "nx run @meu-caderno/src:quality:check",
+    "quality:check:ci": "nx run @meu-caderno/src:quality:check:ci",
+    "quality:fix": "nx run @meu-caderno/src:quality:fix",
     "all:build": "nx run @meu-caderno/src:all:build"
   },
   "nx": {
@@ -71,12 +72,36 @@
         "cache": false,
         "continuous": false
       },
-      "check:ci:biome": {
+      "quality:check": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "biome check ."
+          ],
+          "parallel": false
+        },
+        "cache": false,
+        "continuous": false
+      },
+      "quality:check:ci": {
         "executor": "nx:run-commands",
         "options": {
           "cwd": "{projectRoot}",
           "commands": [
             "biome ci ."
+          ],
+          "parallel": false
+        },
+        "cache": false,
+        "continuous": false
+      },
+      "quality:fix": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "biome check --fix --unsafe ."
           ],
           "parallel": false
         },
