@@ -50,6 +50,9 @@ jobs:
 
           push: never
           runCmd: |
-            cd src/pkgs/app/pwa;
-            bun install;
-            bun run build;
+            pwd;
+            ls;
+
+            # cd src/pkgs/app/pwa;
+            # bun install;
+            # bun run build;
