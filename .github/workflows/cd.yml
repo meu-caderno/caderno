@@ -1,0 +1,55 @@
+name: "CD"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - src/**/*
+      - .container/**/*
+      - .devcontainer/**/*
+
+concurrency:
+  group: cd
+  cancel-in-progress: true
+
+env:
+  REGISTRY: ghcr.io
+
+  REGISTRY_USERNAME: ${{ github.actor }}
+  REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  IMAGE_BASENAME: ${{ github.repository }}
+  IMAGE_SERVICE: caderno-app-devcontainer
+
+jobs:
+  ci:
+    name: "Build container image"
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: "Checkout do código-fonte"
+        uses: actions/checkout@v7.0.0
+
+      - name: "Pre-build dev container image"
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: ${{ env.REGISTRY }}/${{ env.IMAGE_BASENAME }}/${{ env.IMAGE_SERVICE }}
+          cacheFrom: ${{ env.REGISTRY }}/${{ env.IMAGE_BASENAME }}/${{ env.IMAGE_SERVICE }}
+          push: never
+
+      - name: "Build PWA in DevContainer"
+        uses: devcontainers/ci@v0.3
+        with:
+          cacheFrom: ${{ env.REGISTRY }}/${{ env.IMAGE_BASENAME }}/${{ env.IMAGE_SERVICE }}
+
+          push: never
+          runCmd: |
+            cd src/pkgs/app/pwa;
+            bun install;
+            bun run build;
