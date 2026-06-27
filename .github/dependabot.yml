@@ -10,11 +10,16 @@ updates:
       default-days: 3
 
   - package-ecosystem: github-actions
-    directory: "/.github/workflows"
+    directories:
+      - "/"
+      - "/.github/actions/prepare"
+      - "/.github/actions/prepare-devcontainer"
+      - "/.github/actions/run-in-devcontainer"
     schedule:
-      interval: "daily"
-    cooldown: 
+      interval: daily
+    cooldown:
       default-days: 3
+
 
   - package-ecosystem: bun
     directory: "/src"
