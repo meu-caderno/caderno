@@ -11,9 +11,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: "Checkout source-code"
-      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
-
     - name: "Prepare DevContainer"
       uses: ./.github/actions/prepare-devcontainer
       with:
