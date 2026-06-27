@@ -1,10 +1,28 @@
 # Caderno
 
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![Status](https://img.shields.io/badge/status-MVP-orange)](#status)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contribuindo)
+![GitHub last commit](https://img.shields.io/github/last-commit/meu-caderno/caderno)
+![GitHub issues](https://img.shields.io/github/issues/meu-caderno/caderno)
+![GitHub stars](https://img.shields.io/github/stars/meu-caderno/caderno?style=social)
+
+Stack: 
+
+![Bun](https://img.shields.io/badge/Bun-000?logo=bun&logoColor=fff)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)
+![Nuxt](https://img.shields.io/badge/Nuxt-00DC82?logo=nuxt&logoColor=fff)
+
+Fluxo: 
+
+[![Flow - Quality][badge-quality-src]][badge-quality-href]
+[![Flow - Deploy][badge-deploy-src]][badge-deploy-href]
+
+Segurança: 
+
+[![Flow - CI Lint][badge-lint-ci-src]][badge-lint-ci-href]
 [![CodeQL][badge-codeql-src]][badge-codeql-href]
 [![Dependabot Updates][badge-dependabot-src]][badge-dependabot-href]
-[![Flow - Deploy][badge-deploy-src]][badge-deploy-href]
-[![Flow - Quality][badge-quality-src]][badge-quality-href]
-[![Flow - CI Lint][badge-lint-ci-src]][badge-lint-ci-href]
 
 Aplicativo de estudos local-first para organizar disciplinas, cursos, projetos de aprendizado e conhecimento pessoal em um único lugar.
 
@@ -69,6 +87,20 @@ cd caderno
 ```
 
 Utilize DevContainer no VSCode ou sua IDE JetBrains para conectar ao Caderno SDK.
+
+## Segurança
+
+A segurança do código e da cadeia de suprimentos é verificada de forma automatizada:
+
+* **CodeQL**: análise estática de segurança (SAST) a cada push e PR.
+* **Dependabot**: atualização e alerta de vulnerabilidades em dependências.
+* **zizmor**: auditoria de segurança dos workflows do GitHub Actions, com resultados publicados no painel *Security*.
+* **actionlint**: validação e lint dos workflows de CI.
+* **Build attestation**: artefatos de deploy recebem [attestation de proveniência](https://docs.github.com/actions/security-guides/using-artifact-attestations) (SLSA), permitindo verificar a origem do build.
+
+Todos os workflows seguem o princípio de menor privilégio (`permissions` mínimas por job) e fazem checkout sem persistir credenciais.
+
+Encontrou uma vulnerabilidade? Por favor, **não abra uma issue pública**. Veja [SECURITY.md](./SECURITY.md) para reportar de forma responsável.
 
 ## Licença
 
