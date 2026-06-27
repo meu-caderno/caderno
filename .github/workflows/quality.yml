@@ -7,9 +7,15 @@ on:
     branches:
       - main
 
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  job:
+  quality:
     runs-on: ubuntu-latest
+
+    timeout-minutes: 15
 
     permissions:
       contents: read
@@ -21,14 +27,14 @@ jobs:
       - name: "Prepare source-code with SDK"
         uses: ./.github/actions/prepare
 
-      - name: "Check for format and lint issues"
+      - name: "Quality Check: Lint + format + typecheck"
         uses: ./.github/actions/run-in-devcontainer
         with:
           command: |
             cd src;
             bun run quality:check:ci;
 
-      - name: "Build PWA in DevContainer"
+      - name: "Quality Check: everything must build"
         uses: ./.github/actions/run-in-devcontainer
         with:
           command: |
