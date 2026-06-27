@@ -3,15 +3,9 @@ name: "Flow - CI Lint"
 on:
   workflow_dispatch:
   pull_request:
-    paths:
-      - ".github/workflows/**"
-      - ".github/actions/**"
   push:
     branches:
       - main
-    paths:
-      - ".github/workflows/**"
-      - ".github/actions/**"
   schedule:
     - cron: "0 0 * * 1"
 

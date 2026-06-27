@@ -4,6 +4,7 @@
 [![Dependabot Updates][badge-dependabot-src]][badge-dependabot-href]
 [![Flow - Deploy][badge-deploy-src]][badge-deploy-href]
 [![Flow - Quality][badge-quality-src]][badge-quality-href]
+[![Flow - CI Lint][badge-lint-ci-src]][badge-lint-ci-href]
 
 Aplicativo de estudos local-first para organizar disciplinas, cursos, projetos de aprendizado e conhecimento pessoal em um único lugar.
 
@@ -90,3 +91,6 @@ Você deve ter recebido uma cópia em [LICENSE](./LICENSE). Caso não, veja em <
 
 [badge-quality-src]: https://github.com/meu-caderno/caderno/actions/workflows/quality.yml/badge.svg
 [badge-quality-href]: https://github.com/meu-caderno/caderno/actions/workflows/quality.yml
+
+[badge-lint-ci-src]: https://github.com/meu-caderno/caderno/actions/workflows/lint-ci.yml/badge.svg
+[badge-lint-ci-href]: https://github.com/meu-caderno/caderno/actions/workflows/lint-ci.yml
