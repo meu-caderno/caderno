@@ -34,7 +34,7 @@ jobs:
         with:
           command: |
             cd src/pkgs/apps/pwa;
-            bun run build;
+            bun run generate;
 
       - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763
         with:
