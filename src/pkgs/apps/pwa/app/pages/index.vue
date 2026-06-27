@@ -15,7 +15,7 @@ const { isPending, isError, data, error } = query;
 
 <template>
   <div>
-    <h1>Olá, Mundo!</h1>
+    <h1>{{ $t('welcome') }}</h1>
     <UIButton />
     <pre><code>{{ { isPending, isError, data, error } }}</code></pre>
   </div>
