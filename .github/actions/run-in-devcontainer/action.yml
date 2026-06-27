@@ -18,4 +18,5 @@ runs:
         cacheFrom: ${{ inputs.imageName }}
         push: never
         runCmd: |
+          set -euo pipefail
           ${{ inputs.command }}

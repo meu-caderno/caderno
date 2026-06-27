@@ -14,9 +14,13 @@ jobs:
     name: "Build"
 
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     permissions:
       contents: read
+      attestations: write
+      artifact-metadata: write  
+      id-token: write
 
     steps:
       - name: "Checkout source-code"
@@ -30,8 +34,11 @@ jobs:
         with:
           command: |
             cd src/pkgs/apps/pwa;
-            bun install;
             bun run build;
+
+      - uses: actions/attest@a1948c3f048ba23858d222213b7c278aabede763
+        with:
+          subject-path: src/pkgs/apps/pwa/.output/public
 
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9
         with:
@@ -41,10 +48,15 @@ jobs:
     needs: build
 
     runs-on: ubuntu-latest
+    timeout-minutes: 10
 
     environment:
-      name: github-pages
+      name: deploy-production
       url: ${{ steps.deployment.outputs.page_url }}
+
+    permissions:
+      pages: write
+      id-token: write
 
     steps:
       - id: deployment
