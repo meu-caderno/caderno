@@ -8,6 +8,10 @@ export default defineNuxtConfig({
     preset: "static",
   },
 
+  app: {
+    baseURL: process.env.BASE_URL || '/'
+  },
+
   srcDir: "./app",
 
   typescript: {

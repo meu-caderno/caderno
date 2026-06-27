@@ -9,6 +9,9 @@ concurrency:
   group: deploy
   cancel-in-progress: true
 
+env:
+  BASE_URL: /meu-caderno/
+
 jobs:
   build:
     name: "Build"
@@ -32,6 +35,8 @@ jobs:
       - name: "Build PWA in DevContainer"
         uses: ./.github/actions/run-in-devcontainer
         with:
+          env: |
+            export BASE_URL='${{ env.BASE_URL }}'
           command: |
             cd src/pkgs/apps/pwa;
             bun run generate;
