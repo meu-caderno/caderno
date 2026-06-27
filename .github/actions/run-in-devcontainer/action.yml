@@ -5,11 +5,14 @@ inputs:
   imageName:
     required: true
     default: "ci.caderno.meu-caderno.local/devcontainer"
+    description: ""
   command:
     required: true
+    description: ""
   env:
     required: false
     default: ""
+    description: ""
   
 runs:
   using: composite

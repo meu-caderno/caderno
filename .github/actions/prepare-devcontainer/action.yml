@@ -5,10 +5,11 @@ inputs:
   imageName:
     required: true
     default: "ci.caderno.meu-caderno.local/devcontainer"
+    description: ""
   installDependencies:
     required: true
     default: "true"
-
+    description: ""
 runs:
   using: composite
   steps:

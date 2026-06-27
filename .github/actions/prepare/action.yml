@@ -5,8 +5,7 @@ inputs:
   imageName:
     required: true
     default: "ci.caderno.meu-caderno.local/devcontainer"
-  command:
-    required: true
+    description: ""
 
 runs:
   using: composite
