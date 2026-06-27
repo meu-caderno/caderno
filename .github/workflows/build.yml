@@ -7,6 +7,13 @@ on:
     types:
       - completed
 
+env:
+  REGISTRY: ghcr.io
+  REGISTRY_USERNAME: ${{ github.actor }}
+  REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  IMAGE_BASENAME: ${{ github.repository }}
+  IMAGE_SERVICE: caderno-app
+
 jobs:
   build:
     name: "Build container image"
