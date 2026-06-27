@@ -22,8 +22,18 @@ path = [
   ".container/**/*",
   ".devcontainer/**/*",
   ".gitattributes",
+  ".dockerignore",
   "CODEOWNERS"
 ]
 precedence = "override"
 SPDX-FileCopyrightText = "2026 Gabriel Rodrigues Antunes <gabrielrodantunes@gmail.com>"
 SPDX-License-Identifier = "AGPL-3.0-or-later"
+
+
+[[annotations]]
+path = [
+  "docs/assets/**/*"
+]
+precedence = "override"
+SPDX-FileCopyrightText = "2026 Gabriel Rodrigues Antunes <gabrielrodantunes@gmail.com>"
+SPDX-License-Identifier = "CC-BY-SA-4.0"

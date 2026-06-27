@@ -42,3 +42,9 @@ jobs:
           command: |
             cd src;
             bun run all:build;
+
+      - name: "All files must be properly covered by license"
+        uses: ./.github/actions/run-in-devcontainer
+        with:
+          command: |
+            reuse lint;
