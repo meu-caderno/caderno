@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  BASE_URL: /meu-caderno/
+  BASE_URL: /caderno/
 
 jobs:
   build:
