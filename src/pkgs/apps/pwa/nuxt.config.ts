@@ -26,7 +26,6 @@ export default defineNuxtConfig({
     baseURL: process.env.BASE_URL || "/",
   },
 
-  
   typescript: {
     typeCheck: false,
     strict: true,
@@ -36,18 +35,17 @@ export default defineNuxtConfig({
     enabled: true,
   },
 
-  pwa: {
-  },
+  pwa: {},
 
   i18n: {
-    defaultLocale: 'pt-BR',
+    defaultLocale: "pt-BR",
     locales: [
-      { code: 'en', name: 'English', file: 'en.json' },
-      { code: 'pt-BR', name: 'Português', file: 'pt-BR.json' }
+      { code: "en", name: "English", file: "en.json" },
+      { code: "pt-BR", name: "Português", file: "pt-BR.json" },
     ],
     strategy: "no_prefix",
   },
-  
+
   hints: {
     devtools: true,
 
@@ -60,7 +58,7 @@ export default defineNuxtConfig({
   },
 
   image: {},
- 
+
   colorMode: {},
 
   icon: {},
