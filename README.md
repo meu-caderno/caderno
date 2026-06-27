@@ -71,6 +71,20 @@ Exportação e importação de dados são partes fundamentais do projeto.
 
 Em desenvolvimento. Atualmente na fase de MVP.
 
+## Apoie o projeto
+
+[![Sponsor][badge-sponsor-src]][badge-sponsor-href]
+
+O Caderno é **livre, gratuito e descentralizado**, e a intenção é que continue assim, sem pegadinhas, sem lock-in, sem vender seus dados.
+
+Mas tudo na vida tem custo: internet, energia, equipamentos, conhecimento, tempo e qualidade de vida. Manter um projeto aberto vivo é, no fundo, **trocar horas de descanso por linhas de código**.
+
+Se o Caderno te ajuda de alguma forma, você pode ajudar de volta **com o que o coração mandar**. Qualquer valor, único ou recorrente, faz diferença e mantém o projeto independente.
+
+> Apoiar é opcional e sempre será. O Caderno não trava recursos atrás de pagamento: quem contribui sustenta o projeto para todo mundo, não compra vantagem.
+
+💛 **[Seja um apoiador no GitHub Sponsors →][badge-sponsor-href]**
+
 ## Contribuindo
 
 Antes de propor uma funcionalidade, considere:
@@ -161,3 +175,6 @@ Você deve ter recebido uma cópia em [LICENSE][link-license]. Caso não, veja e
 
 [badge-lint-ci-src]: https://github.com/meu-caderno/caderno/actions/workflows/lint-ci.yml/badge.svg
 [badge-lint-ci-href]: https://github.com/meu-caderno/caderno/actions/workflows/lint-ci.yml
+
+[badge-sponsor-href]: https://github.com/sponsors/guesant
+[badge-sponsor-src]: https://img.shields.io/badge/Sponsor-%E2%9D%A4-db61a2?logo=githubsponsors&logoColor=fff
