@@ -1,0 +1,56 @@
+name: "Flow - CI Lint"
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+      - ".github/actions/**"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/**"
+      - ".github/actions/**"
+  schedule:
+    - cron: "0 0 * * 1"
+
+concurrency:
+  group: ci-lint-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    name: "actionlint"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: "Checkout source-code"
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: "Check workflow files"
+        uses: docker://rhysd/actionlint@sha256:9d36088643581e728c969f35141f88139fec77280b2be23c1f66f8e40e1025e7
+        with:
+          args: "-color"
+
+  zizmor:
+    name: "zizmor"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      security-events: write
+      contents: read
+      actions: read
+    steps:
+      - name: "Checkout source-code"
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+      - name: "Run zizmor 🌈"
+        uses: zizmorcore/zizmor-action@5f14fd08f7cf1cb1609c1e344975f152c7ee938d # v0.5.6
