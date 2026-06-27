@@ -2,7 +2,8 @@
 
 [![CodeQL][badge-codeql-src]][badge-codeql-href]
 [![Dependabot Updates][badge-dependabot-src]][badge-dependabot-href]
-[![CI - Build][badge-ci-src]][badge-ci-href]
+[![Flow - Deploy][badge-deploy-src]][badge-deploy-href]
+[![Flow - Quality][badge-quality-src]][badge-quality-href]
 
 Aplicativo de estudos local-first para organizar disciplinas, cursos, projetos de aprendizado e conhecimento pessoal em um único lugar.
 
@@ -84,5 +85,8 @@ Você deve ter recebido uma cópia em [LICENSE](./LICENSE). Caso não, veja em <
 [badge-dependabot-src]: https://github.com/meu-caderno/caderno/actions/workflows/dependabot/dependabot-updates/badge.svg
 [badge-dependabot-href]: https://github.com/meu-caderno/caderno/actions/workflows/dependabot/dependabot-updates
 
-[badge-ci-src]: https://github.com/meu-caderno/caderno/actions/workflows/ci.yml/badge.svg
-[badge-ci-href]: https://github.com/meu-caderno/caderno/actions/workflows/ci.yml
+[badge-deploy-src]: https://github.com/meu-caderno/caderno/actions/workflows/deploy.yml/badge.svg
+[badge-deploy-href]: https://github.com/meu-caderno/caderno/actions/workflows/deploy.yml
+
+[badge-quality-src]: https://github.com/meu-caderno/caderno/actions/workflows/quality.yml/badge.svg
+[badge-quality-href]: https://github.com/meu-caderno/caderno/actions/workflows/quality.yml
