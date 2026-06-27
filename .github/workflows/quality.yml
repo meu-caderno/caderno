@@ -15,8 +15,8 @@ jobs:
       contents: read
 
     steps:
-      - name: "Checkout source-code"
-        uses: actions/checkout@v7.0.0
+      - name: "Prepare source-code with SDK"
+        uses: ./.github/actions/prepare
 
       - name: "Check for format and lint issues"
         uses: ./.github/actions/run-in-devcontainer

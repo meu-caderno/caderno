@@ -1,11 +1,7 @@
 name: "Flow - Deploy"
 
 on:
-  workflow_run:
-    workflows: 
-      - "Flow - Build"
-    types:
-      - completed
+  push:
     branches:
       - main
 
@@ -13,16 +9,9 @@ concurrency:
   group: deploy
   cancel-in-progress: true
 
-# env:
-  # REGISTRY: ghcr.io
-  # IMAGE_BASENAME: ${{ github.repository }}
-  # IMAGE_SERVICE: caderno-app-devcontainer
-  #
-  # REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
-  job:
-    name: "Build container image"
+  build:
+    name: "Build"
 
     runs-on: ubuntu-latest
 
@@ -30,8 +19,8 @@ jobs:
       contents: read
 
     steps:
-      - name: "Checkout source-code"
-        uses: actions/checkout@v7.0.0
+      - name: "Prepare source-code with SDK"
+        uses: ./.github/actions/prepare
 
       - name: "Build PWA in DevContainer"
         uses: ./.github/actions/run-in-devcontainer
@@ -40,3 +29,20 @@ jobs:
             cd src/pkgs/apps/pwa;
             bun install;
             bun run build;
+
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9
+        with:
+          path: src/pkgs/apps/pwa/.output/public
+
+  deploy:
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128

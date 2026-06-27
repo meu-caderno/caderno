@@ -11,11 +11,10 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: "Run in DevContainer"
-      uses: devcontainers/ci@v0.3
+    - name: "Checkout source-code"
+      uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+
+    - name: "Prepare DevContainer"
+      uses: ./.github/actions/prepare-devcontainer
       with:
-        configFile: ./.devcontainer/ci/devcontainer.json
-        cacheFrom: ${{ inputs.imageName }}
-        push: never
-        runCmd: |
-          ${{ inputs.command }}
+        imageName: ${{ inputs.imageName }}
