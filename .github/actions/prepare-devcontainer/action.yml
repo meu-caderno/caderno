@@ -13,7 +13,7 @@ runs:
   using: composite
   steps:
     - name: "Pre-build DevContainer image"
-      uses: devcontainers/ci@v0.3
+      uses: devcontainers/ci@513af61f4de4f75d37e4438f184ba4358f0fc1ca
       with:
         configFile: ./.devcontainer/ci/devcontainer.json
         imageName: ${{ inputs.imageName }}
@@ -21,7 +21,7 @@ runs:
         push: never
 
     - name: "Install dependencies"
-      uses: devcontainers/ci@v0.3
+      uses: devcontainers/ci@513af61f4de4f75d37e4438f184ba4358f0fc1ca
       if: ${{ fromJSON(inputs.installDependencies) == true }}
       with:
         configFile: ./.devcontainer/ci/devcontainer.json

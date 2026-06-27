@@ -12,7 +12,7 @@ runs:
   using: composite
   steps:
     - name: "Run in DevContainer"
-      uses: devcontainers/ci@v0.3
+      uses: devcontainers/ci@513af61f4de4f75d37e4438f184ba4358f0fc1ca
       with:
         configFile: ./.devcontainer/ci/devcontainer.json
         cacheFrom: ${{ inputs.imageName }}
