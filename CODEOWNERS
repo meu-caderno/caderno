@@ -1,1 +1,44 @@
-* @meu-caderno/security @guesant
+# ============================================================================
+# Default
+# ============================================================================
+
+*                                   @meu-caderno/security @guesant
+
+# ============================================================================
+# Infrastructure & CI/CD
+# ============================================================================
+
+.github/                            @meu-caderno/security @guesant
+.container/                         @meu-caderno/security @guesant
+.devcontainer/                      @meu-caderno/security @guesant
+.dockerignore                       @meu-caderno/security @guesant
+
+# ============================================================================
+# Repository governance
+# ============================================================================
+
+CODEOWNERS                          @guesant
+LICENSE                             @guesant
+LICENSES/                           @guesant
+README.md                           @guesant
+SECURITY.md                         @guesant
+CONSTITUTION.md                     @guesant
+PRINCIPLES.md                       @guesant
+REUSE.toml                          @guesant
+
+# ============================================================================
+# Workspace
+# ============================================================================
+
+src/biome.json                      @guesant
+src/bun.lock                        @guesant
+src/bunfig.toml                     @guesant
+src/nx.json                         @guesant
+src/package.json                    @guesant
+
+# ============================================================================
+# Packages
+# ============================================================================
+
+src/pkgs/core/                      @guesant
+src/pkgs/apps/pwa/                  @guesant
