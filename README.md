@@ -1,34 +1,38 @@
 # Caderno
 
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
-[![Status](https://img.shields.io/badge/status-MVP-orange)](#status)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](#contribuindo)
-![GitHub last commit](https://img.shields.io/github/last-commit/meu-caderno/caderno)
-![GitHub issues](https://img.shields.io/github/issues/meu-caderno/caderno)
-![GitHub stars](https://img.shields.io/github/stars/meu-caderno/caderno?style=social)
+![Banner](./docs/assets/banner.jpg)
 
-Stack: 
-
-![Bun](https://img.shields.io/badge/Bun-000?logo=bun&logoColor=fff)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)
-![Nuxt](https://img.shields.io/badge/Nuxt-00DC82?logo=nuxt&logoColor=fff)
-
-Fluxo: 
-
-[![Flow - Quality][badge-quality-src]][badge-quality-href]
-[![Flow - Deploy][badge-deploy-src]][badge-deploy-href]
-
-Segurança: 
-
-[![Flow - CI Lint][badge-lint-ci-src]][badge-lint-ci-href]
-[![CodeQL][badge-codeql-src]][badge-codeql-href]
-[![Dependabot Updates][badge-dependabot-src]][badge-dependabot-href]
+[![License: AGPL v3][badge-license-src]][badge-license-href]
+[![Status][badge-status-src]][badge-status-href]
+[![PRs Welcome][badge-prs-src]][badge-prs-href]
+[![GitHub last commit][badge-last-commit-src]][badge-last-commit-href]
+[![GitHub issues][badge-gh-issues-src]][badge-gh-issues-href]
+[![GitHub stars][badge-stars-src]][badge-stars-href]
 
 Aplicativo de estudos local-first para organizar disciplinas, cursos, projetos de aprendizado e conhecimento pessoal em um único lugar.
 
 O objetivo é reunir aquilo que normalmente fica espalhado entre anotações, calendários, planilhas e aplicativos diferentes: presença, faltas, atividades, notas, materiais de estudo e conhecimento acumulado ao longo do tempo.
 
 O projeto funciona offline e mantém os dados no dispositivo do usuário. Sincronização, quando existir, será um recurso opcional.
+
+---
+
+Fluxo: 
+
+[![Flow - Quality][badge-quality-src]][badge-quality-href]
+[![Flow - Deploy][badge-deploy-src]][badge-deploy-href]
+
+Segurança:
+
+[![Flow - CI Lint][badge-lint-ci-src]][badge-lint-ci-href]
+[![CodeQL][badge-codeql-src]][badge-codeql-href]
+[![Dependabot Updates][badge-dependabot-src]][badge-dependabot-href]
+
+Stack: 
+
+![Bun][badge-bun-src]
+![TypeScript][badge-typescript-src]
+![Nuxt][badge-nuxt-src]
 
 ## O que é
 
@@ -96,21 +100,52 @@ A segurança do código e da cadeia de suprimentos é verificada de forma automa
 * **Dependabot**: atualização e alerta de vulnerabilidades em dependências.
 * **zizmor**: auditoria de segurança dos workflows do GitHub Actions, com resultados publicados no painel *Security*.
 * **actionlint**: validação e lint dos workflows de CI.
-* **Build attestation**: artefatos de deploy recebem [attestation de proveniência](https://docs.github.com/actions/security-guides/using-artifact-attestations) (SLSA), permitindo verificar a origem do build.
+* **Build attestation**: artefatos de deploy recebem [attestation de proveniência][link-attestation] (SLSA), permitindo verificar a origem do build.
 
 Todos os workflows seguem o princípio de menor privilégio (`permissions` mínimas por job) e fazem checkout sem persistir credenciais.
 
-Encontrou uma vulnerabilidade? Por favor, **não abra uma issue pública**. Veja [SECURITY.md](./SECURITY.md) para reportar de forma responsável.
+Encontrou uma vulnerabilidade? Por favor, **não abra uma issue pública**. Veja [SECURITY.md][link-security] para reportar de forma responsável.
 
 ## Licença
 
-[![GNU AGPLv3 Image](https://www.gnu.org/graphics/agplv3-with-text-162x68.png)](https://www.gnu.org/licenses/agpl-3.0.html)
+[![GNU AGPLv3 Image][license-agplv3-src]][badge-license-href]
 
-This project is a Free Software: You can use, study share and improve it at your will. Specifically you can redistribute and/or modify it under the terms of the [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+This project is a Free Software: You can use, study share and improve it at your will. Specifically you can redistribute and/or modify it under the terms of the [GNU Affero General Public License][badge-license-href] as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-Você deve ter recebido uma cópia em [LICENSE](./LICENSE). Caso não, veja em <https://www.gnu.org/licenses/agpl-3.0.html>.
+Você deve ter recebido uma cópia em [LICENSE][link-license]. Caso não, veja em <https://www.gnu.org/licenses/agpl-3.0.html>.
 
 <!-- 00 -->
+
+[badge-license-src]: https://img.shields.io/badge/License-AGPL_v3-blue.svg
+[badge-license-href]: https://www.gnu.org/licenses/agpl-3.0
+
+[license-agplv3-href]: https://www.gnu.org/licenses/agpl-3.0
+[license-agplv3-src]: https://www.gnu.org/graphics/agplv3-with-text-162x68.png
+
+[link-attestation]: https://docs.github.com/actions/security-guides/using-artifact-attestations
+[link-security]: ./SECURITY.md
+[link-license]: ./LICENSE
+
+[badge-status-src]: https://img.shields.io/badge/status-MVP-orange
+[badge-status-href]: #status
+
+[badge-prs-src]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
+[badge-prs-href]: #contribuindo
+
+[badge-last-commit-src]: https://img.shields.io/github/last-commit/meu-caderno/caderno
+[badge-last-commit-href]: https://github.com/meu-caderno/caderno/activity
+
+[badge-gh-issues-src]: https://img.shields.io/github/issues/meu-caderno/caderno
+[badge-gh-issues-href]: https://github.com/meu-caderno/caderno/issues
+
+[badge-stars-src]: https://img.shields.io/github/stars/meu-caderno/caderno?style=social
+[badge-stars-href]: https://github.com/meu-caderno/caderno/stargazers
+
+[badge-bun-src]: https://img.shields.io/badge/Bun-000?logo=bun&logoColor=fff
+
+[badge-typescript-src]: https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff
+
+[badge-nuxt-src]: https://img.shields.io/badge/Nuxt-00DC82?logo=nuxt&logoColor=fff
 
 [badge-codeql-src]: https://github.com/meu-caderno/caderno/actions/workflows/github-code-scanning/codeql/badge.svg
 [badge-codeql-href]: https://github.com/meu-caderno/caderno/actions/workflows/github-code-scanning/codeql
