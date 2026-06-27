@@ -1,4 +1,3 @@
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
@@ -9,7 +8,7 @@ export default defineNuxtConfig({
   },
 
   app: {
-    baseURL: process.env.BASE_URL || '/'
+    baseURL: process.env.BASE_URL || "/",
   },
 
   srcDir: "./app",
