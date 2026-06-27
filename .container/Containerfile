@@ -144,15 +144,17 @@ RUN bun run build
 ########
 
 ########
-FROM base AS runtime
+FROM nginx:1.29-alpine AS runtime
 
-WORKDIR /caderno/app
-COPY --from=pwa-builder /caderno/source/pkgs/apps/pwa/.output/ ./.output/
+COPY .container/assets/runtime/nginx.conf /etc/nginx/conf.d/default.conf
 
-ENV HOST=0.0.0.0
-ENV PORT=3000
+COPY --from=pwa-builder \
+    /caderno/source/pkgs/apps/pwa/.output/public/ \
+    /usr/share/nginx/html/
 
-EXPOSE 3000
+EXPOSE 80
 
-CMD ["bun", "run", ".output/server/index.mjs"]
+STOPSIGNAL SIGQUIT
+
+CMD ["nginx", "-g", "daemon off;"]
 ########
