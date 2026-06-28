@@ -1,0 +1,66 @@
+# SPDX-FileCopyrightText: 2026 Gabriel Rodrigues Antunes <gabrielrodantunes@gmail.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+name: "💡 Sugestão de funcionalidade"
+description: "Proponha uma nova funcionalidade ou melhoria para o Caderno"
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado pela ideia! 🌱 Antes de enviar, vale conhecer a
+        [Constituição](../../blob/main/CONSTITUTION.md): ela define o que entra no Caderno.
+
+  - type: checkboxes
+    id: pre-checks
+    attributes:
+      label: Verificações iniciais
+      options:
+        - label: Procurei em issues existentes e não encontrei uma sugestão igual.
+          required: true
+        - label: Li o [Código de Conduta](../../blob/main/CODE_OF_CONDUCT.md).
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Qual problema essa funcionalidade resolve?
+      description: Descreva a necessidade ou a dor por trás da proposta.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposta
+      description: Descreva a solução que você imagina. Como funcionaria?
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: constitution
+    attributes:
+      label: Alinhamento com os princípios do Caderno
+      description: "Marque os critérios que a proposta atende (veja a Constituição):"
+      options:
+        - label: Funciona **offline** (local-first).
+        - label: O usuário continua **no controle** (sugere, não impõe).
+        - label: A ação é **reversível**.
+        - label: Mantém os dados **portáveis** (exporta/importa, sem lock-in).
+        - label: Aparece na **profundidade certa** (não joga complexidade cedo demais).
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternativas consideradas
+      description: Outras abordagens que você pensou? (opcional)
+    validations:
+      required: false
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Contexto adicional
+      description: Mockups, exemplos de outros apps, links. (opcional)
+    validations:
+      required: false

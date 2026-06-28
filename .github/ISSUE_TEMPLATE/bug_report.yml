@@ -1,0 +1,80 @@
+# SPDX-FileCopyrightText: 2026 Gabriel Rodrigues Antunes <gabrielrodantunes@gmail.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+name: "🐛 Relatório de bug"
+description: "Reporte um comportamento incorreto no Caderno"
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por reservar um tempo para reportar um bug. 💛
+
+        ⚠️ **Vulnerabilidade de segurança?** Não use este formulário —
+        siga o [SECURITY.md](../../blob/main/SECURITY.md) para reportar em canal privado.
+
+  - type: checkboxes
+    id: pre-checks
+    attributes:
+      label: Verificações iniciais
+      options:
+        - label: Procurei em issues existentes e não encontrei um relato igual.
+          required: true
+        - label: Li o [Código de Conduta](../../blob/main/CODE_OF_CONDUCT.md).
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição do bug
+      description: Explique de forma clara e objetiva o que está acontecendo.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Passos para reproduzir
+      description: Liste os passos que levam ao problema.
+      placeholder: |
+        1. Vá para '...'
+        2. Clique em '...'
+        3. Veja o erro
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamento esperado
+      description: O que você esperava que acontecesse?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Comportamento observado
+      description: O que aconteceu de fato? Inclua mensagens de erro, se houver.
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Ambiente
+      description: Navegador, sistema operacional e versão/commit do Caderno.
+      placeholder: |
+        - Navegador: Firefox 140
+        - SO: Ubuntu 24.04
+        - Versão/commit: main @ abc1234
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Contexto adicional
+      description: Screenshots, logs ou qualquer informação que ajude. (opcional)
+    validations:
+      required: false

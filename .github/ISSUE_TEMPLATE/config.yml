@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2026 Gabriel Rodrigues Antunes <gabrielrodantunes@gmail.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Dúvidas e discussões
+    url: https://github.com/meu-caderno/caderno/discussions
+    about: Para perguntas, ideias e conversas abertas, use as Discussions.
+  - name: 🔒 Vulnerabilidade de segurança
+    url: https://github.com/meu-caderno/caderno/security/advisories/new
+    about: Não abra issue pública. Reporte de forma privada por aqui (veja SECURITY.md).
+  - name: 💛 Apoiar o projeto
+    url: https://github.com/sponsors/guesant
+    about: O Caderno é mantido em trabalho voluntário. Considere apoiar.

@@ -87,7 +87,7 @@ Se o Caderno te ajuda de alguma forma, você pode ajudar de volta **com o que o 
 
 ## Contribuindo
 
-Antes de propor uma funcionalidade, considere:
+Contribuições são bem-vindas! Antes de propor uma funcionalidade, considere:
 
 * Ela funciona offline?
 * O usuário continua no controle?
@@ -97,6 +97,10 @@ Antes de propor uma funcionalidade, considere:
 
 Se alguma resposta for negativa, provavelmente a proposta precisa ser revisada.
 
+O guia completo (setup, convenção de commits, fluxo de PR) está em
+**[CONTRIBUTING.md][link-contributing]**. Ao participar, você concorda com o nosso
+**[Código de Conduta][link-coc]**.
+
 ### Desenvolvimento
 
 ```sh
@@ -105,6 +109,17 @@ cd caderno
 ```
 
 Utilize DevContainer no VSCode ou sua IDE JetBrains para conectar ao Caderno SDK.
+Veja [docs/DEVELOPMENT.md][link-development] para comandos e detalhes, e
+[docs/ARCHITECTURE.md][link-architecture] para entender a estrutura do projeto.
+
+## Comunidade
+
+* 🐛 Bugs e 💡 ideias: abra uma [issue][link-issues] usando os templates.
+* 💬 Dúvidas e discussões: use as [Discussions][link-discussions].
+* 🗺️ Para onde o projeto vai: [ROADMAP.md][link-roadmap] e
+  [CHANGELOG.md][link-changelog].
+* 🏛️ Como o projeto é conduzido: [GOVERNANCE.md][link-governance].
+* 🆘 Onde pedir ajuda: [SUPPORT.md][link-support].
 
 ## Segurança
 
@@ -139,12 +154,22 @@ Você deve ter recebido uma cópia em [LICENSE][link-license]. Caso não, veja e
 [link-attestation]: https://docs.github.com/actions/security-guides/using-artifact-attestations
 [link-security]: ./SECURITY.md
 [link-license]: ./LICENSE
+[link-contributing]: ./CONTRIBUTING.md
+[link-coc]: ./CODE_OF_CONDUCT.md
+[link-support]: ./SUPPORT.md
+[link-governance]: ./GOVERNANCE.md
+[link-roadmap]: ./ROADMAP.md
+[link-changelog]: ./CHANGELOG.md
+[link-development]: ./docs/DEVELOPMENT.md
+[link-architecture]: ./docs/ARCHITECTURE.md
+[link-issues]: https://github.com/meu-caderno/caderno/issues
+[link-discussions]: https://github.com/meu-caderno/caderno/discussions
 
 [badge-status-src]: https://img.shields.io/badge/status-MVP-orange
 [badge-status-href]: #status
 
 [badge-prs-src]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
-[badge-prs-href]: #contribuindo
+[badge-prs-href]: ./CONTRIBUTING.md
 
 [badge-last-commit-src]: https://img.shields.io/github/last-commit/meu-caderno/caderno
 [badge-last-commit-href]: https://github.com/meu-caderno/caderno/activity
