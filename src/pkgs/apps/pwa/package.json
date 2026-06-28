@@ -10,16 +10,23 @@
     "prepare": "nx run prepare",
     "postinstall": "nuxt prepare",
     "typecheck": "nuxt typecheck",
-    "cleanup": "rm -rf .nuxt .output dist"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "e2e": "playwright test --pass-with-no-tests",
+    "analyze": "nuxt analyze",
+    "cleanup": "rm -rf .nuxt .output dist coverage playwright-report test-results"
   },
   "dependencies": {
     "@nuxt/a11y": "1.0.0-alpha.1",
     "@nuxt/hints": "1.1.3",
     "@nuxt/icon": "^2.2.3",
     "@nuxt/image": "2.0.0",
+    "@nuxt/fonts": "^0.11.4",
     "@nuxt/scripts": "1.2.1",
     "@nuxtjs/color-mode": "^4.0.1",
     "@nuxtjs/i18n": "10.4.0",
+    "@nuxtjs/seo": "^3.2.2",
     "@tanstack/vue-query": "^5.101.0",
     "@types/bun": "^1.3.14",
     "@types/node": "^26.0.1",
@@ -34,6 +41,16 @@
     "vue-router": "^5.1.0",
     "vue-tsc": "^3.3.5"
   },
+  "devDependencies": {
+    "@playwright/test": "1.61.1",
+    "@vitejs/plugin-vue": "^5.2.4",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vue/test-utils": "^2.4.6",
+    "happy-dom": "^17.4.4",
+    "serve": "^14.2.4",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
   "nx": {
     "includedScripts": [],
     "namedInputs": {
@@ -41,7 +58,9 @@
         "{projectRoot}/app",
         "{projectRoot}/public",
         "{projectRoot}/nuxt.config.ts",
-        "{projectRoot}/tsconfig.json"
+        "{projectRoot}/tsconfig.json",
+        "{projectRoot}/vitest.config.ts",
+        "{projectRoot}/playwright.config.ts"
       ]
     },
     "targets": {
@@ -112,6 +131,103 @@
         },
         "continuous": false,
         "cache": false
+      },
+      "typecheck": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "nuxt typecheck"
+          ],
+          "parallel": false
+        },
+        "inputs": [
+          "default"
+        ],
+        "dependsOn": [
+          "prepare"
+        ],
+        "cache": true,
+        "continuous": false
+      },
+      "test": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "vitest run"
+          ],
+          "parallel": false
+        },
+        "inputs": [
+          "default"
+        ],
+        "dependsOn": [
+          "prepare"
+        ],
+        "cache": true,
+        "continuous": false
+      },
+      "test:watch": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "vitest"
+          ],
+          "parallel": false
+        },
+        "continuous": true
+      },
+      "coverage": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "vitest run --coverage"
+          ],
+          "parallel": false
+        },
+        "inputs": [
+          "default"
+        ],
+        "dependsOn": [
+          "prepare"
+        ],
+        "outputs": [
+          "{projectRoot}/coverage"
+        ],
+        "cache": true,
+        "continuous": false
+      },
+      "e2e": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "playwright test --pass-with-no-tests"
+          ],
+          "parallel": false
+        },
+        "dependsOn": [
+          "generate"
+        ],
+        "cache": false,
+        "continuous": false
+      },
+      "analyze": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "nuxt analyze"
+          ],
+          "parallel": false
+        },
+        "dependsOn": [
+          "prepare"
+        ],
+        "continuous": false
       }
     }
   }

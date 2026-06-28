@@ -19,7 +19,11 @@
     "quality:check": "nx run @meu-caderno/src:quality:check",
     "quality:check:ci": "nx run @meu-caderno/src:quality:check:ci",
     "quality:fix": "nx run @meu-caderno/src:quality:fix",
-    "all:build": "nx run @meu-caderno/src:all:build"
+    "all:build": "nx run @meu-caderno/src:all:build",
+    "all:typecheck": "nx run @meu-caderno/src:all:typecheck",
+    "all:test": "nx run @meu-caderno/src:all:test",
+    "all:coverage": "nx run @meu-caderno/src:all:coverage",
+    "all:e2e": "nx run @meu-caderno/src:all:e2e"
   },
   "nx": {
     "includedScripts": [],
@@ -114,6 +118,45 @@
           "parallel": true,
           "commands": [
             "nx run @meu-caderno/apps.pwa:build"
+          ]
+        }
+      },
+      "all:typecheck": {
+        "executor": "nx:run-commands",
+        "options": {
+          "parallel": true,
+          "commands": [
+            "nx run @meu-caderno/apps.pwa:typecheck",
+            "nx run @meu-caderno/core:typecheck"
+          ]
+        }
+      },
+      "all:test": {
+        "executor": "nx:run-commands",
+        "options": {
+          "parallel": true,
+          "commands": [
+            "nx run @meu-caderno/apps.pwa:test",
+            "nx run @meu-caderno/core:test"
+          ]
+        }
+      },
+      "all:coverage": {
+        "executor": "nx:run-commands",
+        "options": {
+          "parallel": true,
+          "commands": [
+            "nx run @meu-caderno/apps.pwa:coverage",
+            "nx run @meu-caderno/core:coverage"
+          ]
+        }
+      },
+      "all:e2e": {
+        "executor": "nx:run-commands",
+        "options": {
+          "parallel": false,
+          "commands": [
+            "nx run @meu-caderno/apps.pwa:e2e"
           ]
         }
       }

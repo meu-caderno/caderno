@@ -26,6 +26,9 @@ coverage
 
 *.tsbuildinfo
 
+# Nuxt (gerado por alguns módulos)
+**/.nuxtrc
+
 .eslintcache
 
 # Cypress

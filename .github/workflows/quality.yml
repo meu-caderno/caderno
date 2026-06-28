@@ -15,7 +15,7 @@ jobs:
   quality:
     runs-on: ubuntu-latest
 
-    timeout-minutes: 15
+    timeout-minutes: 25
 
     permissions:
       contents: read
@@ -29,12 +29,26 @@ jobs:
       - name: "Prepare source-code with SDK"
         uses: ./.github/actions/prepare
 
-      - name: "Quality Check: Lint + format + typecheck"
+      - name: "Quality Check: Lint + format"
         uses: ./.github/actions/run-in-devcontainer
         with:
           command: |
             cd src;
             bun run quality:check:ci;
+
+      - name: "Quality Check: types must pass"
+        uses: ./.github/actions/run-in-devcontainer
+        with:
+          command: |
+            cd src;
+            bun run all:typecheck;
+
+      - name: "Quality Check: unit + component tests"
+        uses: ./.github/actions/run-in-devcontainer
+        with:
+          command: |
+            cd src;
+            bun run all:test;
 
       - name: "Quality Check: everything must build"
         uses: ./.github/actions/run-in-devcontainer
@@ -42,6 +56,13 @@ jobs:
           command: |
             cd src;
             bun run all:build;
+
+      - name: "Quality Check: e2e (Playwright)"
+        uses: ./.github/actions/run-in-devcontainer
+        with:
+          command: |
+            cd src;
+            bun run all:e2e;
 
       - name: "All files must be properly covered by license"
         uses: ./.github/actions/run-in-devcontainer

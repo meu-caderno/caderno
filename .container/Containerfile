@@ -5,6 +5,7 @@ ARG USER_ID=1000
 ARG GROUP_ID=1000
 # configurações do bun
 ARG BUN_VERSION=bun-v1.3.3
+ARG PLAYWRIGHT_VERSION=1.61.1
 
 ########
 # LAYER: Base OS
@@ -54,6 +55,7 @@ ARG USERNAME
 ARG USER_ID
 ARG GROUP_ID
 ARG HOME
+ARG PLAYWRIGHT_VERSION
 
 USER root
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -63,6 +65,10 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     vim \
     zsh \
     reuse
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    bunx playwright@${PLAYWRIGHT_VERSION} install-deps chromium
 
 RUN mkdir -p /container/shell-history/root /container/shell-history/${USERNAME} \
     && chown -R ${USER_ID}:${GROUP_ID} /container/shell-history/${USERNAME} \

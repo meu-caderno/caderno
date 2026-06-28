@@ -48,7 +48,18 @@ cd src
 | `bun run quality:fix` | Corrige automaticamente o que dá (`biome check --fix --unsafe .`) |
 | `bun run lint:check` / `lint:fix` | Apenas lint |
 | `bun run format:check` / `format:fix` | Apenas formatação |
+| `bun run all:typecheck` | Checagem de tipos (PWA via `nuxt typecheck`, core via `tsc`) |
+| `bun run all:test` | Testes unitários/componente (Vitest) de todos os pacotes |
+| `bun run all:coverage` | Testes com relatório de cobertura |
+| `bun run all:e2e` | Testes end-to-end (Playwright) — gera o build e roda no Chromium |
 | `bun run all:build` | Builda tudo (PWA) |
+
+> **Testes:** o ambiente de Vitest (unit/componente) e Playwright (e2e) já está
+> configurado, mas **sem testes de exemplo** — adicione `*.spec.ts` em
+> `pkgs/*/src` ou `pkgs/apps/pwa/app/` (Vitest) e em `pkgs/apps/pwa/e2e/`
+> (Playwright). Para rodar o e2e localmente, instale o browser uma vez com
+> `bunx playwright install chromium` (as libs de sistema já vêm na imagem do
+> DevContainer).
 
 ### Rodando o app (PWA)
 
@@ -70,7 +81,10 @@ Rode localmente os **mesmos checks da CI** (workflow
 ```sh
 cd src
 bun run quality:check:ci   # biome ci . (lint + format + checagens)
+bun run all:typecheck      # tipos precisam passar
+bun run all:test           # testes unitários/componente
 bun run all:build          # tudo precisa buildar
+bun run all:e2e            # testes end-to-end (precisa do browser instalado)
 reuse lint                 # arquivos cobertos por licença (SPDX/REUSE)
 ```
 
