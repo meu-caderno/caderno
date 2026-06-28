@@ -23,6 +23,7 @@ path = [
   ".devcontainer/**/*",
   ".gitattributes",
   ".dockerignore",
+  ".editorconfig",
   "CODEOWNERS"
 ]
 precedence = "override"
@@ -32,7 +33,10 @@ SPDX-License-Identifier = "AGPL-3.0-or-later"
 
 [[annotations]]
 path = [
-  "docs/assets/**/*"
+  "docs/assets/**/*",
+  "src/**/*.png",
+  "src/**/*.svg",
+  "src/**/*.webp"
 ]
 precedence = "override"
 SPDX-FileCopyrightText = "2026 Gabriel Rodrigues Antunes <gabrielrodantunes@gmail.com>"

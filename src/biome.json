@@ -7,7 +7,15 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**/*", "!**/.nx/*", "!**/.nuxt/*", "!**/.output/*"]
+    "includes": [
+      "**/*",
+      "!**/.nx/*",
+      "!**/.nuxt/*",
+      "!**/.output/*",
+      "!**/coverage/*",
+      "!**/playwright-report/*",
+      "!**/test-results/*"
+    ]
   },
   "formatter": {
     "enabled": true,
