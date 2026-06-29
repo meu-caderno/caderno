@@ -1,7 +1,12 @@
 <script setup lang="ts">
-const { tabItems, isVisible } = useLayout();
+import { NAV_ITEMS } from "~/composables/useNav";
+
+const { tabItems, ordered } = useLayout();
+const navKeys = NAV_ITEMS.map((item) => item.key);
 const items = computed(() =>
-  useNav().filter((item) => isVisible(tabItems.value, item.key)),
+  ordered(tabItems.value, navKeys)
+    .map((key) => NAV_ITEMS.find((item) => item.key === key))
+    .filter((item): item is (typeof NAV_ITEMS)[number] => item != null),
 );
 </script>
 

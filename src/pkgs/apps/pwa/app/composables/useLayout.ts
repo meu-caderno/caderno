@@ -45,6 +45,10 @@ export function useLayout() {
     return list === null || list.includes(key);
   }
 
+  function ordered(list: VisibilityList, allKeys: string[]): string[] {
+    return list ?? allKeys;
+  }
+
   function nextList(
     list: VisibilityList,
     allKeys: string[],
@@ -56,7 +60,22 @@ export function useLayout() {
       if (pinned.includes(key)) return current;
       return current.filter((entry) => entry !== key);
     }
-    return allKeys.filter((entry) => current.includes(entry) || entry === key);
+    return [...current, key];
+  }
+
+  function movedList(
+    list: VisibilityList,
+    allKeys: string[],
+    key: string,
+    direction: -1 | 1,
+  ): string[] {
+    const current = [...(list ?? allKeys)];
+    const from = current.indexOf(key);
+    const to = from + direction;
+    if (from < 0 || to < 0 || to >= current.length) return current;
+    const [moved] = current.splice(from, 1);
+    current.splice(to, 0, moved as string);
+    return current;
   }
 
   async function toggleWidget(key: string, allKeys: string[]) {
@@ -77,14 +96,36 @@ export function useLayout() {
     await persist({ railItems: next });
   }
 
+  async function moveWidget(key: string, allKeys: string[], direction: -1 | 1) {
+    const next = movedList(homeWidgets.value, allKeys, key, direction);
+    homeWidgets.value = next;
+    await persist({ homeWidgets: next });
+  }
+
+  async function moveTab(key: string, allKeys: string[], direction: -1 | 1) {
+    const next = movedList(tabItems.value, allKeys, key, direction);
+    tabItems.value = next;
+    await persist({ tabItems: next });
+  }
+
+  async function moveRail(key: string, allKeys: string[], direction: -1 | 1) {
+    const next = movedList(railItems.value, allKeys, key, direction);
+    railItems.value = next;
+    await persist({ railItems: next });
+  }
+
   return {
     homeWidgets,
     tabItems,
     railItems,
     hydrate,
     isVisible,
+    ordered,
     toggleWidget,
     toggleTab,
     toggleRail,
+    moveWidget,
+    moveTab,
+    moveRail,
   };
 }

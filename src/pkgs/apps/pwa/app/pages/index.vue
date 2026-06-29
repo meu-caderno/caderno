@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Activity, Id, Subject } from "@meu-caderno/core";
 import { useCaderno } from "~/composables/useCaderno";
+import { HOME_WIDGETS } from "~/composables/useLayout";
 
 const {
   context,
@@ -23,9 +24,10 @@ const {
 const { service } = useCadernoService();
 const { toast } = useToast();
 const { reviewing, close: closeOnboarding } = useOnboarding();
-const { homeWidgets, isVisible } = useLayout();
+const { homeWidgets, ordered } = useLayout();
 const { hasConsent } = useConsent();
-const showWidget = (key: string) => isVisible(homeWidgets.value, key);
+const widgetKeys = HOME_WIDGETS.map((widget) => widget.key);
+const orderedWidgets = computed(() => ordered(homeWidgets.value, widgetKeys));
 const showGamification = computed(() => hasConsent("gamification"));
 
 const {
@@ -172,40 +174,42 @@ const period = computed(() => {
       :streak="gamification.streak"
       :badges="gamification.badges"
     />
-    <SectionHomeTodayRoll
-      v-if="showWidget('roll')"
-      :roll="roll"
-      :date-label="todayLabel"
-      @mark="mark"
-    />
-    <SectionHomeRiskAlert
-      v-if="showWidget('risk')"
-      :stats="stats"
-      @detail="detailSubjectId = $event"
-    />
-    <SectionHomeGoalsSection
-      v-if="showWidget('goals') && context"
-      :context="context"
-      :today="today"
-      @manage="managingGoals = true"
-    />
-    <SectionHomeSubjectsSection
-      v-if="showWidget('subjects')"
-      :stats="stats"
-      @create="creatingSubject = true"
-      @notas="notasSubjectId = $event"
-      @detail="detailSubjectId = $event"
-    />
-    <SectionHomeActivitiesSection
-      v-if="showWidget('activities')"
-      :activities="pendingActivities"
-      :subjects="subjects"
-      :stats="stats"
-      :today="today"
-      @complete="completeActivity"
-      @create="creatingActivity = true"
-      @edit="editingActivity = $event"
-    />
+    <template v-for="key in orderedWidgets" :key="key">
+      <SectionHomeTodayRoll
+        v-if="key === 'roll'"
+        :roll="roll"
+        :date-label="todayLabel"
+        @mark="mark"
+      />
+      <SectionHomeRiskAlert
+        v-else-if="key === 'risk'"
+        :stats="stats"
+        @detail="detailSubjectId = $event"
+      />
+      <SectionHomeGoalsSection
+        v-else-if="key === 'goals' && context"
+        :context="context"
+        :today="today"
+        @manage="managingGoals = true"
+      />
+      <SectionHomeSubjectsSection
+        v-else-if="key === 'subjects'"
+        :stats="stats"
+        @create="creatingSubject = true"
+        @notas="notasSubjectId = $event"
+        @detail="detailSubjectId = $event"
+      />
+      <SectionHomeActivitiesSection
+        v-else-if="key === 'activities'"
+        :activities="pendingActivities"
+        :subjects="subjects"
+        :stats="stats"
+        :today="today"
+        @complete="completeActivity"
+        @create="creatingActivity = true"
+        @edit="editingActivity = $event"
+      />
+    </template>
 
     <SectionHomeSubjectForm
       v-if="creatingSubject"
