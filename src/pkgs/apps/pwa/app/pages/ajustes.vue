@@ -12,6 +12,7 @@
     <SectionSettingsPomodoroCard />
     <SectionSettingsWorkbenchesCard />
     <SectionSettingsPluginsCard />
+    <SectionSettingsOplogCard />
     <SectionSettingsConsentCard />
     <SectionSettingsGeneralCard />
     <SectionSettingsBackupCard />
