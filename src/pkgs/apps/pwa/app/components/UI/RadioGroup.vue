@@ -42,7 +42,7 @@ defineProps<{ options: Option[] }>();
   cursor: pointer;
 }
 .uirg__item:has([data-state="checked"]) {
-  border-color: var(--pt-ink);
+  border-color: var(--pt-accent);
   background: var(--pt-paper);
 }
 .uirg__radio {
@@ -58,13 +58,13 @@ defineProps<{ options: Option[] }>();
   justify-content: center;
 }
 .uirg__radio[data-state="checked"] {
-  border-color: var(--pt-ink);
+  border-color: var(--pt-accent);
 }
 .uirg__dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: var(--pt-ink);
+  background: var(--pt-accent);
 }
 .uirg__text {
   display: flex;

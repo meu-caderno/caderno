@@ -45,7 +45,7 @@ defineProps<{ options: Option[]; multiple?: boolean }>();
   cursor: pointer;
 }
 .uitg__item[data-state="on"] {
-  border-color: var(--pt-ink);
+  border-color: var(--pt-accent);
   background: var(--pt-paper);
   color: var(--pt-ink);
 }

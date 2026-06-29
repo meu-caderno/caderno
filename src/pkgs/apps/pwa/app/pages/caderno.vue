@@ -110,10 +110,10 @@ async function confirmDelete() {
 .caderno {
   max-width: 720px;
   margin: 0 auto;
-  padding: 22px 16px 64px;
+  padding: var(--pt-pad-screen) 16px 64px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: calc(16px * var(--pt-density));
 }
 .caderno__head {
   display: flex;

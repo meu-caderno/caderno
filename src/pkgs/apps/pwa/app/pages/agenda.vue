@@ -24,10 +24,10 @@ const { days, booting, ready } = useAgenda();
 .agenda {
   max-width: 720px;
   margin: 0 auto;
-  padding: 22px 16px 64px;
+  padding: var(--pt-pad-screen) 16px 64px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: calc(12px * var(--pt-density));
 }
 .agenda--center {
   padding: 64px 16px;

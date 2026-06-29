@@ -62,9 +62,9 @@ defineEmits<(e: "click", ev: MouseEvent) => void>();
 }
 
 .pt-btn--primal {
-  background: var(--pt-ink);
-  color: var(--pt-on-ink);
-  border: var(--pt-stroke) solid var(--pt-ink);
+  background: var(--pt-accent);
+  color: var(--pt-on-accent);
+  border: var(--pt-stroke) solid var(--pt-accent);
   box-shadow: var(--pt-shadow-strong);
 }
 .pt-btn--leve {

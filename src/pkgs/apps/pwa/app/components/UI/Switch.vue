@@ -36,7 +36,7 @@ defineProps<{ label?: string; hint?: string }>();
   transition: background 0.15s;
 }
 .uisw__root[data-state="checked"] {
-  background: var(--pt-ink);
+  background: var(--pt-accent);
 }
 .uisw__thumb {
   display: block;

@@ -47,7 +47,7 @@ const isActive = computed(() =>
   font-size: 21px;
 }
 .nav-item--tab.nav-item--active {
-  color: var(--pt-ink);
+  color: var(--pt-accent);
 }
 
 /* Rail (desktop): horizontal row */
@@ -65,6 +65,6 @@ const isActive = computed(() =>
 }
 .nav-item--rail.nav-item--active {
   background: var(--pt-card);
-  color: var(--pt-ink);
+  color: var(--pt-accent);
 }
 </style>

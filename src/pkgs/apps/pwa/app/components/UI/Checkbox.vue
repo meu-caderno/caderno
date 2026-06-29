@@ -37,8 +37,8 @@ defineProps<{ label?: string }>();
   padding: 0;
 }
 .uicb__box[data-state="checked"] {
-  background: var(--pt-ink);
-  border-color: var(--pt-ink);
+  background: var(--pt-accent);
+  border-color: var(--pt-accent);
 }
 .uicb__ind {
   color: var(--pt-paper);
