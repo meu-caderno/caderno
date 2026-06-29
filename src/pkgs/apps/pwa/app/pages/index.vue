@@ -45,7 +45,7 @@ const deletingSubject = ref<Subject | null>(null);
 const creatingActivity = ref(false);
 const editingActivity = ref<Activity | null>(null);
 const managingGoals = ref(false);
-const focusing = ref(false);
+const { open: openFocus } = useFocus();
 const capturing = ref(false);
 const showInbox = ref(false);
 const notasSubjectId = ref<Id | null>(null);
@@ -92,7 +92,7 @@ const quickActions: Record<string, () => void> = {
     showInbox.value = true;
   },
   focus: () => {
-    focusing.value = true;
+    openFocus();
   },
   activity: () => {
     creatingActivity.value = true;
@@ -268,7 +268,6 @@ const period = computed(() => {
       @confirm="confirmDeleteSubject"
       @cancel="deletingSubject = null"
     />
-    <SectionHomePomodoroOverlay v-if="focusing" @close="focusing = false" />
     <SectionHomeQuickCapture
       v-if="capturing"
       @done="capturing = false"

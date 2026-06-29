@@ -2,6 +2,7 @@
 import { useTheme } from "~/composables/useTheme";
 
 const { zen, setZen } = useTheme();
+const { focusing, close: closeFocus } = useFocus();
 </script>
 
 <template>
@@ -19,6 +20,7 @@ const { zen, setZen } = useTheme();
     >
       <UIIcon icon="x" :size="16" /> sair do foco
     </button>
+    <SectionHomePomodoroOverlay v-if="focusing" @close="closeFocus" />
   </div>
 </template>
 
