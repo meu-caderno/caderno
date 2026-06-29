@@ -228,6 +228,10 @@ export function useTheme() {
     () => DEFAULT_SCREEN,
   );
   const zen = useState<boolean>("caderno:theme:zen", () => false);
+  const activityView = useState<string>(
+    "caderno:theme:activityView",
+    () => "list",
+  );
   const hydrated = useState<boolean>("caderno:theme:hydrated", () => false);
 
   const customMoods = computed(() => customProfiles.value.map(profileToMood));
@@ -263,6 +267,7 @@ export function useTheme() {
     if (prefs?.headingFont) headingFont.value = prefs.headingFont;
     if (prefs?.screenDensity) screenDensity.value = prefs.screenDensity;
     if (prefs?.zen != null) zen.value = prefs.zen;
+    if (prefs?.activityView) activityView.value = prefs.activityView;
     hydrated.value = true;
   }
 
@@ -289,6 +294,11 @@ export function useTheme() {
   async function setZen(value: boolean) {
     zen.value = value;
     await persist({ zen: value });
+  }
+
+  async function setActivityView(value: string) {
+    activityView.value = value;
+    await persist({ activityView: value });
   }
 
   async function saveProfile(draft: ProfileDraft) {
@@ -318,12 +328,14 @@ export function useTheme() {
     headingFont.value = DEFAULT_HEADING;
     screenDensity.value = DEFAULT_SCREEN;
     zen.value = false;
+    activityView.value = "list";
     await persist({
       homeProfile: DEFAULT_MOOD,
       textScale: DEFAULT_TEXT_SCALE,
       headingFont: DEFAULT_HEADING,
       screenDensity: DEFAULT_SCREEN,
       zen: false,
+      activityView: "list",
     });
   }
 
@@ -335,12 +347,14 @@ export function useTheme() {
     headingFont,
     screenDensity,
     zen,
+    activityView,
     hydrate,
     setMood,
     setTextScale,
     setHeadingFont,
     setScreenDensity,
     setZen,
+    setActivityView,
     saveProfile,
     deleteProfile,
     restoreDefaults,

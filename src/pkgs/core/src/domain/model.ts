@@ -300,6 +300,7 @@ export interface Preferences {
   screenDensity?: string;
   zen?: boolean;
   profileContexts?: Id[];
+  activityView?: string;
 }
 
 export enum OpKind {
