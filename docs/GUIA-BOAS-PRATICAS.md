@@ -145,7 +145,9 @@ Alvos reais: `pages/index.vue` (~304 l, ~12 flags de modal + `quickActions`), `c
   → extrair `SectionSettingsCard`/cabeçalho reutilizável.
 
 ### 4.4 Nomes `[convenção]`
-**Nomes sempre longos e descritivos — sem abreviação, sem uma-letra.** Vale para **tudo**, inclusive
+**Nomes sempre longos e descritivos — sem abreviação, sem uma-letra.** Nada de `ts`→`timestamp`,
+`acc`→`accumulator`/`total`, `idx`→`index`, `el`→`element`, `cfg`→`config`, `msg`→`message`,
+`prev`/`curr`→`previous`/`current`, `wd`→`weekdayLabels`. Vale para **tudo**, inclusive
 parâmetros de `arrow`/predicado e contadores de loop: escreva `(record) =>`, `(activity) =>`,
 `(subject) =>`, `for (const index of …)` — **nunca** `(r) =>`, `(a) =>`, `(s) =>`, `i`. Booleano com
 `is/has/should/can`. Constante nomeada em vez de número/string mágica. Única exceção: `_` para argumento

@@ -1,5 +1,6 @@
 import type { Context, Modules, Vocabulary } from "../domain";
 import { AbsenceStance, Goal } from "../domain";
+import { DEFAULT_ATTENDANCE_FLOOR } from "./attendance";
 
 export interface ContextPreset {
   modules: Modules;
@@ -41,7 +42,7 @@ const PRESETS: Record<Goal, ContextPreset> = {
     modules: modules({ attendance: true, grades: true, term: true }),
     vocabulary: vocabulary("disciplina", "atividade", "presença", "período"),
     absenceStance: AbsenceStance.PLAN_ABSENCES,
-    attendanceFloor: 0.75,
+    attendanceFloor: DEFAULT_ATTENDANCE_FLOOR,
   },
   [Goal.PUBLIC_EXAM]: {
     modules: modules({ grades: true, streak: true, hours: true }),

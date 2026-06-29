@@ -16,9 +16,16 @@ export function divide(left: number, right: number): number {
   return new Decimal(left).dividedBy(right).toNumber();
 }
 
+export function remainder(left: number, right: number): number {
+  return new Decimal(left).modulo(right).toNumber();
+}
+
 export function sum(values: readonly number[]): number {
   return values
-    .reduce<Decimal>((acc, value) => acc.plus(value), new Decimal(0))
+    .reduce<Decimal>(
+      (accumulator, value) => accumulator.plus(value),
+      new Decimal(0),
+    )
     .toNumber();
 }
 

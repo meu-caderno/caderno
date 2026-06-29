@@ -35,7 +35,6 @@ const isActive = computed(() =>
   line-height: 1;
 }
 
-/* Tab bar (mobile): vertical, compact */
 .nav-item--tab {
   flex-direction: column;
   gap: 3px;
@@ -50,7 +49,6 @@ const isActive = computed(() =>
   color: var(--pt-accent);
 }
 
-/* Rail (desktop): horizontal row */
 .nav-item--rail {
   gap: 11px;
   padding: 10px 12px;

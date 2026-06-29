@@ -92,6 +92,18 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
     });
   };
 
+  const commitDelete = async <T extends Identified>(
+    select: (tx: ContextTx) => Repository<T>,
+    entity: EntityName,
+    id: Id,
+  ): Promise<void> => {
+    const ts = await clock.now();
+    await store.transaction(async (tx) => {
+      await select(tx).delete(id);
+      await tx.oplog.append(makeOp(entity, OpKind.DELETE, id, ts));
+    });
+  };
+
   return {
     async createContext(input) {
       const context: Context = { ...input, id: await ids.newId() };
@@ -275,13 +287,7 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
       if (!activity) {
         return fail(DomainErrorCode.NOT_FOUND, { id }, EntityName.ACTIVITY);
       }
-      const ts = await clock.now();
-      await store.transaction(async (tx) => {
-        await tx.activities.delete(id);
-        await tx.oplog.append(
-          makeOp(EntityName.ACTIVITY, OpKind.DELETE, id, ts),
-        );
-      });
+      await commitDelete((tx) => tx.activities, EntityName.ACTIVITY, id);
       return ok(undefined);
     },
 
@@ -344,13 +350,7 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
       if (!item) {
         return fail(DomainErrorCode.NOT_FOUND, { id }, EntityName.LIBRARY);
       }
-      const ts = await clock.now();
-      await store.transaction(async (tx) => {
-        await tx.library.delete(id);
-        await tx.oplog.append(
-          makeOp(EntityName.LIBRARY, OpKind.DELETE, id, ts),
-        );
-      });
+      await commitDelete((tx) => tx.library, EntityName.LIBRARY, id);
       return ok(undefined);
     },
 
@@ -465,11 +465,7 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
       if (!(await store.graph.edges.get(id))) {
         return fail(DomainErrorCode.NOT_FOUND, { id }, EntityName.EDGE);
       }
-      const ts = await clock.now();
-      await store.transaction(async (tx) => {
-        await tx.graph.edges.delete(id);
-        await tx.oplog.append(makeOp(EntityName.EDGE, OpKind.DELETE, id, ts));
-      });
+      await commitDelete((tx) => tx.graph.edges, EntityName.EDGE, id);
       return ok(undefined);
     },
   };

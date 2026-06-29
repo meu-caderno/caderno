@@ -8,6 +8,7 @@ import type {
   Context,
   DayIso,
   Edge,
+  Grade,
   Id,
   LibraryItem,
   Modules,
@@ -58,7 +59,11 @@ export const ColorSchema = z
   .string()
   .regex(/^#[0-9a-fA-F]{6}$/)
   .transform((value) => value as Color);
-export const GradeSchema = z.number().min(0).max(10);
+export const GradeSchema = z
+  .number()
+  .min(0)
+  .max(10)
+  .transform((value) => value as Grade);
 export const ClockTimeSchema = z.string().regex(/^\d{2}:\d{2}$/);
 
 export const GoalSchema = z.enum(Goal);

@@ -64,7 +64,7 @@ const due = computed(() => dueBadge(props.activity.dueDate));
         <span
           v-if="subjectName"
           class="activity-item__dot"
-          :style="{ background: subjectColor ?? '#c4beb0' }"
+          :style="{ background: subjectColor ?? 'var(--pt-border-muted)' }"
         />
         <span v-if="subjectName" class="activity-item__subject">
           {{ subjectName }}

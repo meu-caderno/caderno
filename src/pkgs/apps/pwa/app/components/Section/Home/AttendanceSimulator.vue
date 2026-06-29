@@ -11,8 +11,8 @@ const scenario = computed(() =>
 );
 const verdict = computed(() =>
   scenario.value.meetsBudget
-    ? { label: "ainda dentro do limite", color: "#2f7d4f" }
-    : { label: "estoura o limite de faltas", color: "#c0392b" },
+    ? { label: "ainda dentro do limite", color: "var(--pt-ok)" }
+    : { label: "estoura o limite de faltas", color: "var(--pt-danger)" },
 );
 </script>
 

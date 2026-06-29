@@ -6,6 +6,12 @@ export const XP_PER_PRESENCE = 5;
 export const XP_PER_ACTIVITY = 10;
 export const XP_PER_LEVEL = 100;
 
+const FIRST_ACTION_THRESHOLD = 1;
+const SHORT_STREAK_DAYS = 3;
+const WEEK_STREAK_DAYS = 7;
+const TASK_BADGE_THRESHOLD = 10;
+const LEVEL_BADGE_THRESHOLD = 5;
+
 export interface XpInput {
   presences: number;
   completedActivities: number;
@@ -26,13 +32,13 @@ export interface Level {
 }
 
 export function levelFromXp(xp: number): Level {
-  const safe = Math.max(0, xp);
-  const level = num.floor(num.divide(safe, XP_PER_LEVEL)) + 1;
-  const intoLevel = safe % XP_PER_LEVEL;
+  const safeXp = Math.max(0, xp);
+  const level = num.add(num.floor(num.divide(safeXp, XP_PER_LEVEL)), 1);
+  const intoLevel = num.remainder(safeXp, XP_PER_LEVEL);
   return {
     level,
     intoLevel,
-    toNextLevel: XP_PER_LEVEL - intoLevel,
+    toNextLevel: num.subtract(XP_PER_LEVEL, intoLevel),
     ratio: num.divide(intoLevel, XP_PER_LEVEL),
   };
 }
@@ -72,31 +78,33 @@ export function achievements(input: GamificationInput): Achievement[] {
       key: "first-step",
       label: "Primeiro passo",
       icon: "👣",
-      unlocked: input.presences + input.completedActivities >= 1,
+      unlocked:
+        num.add(input.presences, input.completedActivities) >=
+        FIRST_ACTION_THRESHOLD,
     },
     {
       key: "streak-3",
       label: "3 dias seguidos",
       icon: "🔥",
-      unlocked: input.streak >= 3,
+      unlocked: input.streak >= SHORT_STREAK_DAYS,
     },
     {
       key: "streak-7",
       label: "Uma semana",
       icon: "⚡",
-      unlocked: input.streak >= 7,
+      unlocked: input.streak >= WEEK_STREAK_DAYS,
     },
     {
       key: "ten-tasks",
       label: "10 tarefas",
       icon: "✅",
-      unlocked: input.completedActivities >= 10,
+      unlocked: input.completedActivities >= TASK_BADGE_THRESHOLD,
     },
     {
       key: "level-5",
       label: "Nível 5",
       icon: "🏅",
-      unlocked: input.level >= 5,
+      unlocked: input.level >= LEVEL_BADGE_THRESHOLD,
     },
   ];
 }

@@ -11,6 +11,10 @@ function toDayIso(date: Date): DayIso {
   return date.toISOString().slice(0, 10) as DayIso;
 }
 
+const WEEKLY_INTERVAL_DAYS = 7;
+const BIWEEKLY_INTERVAL_DAYS = 14;
+const DEFAULT_SOON_DAYS = 3;
+
 export function derivePrepDueDate(
   targetDueDate: DayIso,
   gapDays: number,
@@ -69,7 +73,10 @@ export function nextRecurrence(
   ) {
     return null;
   }
-  const interval = activity.recurrence === Recurrence.BIWEEKLY ? 14 : 7;
+  const interval =
+    activity.recurrence === Recurrence.BIWEEKLY
+      ? BIWEEKLY_INTERVAL_DAYS
+      : WEEKLY_INTERVAL_DAYS;
   return {
     ...activity,
     id: nextId,
@@ -130,7 +137,7 @@ export enum DueBucket {
 export function dueBucket(
   activity: Pick<Activity, "dueDate" | "status">,
   today: DayIso,
-  soonDays = 3,
+  soonDays = DEFAULT_SOON_DAYS,
 ): DueBucket {
   if (
     activity.status === ActivityStatus.DONE ||

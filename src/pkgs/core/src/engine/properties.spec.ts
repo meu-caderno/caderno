@@ -1,6 +1,6 @@
 import fc from "fast-check";
 import { describe, it } from "vitest";
-import type { DayIso, Id, Record } from "../domain";
+import type { DayIso, Grade, Id, Record } from "../domain";
 import { AttendanceStatus } from "../domain";
 import { computeAttendance } from "./attendance";
 import { weightedAverage } from "./grades";
@@ -49,8 +49,12 @@ describe("engine properties", () => {
           { minLength: 1 },
         ),
         (assessments) => {
-          const avg = weightedAverage(assessments);
-          return avg === null || (avg >= -1e-9 && avg <= 10 + 1e-9);
+          const branded = assessments.map((assessment) => ({
+            weight: assessment.weight,
+            grade: assessment.grade as Grade,
+          }));
+          const average = weightedAverage(branded);
+          return average === null || (average >= -1e-9 && average <= 10 + 1e-9);
         },
       ),
     );
