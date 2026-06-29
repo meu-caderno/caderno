@@ -14,6 +14,7 @@ import type {
   Node,
   OpLogEntry,
   OpLogStore,
+  Preferences,
   Profile,
   Repository,
   StorageProvider,
@@ -134,7 +135,11 @@ export function createInMemoryContextStore(): ContextStore {
 }
 
 export function createInMemoryConfigStore(): ConfigStore {
-  return { profiles: createRepo<Profile>(), moods: createRepo<Mood>() };
+  return {
+    profiles: createRepo<Profile>(),
+    moods: createRepo<Mood>(),
+    preferences: createRepo<Preferences>(),
+  };
 }
 
 export function inMemoryStorageProvider(): StorageProvider {

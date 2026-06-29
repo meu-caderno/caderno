@@ -80,6 +80,23 @@ describe("CadernoService", () => {
     }
   });
 
+  it("creates a context that a subject can reference", async () => {
+    const store = createInMemoryContextStore();
+    const svc = createCadernoService({
+      store,
+      clock: fixedClock(1 as Timestamp, "2026-03-01" as DayIso),
+      ids: counterIds("c"),
+    });
+    const ctx = await svc.createContext({ ...sampleContext() });
+    expect(ctx.ok).toBe(true);
+    if (!ctx.ok) return;
+    expect(await store.oplog.forId(ctx.value.id)).toHaveLength(1);
+    const sub = await svc.createSubject(
+      subjectInput({ contextId: ctx.value.id }),
+    );
+    expect(sub.ok).toBe(true);
+  });
+
   it("rejects attendance for a missing subject", async () => {
     const { svc } = await service();
     const r = await svc.markAttendance({

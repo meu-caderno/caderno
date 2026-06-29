@@ -286,6 +286,11 @@ export interface Profile {
   headingFont?: string;
 }
 
+export interface Preferences {
+  id: Id;
+  activeContextId?: Id;
+}
+
 export enum OpKind {
   PUT = "PUT",
   DELETE = "DELETE",

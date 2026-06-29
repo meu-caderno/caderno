@@ -20,6 +20,7 @@ import type {
   OpKind,
   OpLogEntry,
   OpLogStore,
+  Preferences,
   Profile,
   Repository,
   StorageProvider,
@@ -121,10 +122,11 @@ export function createDexieContextStore(name = "caderno"): ContextStore {
 
 export function createDexieConfigStore(name = "caderno-config"): ConfigStore {
   const db = new Dexie(name);
-  db.version(1).stores({ profiles: "id", moods: "id" });
+  db.version(1).stores({ profiles: "id", moods: "id", preferences: "id" });
   return {
     profiles: repo(db.table<Profile, string>("profiles")),
     moods: repo(db.table<Mood, string>("moods")),
+    preferences: repo(db.table<Preferences, string>("preferences")),
   };
 }
 

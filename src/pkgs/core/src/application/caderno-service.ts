@@ -2,6 +2,7 @@ import type {
   Activity,
   Record as AttendanceRecord,
   Clock,
+  Context,
   ContextStore,
   ContextTx,
   Grade,
@@ -24,6 +25,10 @@ export interface CadernoDeps {
 }
 
 export interface CadernoService {
+  createContext(
+    input: Omit<Context, "id">,
+  ): Promise<Result<Context, DomainError>>;
+  updateContext(context: Context): Promise<Result<Context, DomainError>>;
   createSubject(
     input: Omit<Subject, "id">,
   ): Promise<Result<Subject, DomainError>>;
@@ -61,6 +66,26 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
   };
 
   return {
+    async createContext(input) {
+      const context: Context = { ...input, id: await ids.newId() };
+      await commitPut((tx) => tx.contexts, EntityName.CONTEXT, context);
+      await hooks?.callHook("context:created", context);
+      return ok(context);
+    },
+
+    async updateContext(context) {
+      if (!(await store.contexts.get(context.id))) {
+        return fail(
+          DomainErrorCode.NOT_FOUND,
+          { id: context.id },
+          EntityName.CONTEXT,
+        );
+      }
+      await commitPut((tx) => tx.contexts, EntityName.CONTEXT, context);
+      await hooks?.callHook("context:updated", context);
+      return ok(context);
+    },
+
     async createSubject(input) {
       if (!(await store.contexts.get(input.contextId))) {
         return fail(

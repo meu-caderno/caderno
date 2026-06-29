@@ -1,4 +1,10 @@
-import type { Activity, DayIso, Id, Subject } from "../domain";
+import type {
+  Activity,
+  Record as AttendanceRecord,
+  DayIso,
+  Id,
+  Subject,
+} from "../domain";
 import { type DueBucket, groupByDue, inboxItems } from "./activities";
 import {
   type AttendanceInput,
@@ -18,6 +24,13 @@ export function selectTodayAgenda(
 
 export function selectInbox(activities: ReadonlyArray<Activity>): Activity[] {
   return inboxItems(activities);
+}
+
+export function recordsOf(
+  records: ReadonlyArray<AttendanceRecord>,
+  subjectId: Id,
+): AttendanceRecord[] {
+  return records.filter((record) => record.subjectId === subjectId);
 }
 
 export function selectDueBuckets(

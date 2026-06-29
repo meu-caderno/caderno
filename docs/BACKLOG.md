@@ -105,10 +105,18 @@ Status: [ ] aberto · [~] em debate · [x] decidido · [-] descartado
 - **Verificado:** `biome ci` verde (zero violação atual); violações plantadas (domain→dexie, engine→application) **bloqueadas** no lint.
 - **Extensível:** regras p/ adapters não se importarem entre si ficam fáceis de adicionar depois.
 
-### [ ] #12 — Resto das telas do MVP
-- **Estado:** home + componentes UI existem; demais telas não, pois a UI é seed.
-- **A debater:** quais telas entram no MVP1; depende do #1.
-- **Decisão:** _(pendente)_
+### [~] #12 — Telas do MVP (épico) — PLANEJADO
+- **Decisões (interview):** escopo = **MVP completo** (Home + presença + matéria + atividades + notas + **Caderno** + **Ajustes**); 1ª execução = **vazio + onboarding**; **multi-contexto** com seletor; **sem senha** por padrão (envelopeKeyStore pluga depois); **Caderno = grafo completo** (árvore + `PREPARES` + guarda de ciclo); **design importado do claude_design** (`97eadd65…` via DesignSync); **export/import (backup) incluído** nos Ajustes.
+- **Núcleo a adicionar (application):** `createContext`/`updateContext` + **contexto ativo** no `ConfigStore` (`setActiveContext`); grafo do caderno (`createNode`/`updateNode`/`moveNode` + `linkNodes` com `createsCycle` — fecha a cauda de grafo do #10); `completeActivity`/`reopenActivity`; `addAssessment` (+`setGrade`) com aviso soft de Σpesos. Caudas: **#8** (registrar manifest), **#15** (normalizar `Subject.records?`→view).
+- **Reatividade:** `useLiveQuery` (Vue-nativo, decisão #1) sobre `store.subscribe`; ViewModels (composables) por tela; reescrever `useCaderno` mantendo `deriveStats`/`statusFromSummary`; `clock` real.
+- **Fases (cada uma verde):**
+  - **F0 — Fundação:** `useLiveQuery` + `createContext`/`setActiveContext` + #8 + #15 (core, sem UI).
+  - **F1 — Onboarding + switcher + Home religada.**
+  - **F2 — Matéria + presença.**
+  - **F3 — Atividades + notas.**
+  - **F4 — Caderno (grafo: nós + links `PREPARES` + ciclo).**
+  - **F5 — Ajustes + export/import (backup).**
+- **Design:** importar telas do projeto claude_design via **DesignSync** nas fases de UI (pode exigir `/design-login`).
 
 ## 🟢 DEFER consciente (confirmar que seguem adiados)
 

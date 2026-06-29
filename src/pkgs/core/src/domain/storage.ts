@@ -8,6 +8,7 @@ import type {
   Mood,
   Node,
   OpLogEntry,
+  Preferences,
   Profile,
   Subject,
 } from "./model";
@@ -98,6 +99,7 @@ export interface ReadonlyContextStore {
 export interface ConfigStore {
   profiles: Repository<Profile>;
   moods: Repository<Mood>;
+  preferences: Repository<Preferences>;
 }
 
 export interface StorageProvider {

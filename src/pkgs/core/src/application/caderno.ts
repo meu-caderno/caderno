@@ -37,6 +37,7 @@ export async function createCaderno(config: CadernoConfig): Promise<Caderno> {
   const { configStore, storage, clock, ids } = config;
   const store = createObservableStore(await storage.createContextStore());
   const registry = createRegistry();
+  registry.register({ manifest: storage.manifest, list: () => [] });
   const hooks = createCadernoHooks();
   const service = createCadernoService({ store, clock, ids, hooks });
   const plugins = loadPlugins(
