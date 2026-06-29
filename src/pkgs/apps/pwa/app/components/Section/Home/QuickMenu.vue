@@ -4,6 +4,7 @@ const emit = defineEmits<{ action: [value: string] }>();
 const items = [
   { value: "capture", label: "Captura rápida", icon: "pencil" as const },
   { value: "inbox", label: "Inbox", icon: "list" as const },
+  { value: "focus", label: "Foco (Pomodoro)", icon: "calendar" as const },
   {
     value: "activity",
     label: "Nova atividade",

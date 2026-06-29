@@ -314,6 +314,9 @@ export interface Preferences {
   consents?: string[];
   lastSeenDay?: string;
   workbenches?: Workbench[];
+  pomodoroFocus?: number;
+  pomodoroBreak?: number;
+  pomodoroLong?: number;
 }
 
 export enum OpKind {

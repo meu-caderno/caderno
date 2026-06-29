@@ -9,6 +9,7 @@
     <SectionSettingsTypographyCard />
     <SectionSettingsLayoutCard />
     <SectionSettingsContextProfileCard />
+    <SectionSettingsPomodoroCard />
     <SectionSettingsWorkbenchesCard />
     <SectionSettingsConsentCard />
     <SectionSettingsGeneralCard />
