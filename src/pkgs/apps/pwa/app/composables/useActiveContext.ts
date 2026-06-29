@@ -19,7 +19,12 @@ export function useActiveContext() {
 
   async function setActive(id: Id) {
     activeId.value = id;
-    await config.preferences.put({ id: PREF_ID, activeContextId: id });
+    const previous = await config.preferences.get(PREF_ID);
+    await config.preferences.put({
+      ...previous,
+      id: PREF_ID,
+      activeContextId: id,
+    });
   }
 
   return { activeId, hydrate, setActive };

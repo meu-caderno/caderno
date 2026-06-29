@@ -9,6 +9,9 @@ useHead({
   meta: head.value.meta,
   titleTemplate: (t) => (t ? `${t} · Meu Caderno` : "Meu Caderno"),
 });
+
+const { hydrate: hydrateAppearance } = useAppearance();
+onMounted(hydrateAppearance);
 </script>
 
 <template>
