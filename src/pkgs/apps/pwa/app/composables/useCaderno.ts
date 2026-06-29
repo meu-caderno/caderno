@@ -11,12 +11,16 @@ import {
   AttendanceRiskLevel,
   AttendanceStatus,
   type AttendanceSummary,
+  achievements,
   attendanceRisk,
   computeAttendance,
+  currentStreak,
+  levelFromXp,
   nextRecurrence,
   Root,
   recordsOf,
   sortByDue,
+  totalXp,
   weightedAverage,
 } from "@meu-caderno/core";
 import { differenceInCalendarDays, format, parseISO } from "date-fns";
@@ -227,6 +231,37 @@ export function useCaderno() {
     ),
   );
 
+  const gamification = computed(() => {
+    const presences = stats.value.reduce(
+      (total, stat) => total + stat.counts.present,
+      0,
+    );
+    const completedActivities = activities.value.filter(
+      (a) => a.status === ActivityStatus.DONE,
+    ).length;
+    const activeDays = [
+      ...new Set(
+        allRecords.value
+          .filter(
+            (r) =>
+              r.status === AttendanceStatus.PRESENT ||
+              r.status === AttendanceStatus.LATE,
+          )
+          .map((r) => r.day),
+      ),
+    ] as DayIso[];
+    const xp = totalXp({ presences, completedActivities });
+    const level = levelFromXp(xp);
+    const streak = currentStreak(activeDays, today.value as DayIso);
+    const badges = achievements({
+      streak,
+      level: level.level,
+      presences,
+      completedActivities,
+    });
+    return { xp, ...level, streak, badges };
+  });
+
   async function mark(subjectId: string, status: AttendanceStatus) {
     await service.markAttendance({
       subjectId: subjectId as Id,
@@ -264,6 +299,7 @@ export function useCaderno() {
     activities,
     pendingActivities,
     inboxItems,
+    gamification,
     today,
     todayLabel: computed(() => formatDay(today.value)),
     booting,

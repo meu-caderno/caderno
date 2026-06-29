@@ -1,5 +1,6 @@
 export * from "./activities";
 export * from "./attendance";
+export * from "./gamification";
 export * from "./grades";
 export * from "./invariants";
 export * from "./merge";

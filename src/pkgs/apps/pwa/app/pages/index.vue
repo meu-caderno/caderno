@@ -12,6 +12,7 @@ const {
   completeActivity,
   pendingActivities,
   inboxItems,
+  gamification,
   subjects,
   today,
   todayLabel,
@@ -23,7 +24,9 @@ const { service } = useCadernoService();
 const { toast } = useToast();
 const { reviewing, close: closeOnboarding } = useOnboarding();
 const { homeWidgets, isVisible } = useLayout();
+const { hasConsent } = useConsent();
 const showWidget = (key: string) => isVisible(homeWidgets.value, key);
+const showGamification = computed(() => hasConsent("gamification"));
 
 const {
   show: showWelcome,
@@ -155,6 +158,15 @@ const period = computed(() => {
       @select-context="setActive"
       @create-context="creatingContext = true"
       @open-settings="editingContext = true"
+    />
+    <SectionHomeGamification
+      v-if="showGamification"
+      :level="gamification.level"
+      :xp="gamification.xp"
+      :ratio="gamification.ratio"
+      :to-next-level="gamification.toNextLevel"
+      :streak="gamification.streak"
+      :badges="gamification.badges"
     />
     <SectionHomeTodayRoll
       v-if="showWidget('roll')"

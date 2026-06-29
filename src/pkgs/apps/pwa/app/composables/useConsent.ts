@@ -6,6 +6,7 @@ export interface ConsentItem {
   key: string;
   label: string;
   blurb: string;
+  optIn?: boolean;
 }
 
 export const CONSENTS: ConsentItem[] = [
@@ -19,7 +20,17 @@ export const CONSENTS: ConsentItem[] = [
     label: "Dicas e confirmações",
     blurb: "Avisos com desfazer ao concluir atividades.",
   },
+  {
+    key: "gamification",
+    label: "Ofensiva & XP",
+    blurb: "Streak, níveis e conquistas. Desligado por padrão.",
+    optIn: true,
+  },
 ];
+
+const DEFAULT_ON = CONSENTS.filter((item) => !item.optIn).map(
+  (item) => item.key,
+);
 
 export function useConsent() {
   const { config } = useCadernoService();
@@ -37,7 +48,8 @@ export function useConsent() {
   }
 
   function hasConsent(key: string): boolean {
-    return consents.value === null || consents.value.includes(key);
+    if (consents.value === null) return DEFAULT_ON.includes(key);
+    return consents.value.includes(key);
   }
 
   async function persist(patch: Partial<Preferences>) {
@@ -47,7 +59,7 @@ export function useConsent() {
 
   async function toggleConsent(key: string) {
     const all = CONSENTS.map((item) => item.key);
-    const current = consents.value ?? all;
+    const current = consents.value ?? DEFAULT_ON;
     const next = current.includes(key)
       ? current.filter((entry) => entry !== key)
       : all.filter((entry) => current.includes(entry) || entry === key);
