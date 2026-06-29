@@ -25,6 +25,13 @@ const { reviewing, close: closeOnboarding } = useOnboarding();
 const { homeWidgets, isVisible } = useLayout();
 const showWidget = (key: string) => isVisible(homeWidgets.value, key);
 
+const {
+  show: showWelcome,
+  check: checkWelcome,
+  dismiss: dismissWelcome,
+} = useWelcomeBack();
+watch(today, (value) => checkWelcome(value), { immediate: true });
+
 const creatingContext = ref(false);
 const editingContext = ref(false);
 const creatingSubject = ref(false);
@@ -133,6 +140,12 @@ const period = computed(() => {
     @done="creatingContext = false"
   />
   <div v-else class="home">
+    <SectionHomeWelcomeBack
+      v-if="showWelcome"
+      :pending="pendingActivities.length"
+      :classes="roll.length"
+      @dismiss="dismissWelcome"
+    />
     <SectionHomeContextHeader
       :context="context"
       :contexts="contexts"

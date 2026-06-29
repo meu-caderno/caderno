@@ -9,6 +9,7 @@
     <SectionSettingsTypographyCard />
     <SectionSettingsLayoutCard />
     <SectionSettingsContextProfileCard />
+    <SectionSettingsConsentCard />
     <SectionSettingsGeneralCard />
     <SectionSettingsBackupCard />
   </div>

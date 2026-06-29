@@ -12,9 +12,11 @@ useHead({
 
 const { hydrate: hydrateTheme } = useTheme();
 const { hydrate: hydrateLayout } = useLayout();
+const { hydrate: hydrateConsent } = useConsent();
 onMounted(() => {
   hydrateTheme();
   hydrateLayout();
+  hydrateConsent();
 });
 </script>
 

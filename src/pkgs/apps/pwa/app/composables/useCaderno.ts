@@ -236,10 +236,12 @@ export function useCaderno() {
   }
 
   const { toast } = useToast();
+  const { hasConsent } = useConsent();
   async function completeActivity(act: Activity) {
     await service.upsertActivity({ ...act, status: ActivityStatus.DONE });
     const next = nextRecurrence(act, await ids.newId());
     if (next) await service.upsertActivity(next);
+    if (!hasConsent("tips")) return;
     toast({
       title: next ? "Concluída · próxima agendada" : "Atividade concluída",
       actionLabel: "desfazer",

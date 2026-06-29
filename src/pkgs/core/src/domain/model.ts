@@ -304,6 +304,8 @@ export interface Preferences {
   homeWidgets?: string[];
   tabItems?: string[];
   railItems?: string[];
+  consents?: string[];
+  lastSeenDay?: string;
 }
 
 export enum OpKind {
