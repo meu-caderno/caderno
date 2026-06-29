@@ -46,16 +46,26 @@ async function onFileChange(event: Event) {
         icon="download"
         :disabled="busy"
         label="Exportar .json"
-        @click="downloadBackup"
+        @click="downloadBackup(false)"
+      />
+      <UIButton
+        variant="leve"
+        icon="lock"
+        :disabled="busy"
+        label="Exportar cifrado"
+        @click="downloadBackup(true)"
       />
       <UIButton
         variant="fantasma"
         icon="arrow-up"
         :disabled="busy"
-        label="Importar .json"
+        label="Importar"
         @click="pickFile"
       />
     </div>
+    <p class="backup-card__note">
+      O arquivo cifrado só abre neste aparelho (usa a chave local).
+    </p>
     <input
       ref="fileInput"
       type="file"
@@ -89,5 +99,10 @@ async function onFileChange(event: Event) {
 }
 .backup-card__file {
   display: none;
+}
+.backup-card__note {
+  font-size: calc(12px * var(--pt-text-scale));
+  color: var(--pt-ink-muted);
+  margin: 0;
 }
 </style>

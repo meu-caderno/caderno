@@ -5,9 +5,27 @@ import {
   migrateBackup,
 } from "@meu-caderno/validation";
 
+const ENCRYPTED_FORMAT = "caderno-encrypted";
+
+interface EncryptedEnvelope {
+  format: typeof ENCRYPTED_FORMAT;
+  version: 1;
+  payload: string;
+}
+
 export function useBackup() {
-  const { store, config, clock } = useCadernoService();
+  const { store, config, clock, cipher } = useCadernoService();
   const busy = ref(false);
+
+  function triggerDownload(text: string, name: string) {
+    const blob = new Blob([text], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = name;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  }
 
   async function collect(): Promise<BackupCollections> {
     const [
@@ -44,22 +62,27 @@ export function useBackup() {
     };
   }
 
-  async function downloadBackup(): Promise<void> {
+  async function downloadBackup(encrypted = false): Promise<void> {
     if (busy.value) return;
     busy.value = true;
     try {
       const exportedAt = await clock.now();
       const backup = exportBackup(await collect(), exportedAt);
-      const blob = new Blob([JSON.stringify(backup, null, 2)], {
-        type: "application/json",
-      });
-      const url = URL.createObjectURL(blob);
+      const json = JSON.stringify(backup, null, 2);
       const day = new Date(exportedAt).toISOString().slice(0, 10);
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = `caderno-${day}.json`;
-      anchor.click();
-      URL.revokeObjectURL(url);
+      if (encrypted) {
+        const envelope: EncryptedEnvelope = {
+          format: ENCRYPTED_FORMAT,
+          version: 1,
+          payload: await cipher.encrypt(json),
+        };
+        triggerDownload(
+          JSON.stringify(envelope),
+          `caderno-${day}.cifrado.json`,
+        );
+      } else {
+        triggerDownload(json, `caderno-${day}.json`);
+      }
     } finally {
       busy.value = false;
     }
@@ -81,11 +104,23 @@ export function useBackup() {
     for (const mood of backup.moods ?? []) await config.moods.put(mood);
   }
 
+  function isEncrypted(data: unknown): data is EncryptedEnvelope {
+    return (
+      typeof data === "object" &&
+      data !== null &&
+      (data as { format?: string }).format === ENCRYPTED_FORMAT
+    );
+  }
+
   async function importFile(file: File): Promise<Backup> {
     if (busy.value) throw new Error("ocupado");
     busy.value = true;
     try {
-      const backup = migrateBackup(JSON.parse(await file.text()));
+      const parsed = JSON.parse(await file.text());
+      const raw = isEncrypted(parsed)
+        ? JSON.parse(await cipher.decrypt(parsed.payload))
+        : parsed;
+      const backup = migrateBackup(raw);
       await writeBackup(backup);
       return backup;
     } finally {

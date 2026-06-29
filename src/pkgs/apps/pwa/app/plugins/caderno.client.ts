@@ -32,5 +32,5 @@ export default defineNuxtPlugin(async () => {
     plugins,
   });
 
-  return { provide: { caderno: { ...caderno, clock, ids } } };
+  return { provide: { caderno: { ...caderno, clock, ids, cipher } } };
 });
