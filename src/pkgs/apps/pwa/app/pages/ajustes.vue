@@ -5,6 +5,7 @@
       <p class="ajustes__sub">Dados deste aparelho</p>
     </header>
     <SectionSettingsMoodsCard />
+    <SectionSettingsDisplayCard />
     <SectionSettingsTypographyCard />
     <SectionSettingsGeneralCard />
     <SectionSettingsBackupCard />

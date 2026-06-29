@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import type { SubjectStats } from "~/composables/useCaderno";
+import { useTheme } from "~/composables/useTheme";
 
 const props = defineProps<{ stat: SubjectStats }>();
 const emit = defineEmits<{ notas: []; detail: [] }>();
+
+const { screenDensity } = useTheme();
+const showCounts = computed(() => screenDensity.value !== "essencial");
+const showHeat = computed(() => screenDensity.value === "tudo");
 
 const s = computed(() => props.stat);
 const subject = computed(() => s.value.subject);
@@ -89,7 +94,7 @@ const budgetPct = computed(() => {
       </div>
     </div>
 
-    <div class="sc-counts">
+    <div v-if="showCounts" class="sc-counts">
       <div class="sc-count sc-count--ok">
         <div class="sc-count-n">{{ s.counts.present }}</div>
         <div class="sc-count-l">presenças</div>
@@ -108,7 +113,7 @@ const budgetPct = computed(() => {
       </div>
     </div>
 
-    <div class="sc-heat">
+    <div v-if="showHeat" class="sc-heat">
       <div class="pt-eyebrow sc-heat-title">Ritmo de presença</div>
       <UIHeatmap :cells="s.heat" :cell-size="14" :gap="4" />
     </div>

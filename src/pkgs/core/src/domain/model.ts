@@ -297,6 +297,7 @@ export interface Preferences {
   homeProfile?: string;
   textScale?: number;
   headingFont?: string;
+  screenDensity?: string;
 }
 
 export enum OpKind {

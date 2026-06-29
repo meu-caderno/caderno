@@ -5,6 +5,19 @@ const PREF_ID = "default" as Id;
 const DEFAULT_MOOD = "calmo";
 const DEFAULT_TEXT_SCALE = 1;
 const DEFAULT_HEADING = "hand";
+const DEFAULT_SCREEN = "equilibrio";
+
+export interface ScreenDensityOption {
+  value: string;
+  label: string;
+  blurb: string;
+}
+
+export const SCREEN_DENSITIES: ScreenDensityOption[] = [
+  { value: "essencial", label: "Essencial", blurb: "Só o que importa agora." },
+  { value: "equilibrio", label: "Equilíbrio", blurb: "O padrão, sem excesso." },
+  { value: "tudo", label: "Tudo à mostra", blurb: "Todos os detalhes." },
+];
 
 export interface TextSizeOption {
   value: number;
@@ -134,7 +147,12 @@ export function resolveMood(key?: string): MoodPreset {
   );
 }
 
-function applyTheme(mood: MoodPreset, textScale: number, headingKey: string) {
+function applyTheme(
+  mood: MoodPreset,
+  textScale: number,
+  headingKey: string,
+  screen: string,
+) {
   if (!import.meta.client) return;
   const tokens = BACKGROUND_TOKENS[mood.background];
   const root = document.documentElement;
@@ -146,6 +164,7 @@ function applyTheme(mood: MoodPreset, textScale: number, headingKey: string) {
   root.style.setProperty("--pt-text-scale", String(textScale));
   root.style.setProperty("--pt-heading-font", resolveHeadingFamily(headingKey));
   root.dataset.density = DENSITY_ATTR[mood.density];
+  root.dataset.screen = screen;
 }
 
 export function useTheme() {
@@ -159,12 +178,21 @@ export function useTheme() {
     "caderno:theme:heading",
     () => DEFAULT_HEADING,
   );
+  const screenDensity = useState<string>(
+    "caderno:theme:screen",
+    () => DEFAULT_SCREEN,
+  );
   const hydrated = useState<boolean>("caderno:theme:hydrated", () => false);
 
   const activeMood = computed(() => resolveMood(moodKey.value));
 
   watchEffect(() =>
-    applyTheme(activeMood.value, textScale.value, headingFont.value),
+    applyTheme(
+      activeMood.value,
+      textScale.value,
+      headingFont.value,
+      screenDensity.value,
+    ),
   );
 
   async function persist(patch: Partial<Preferences>) {
@@ -178,6 +206,7 @@ export function useTheme() {
     if (prefs?.homeProfile) moodKey.value = prefs.homeProfile;
     if (prefs?.textScale) textScale.value = prefs.textScale;
     if (prefs?.headingFont) headingFont.value = prefs.headingFont;
+    if (prefs?.screenDensity) screenDensity.value = prefs.screenDensity;
     hydrated.value = true;
   }
 
@@ -196,14 +225,21 @@ export function useTheme() {
     await persist({ headingFont: key });
   }
 
+  async function setScreenDensity(value: string) {
+    screenDensity.value = value;
+    await persist({ screenDensity: value });
+  }
+
   async function restoreDefaults() {
     moodKey.value = DEFAULT_MOOD;
     textScale.value = DEFAULT_TEXT_SCALE;
     headingFont.value = DEFAULT_HEADING;
+    screenDensity.value = DEFAULT_SCREEN;
     await persist({
       homeProfile: DEFAULT_MOOD,
       textScale: DEFAULT_TEXT_SCALE,
       headingFont: DEFAULT_HEADING,
+      screenDensity: DEFAULT_SCREEN,
     });
   }
 
@@ -212,10 +248,12 @@ export function useTheme() {
     activeMood,
     textScale,
     headingFont,
+    screenDensity,
     hydrate,
     setMood,
     setTextScale,
     setHeadingFont,
+    setScreenDensity,
     restoreDefaults,
   };
 }
