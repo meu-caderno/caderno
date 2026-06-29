@@ -7,6 +7,7 @@
     <SectionSettingsMoodsCard />
     <SectionSettingsDisplayCard />
     <SectionSettingsTypographyCard />
+    <SectionSettingsContextProfileCard />
     <SectionSettingsGeneralCard />
     <SectionSettingsBackupCard />
   </div>

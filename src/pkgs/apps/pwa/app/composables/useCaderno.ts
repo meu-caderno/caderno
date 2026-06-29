@@ -123,7 +123,7 @@ export interface TodayClass {
 
 export function useCaderno() {
   const { service, store, clock, ids } = useCadernoService();
-  const { activeId, hydrate, setActive } = useActiveContext();
+  const { activeId, focusIds, hydrate, setActive } = useActiveContext();
 
   const today = useState<string>("caderno:today", () => "1970-01-01");
   const booting = useState<boolean>("caderno:booting", () => true);
@@ -133,11 +133,16 @@ export function useCaderno() {
     () => store.contexts.list(),
     [] as Context[],
   );
-  const contexts = computed(() =>
-    [...allContexts.value]
+  const contexts = computed(() => {
+    const focus = focusIds.value;
+    return [...allContexts.value]
       .filter((c) => !c.archived)
-      .sort((a, b) => Number(b.pinned ?? false) - Number(a.pinned ?? false)),
-  );
+      .filter(
+        (c) =>
+          focus.length === 0 || focus.includes(c.id) || c.id === activeId.value,
+      )
+      .sort((a, b) => Number(b.pinned ?? false) - Number(a.pinned ?? false));
+  });
 
   onMounted(async () => {
     today.value = await clock.today();

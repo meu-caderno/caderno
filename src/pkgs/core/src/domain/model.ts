@@ -299,6 +299,7 @@ export interface Preferences {
   headingFont?: string;
   screenDensity?: string;
   zen?: boolean;
+  profileContexts?: Id[];
 }
 
 export enum OpKind {
