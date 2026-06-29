@@ -31,20 +31,17 @@
   par `persist(patch: Partial<Preferences>)` + `const PREF_ID = "default" as Id` repetido em 7
   composables: `useTheme.ts:4,256`, `useLayout.ts:3,39`, `useConsent.ts:3,55`, `usePomodoro.ts:3,103`,
   `useWorkbenches.ts:3,22`, `useActiveContext.ts:3,24-40`, `useWelcomeBack.ts:3,14-17`.
-- [ ] **Tipos anônimos → alias nomeado** (§4.6, regra 2026-06-29: todo tipo de objeto é `interface`/`type`
-  nomeado; nunca anônimo inline em assinatura/retorno/`ref<…>`; exceção: `defineProps`/`defineEmits`). `any`
-  já é **0** no repo. Alvos: `engine/undo.ts:62,73` (retorno `{ state; apply? }`), `engine/activities.ts:108`
-  (`patch: { contextId?; subjectId?; kind }` → `TriagePatch`), `ref<{…}>` e literais de objeto-tipo em
-  composables/componentes. Varrer todo o repo.
+- [x] **Tipos anônimos → alias nomeado** (§4.6, regra 2026-06-29) — **FEITO** (commit `5f43a3e`): nomeados
+  `UndoResult`/`CollectionMergeResult`/`TriagePatch`/`SubjectCounts`/`DueBadgeView`/`SodiumContext`/
+  `VersionedPayload`; `blocks: TimeBlock[]`, `row: BlobRow`; 11 generics `{ id: Id }` → `Identified`;
+  removido o `as unknown as` de `merge.ts:123`. `any` já era 0. Gate verde.
 - [ ] **`as` no miolo** (§4.6 — `as` só na fronteira): `engine/merge.ts:117` (`as unknown as`),
   `engine/grades.ts:12,35`, `application/caderno-service.ts:252` (`preparesId as Id`),
   `Section/Home/ContextDetail.vue:19,22,26,45,48` + `Section/Onboarding/Wizard.vue:16-20,77-78`
   (round-trip enum→string→enum), `Section/Home/Assessments.vue:29,40` (`Number(v) as Grade`).
-- [ ] **Nomes de uma letra → descritivos** (§4.4, regra endurecida 2026-06-29: descritivo sempre, sem
-  exceção de loop/predicado) — varrer todo o repo: **~113** parâmetros arrow de uma letra
-  (`(r) =>`/`(a) =>`/`(s) =>`/`(t) =>`) + **~51** `const`/`let` de uma letra. Já flagrados nominalmente:
-  `SubjectCard.vue:12,17` (`s`/`wd`), `usePomodoro.ts:36` (`clock`→`timeLabel`), `cipher.ts:20-45`
-  (`s`→`sodium`), specs (`a`/`b`/`u`/`n`).
+- [x] **Nomes de uma letra → descritivos** (§4.4, regra endurecida 2026-06-29) — **FEITO** (commit `f03a8a9`):
+  ~202 sites renomeados em todo o repo (core ~130, PWA ~58, adapters/validation ~14); 0 resíduo de
+  uma-letra; gate verde.
 - [ ] **Números mágicos → constantes nomeadas** (§4.5): `engine/gamification.ts:81,87,93,99` (3/7/10/5),
   `engine/activities.ts:69,121` (7/14, soonDays 3), `engine/presets.ts:44` (`0.75` duplica
   `DEFAULT_ATTENDANCE_FLOOR`), `app/composables/usePomodoro.ts:17-19,23,39,40,79` (25/5/15, 60, 1000),
