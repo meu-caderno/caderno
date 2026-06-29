@@ -11,6 +11,7 @@
     <SectionSettingsContextProfileCard />
     <SectionSettingsPomodoroCard />
     <SectionSettingsWorkbenchesCard />
+    <SectionSettingsPluginsCard />
     <SectionSettingsConsentCard />
     <SectionSettingsGeneralCard />
     <SectionSettingsBackupCard />

@@ -13,8 +13,9 @@ import {
   encryptedStorageProvider,
   type Plugin,
 } from "@meu-caderno/core";
+import { studyPulsePlugin } from "~/utils/studyPulse";
 
-const plugins: Plugin[] = [];
+const plugins: Plugin[] = [studyPulsePlugin()];
 
 export default defineNuxtPlugin(async () => {
   const clock = browserClock();
