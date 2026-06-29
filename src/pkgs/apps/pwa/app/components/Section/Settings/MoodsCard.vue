@@ -1,10 +1,22 @@
 <script setup lang="ts">
-import { MOODS, useTheme } from "~/composables/useTheme";
+import { useTheme } from "~/composables/useTheme";
 
-const { moodKey, setMood } = useTheme();
+const { moodKey, allMoods, setMood, deleteProfile } = useTheme();
+
+const creating = ref(false);
+const removing = ref<string | null>(null);
+
+const removingLabel = computed(
+  () => allMoods.value.find((m) => m.key === removing.value)?.label ?? "",
+);
 
 function choose(key: string) {
   if (key !== moodKey.value) setMood(key);
+}
+async function confirmRemove() {
+  const key = removing.value;
+  removing.value = null;
+  if (key) await deleteProfile(key);
 }
 </script>
 
@@ -18,7 +30,7 @@ function choose(key: string) {
     </div>
     <div class="moods-card__grid">
       <button
-        v-for="mood in MOODS"
+        v-for="mood in allMoods"
         :key="mood.key"
         type="button"
         class="moods-card__mood"
@@ -29,8 +41,41 @@ function choose(key: string) {
         <span class="moods-card__label">{{ mood.label }}</span>
         <span class="moods-card__blurb">{{ mood.blurb }}</span>
         <span class="moods-card__accent" :style="{ background: mood.accent }" />
+        <span
+          v-if="mood.custom"
+          class="moods-card__remove"
+          role="button"
+          tabindex="0"
+          aria-label="Remover perfil"
+          @click.stop="removing = mood.key"
+          @keydown.enter.stop="removing = mood.key"
+        >
+          <UIIcon icon="trash" :size="13" />
+        </span>
       </button>
     </div>
+
+    <UIButton
+      variant="fantasma"
+      icon="plus"
+      label="Criar perfil"
+      @click="creating = true"
+    />
+
+    <SectionSettingsProfileEditor
+      v-if="creating"
+      @done="creating = false"
+      @cancel="creating = false"
+    />
+    <UIConfirm
+      v-if="removing"
+      title="Remover perfil?"
+      :description="`Remove o perfil ${removingLabel}.`"
+      confirm-label="Remover"
+      danger
+      @confirm="confirmRemove"
+      @cancel="removing = null"
+    />
   </UICard>
 </template>
 
@@ -91,5 +136,19 @@ function choose(key: string) {
   width: 12px;
   height: 12px;
   border-radius: 50%;
+}
+.moods-card__remove {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--pt-radius-sm);
+  background: var(--pt-paper-2);
+  color: var(--pt-ink-muted);
+  cursor: pointer;
 }
 </style>

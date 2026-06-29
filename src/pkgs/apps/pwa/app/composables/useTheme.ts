@@ -1,5 +1,5 @@
-import type { Id, Preferences } from "@meu-caderno/core";
-import { Background, Density } from "@meu-caderno/core";
+import type { Color, Id, Preferences, Profile } from "@meu-caderno/core";
+import { Background, ContextMode, Density } from "@meu-caderno/core";
 
 const PREF_ID = "default" as Id;
 const DEFAULT_MOOD = "calmo";
@@ -54,6 +54,14 @@ export interface MoodPreset {
   emoji: string;
   label: string;
   blurb: string;
+  background: Background;
+  accent: string;
+  density: Density;
+  custom?: boolean;
+}
+
+export interface ProfileDraft {
+  name: string;
   background: Background;
   accent: string;
   density: Density;
@@ -139,12 +147,48 @@ const BACKGROUND_TOKENS: Record<
   },
 };
 
-export function resolveMood(key?: string): MoodPreset {
-  const resolved = key ? (MOOD_ALIASES[key] ?? key) : DEFAULT_MOOD;
+export const BACKGROUND_OPTIONS = [
+  { value: Background.PAPER, label: "Papel" },
+  { value: Background.CREAM, label: "Creme" },
+  { value: Background.LINEN, label: "Linho" },
+];
+
+export const DENSITY_OPTIONS = [
+  { value: Density.MINIMAL, label: "Espaçoso" },
+  { value: Density.NORMAL, label: "Normal" },
+  { value: Density.DENSE, label: "Compacto" },
+];
+
+export const ACCENT_OPTIONS = [
+  "#3f6fb0",
+  "#2f7d4f",
+  "#b8862b",
+  "#c0392b",
+  "#7d5ba6",
+  "#2c8c8c",
+  "#2c2a27",
+];
+
+export function resolveMood(key: string, customs: MoodPreset[]): MoodPreset {
+  const resolved = MOOD_ALIASES[key] ?? key;
   return (
+    customs.find((mood) => mood.key === resolved) ??
     MOODS.find((mood) => mood.key === resolved) ??
     (MOODS.find((mood) => mood.key === DEFAULT_MOOD) as MoodPreset)
   );
+}
+
+function profileToMood(profile: Profile): MoodPreset {
+  return {
+    key: profile.id,
+    emoji: "🎨",
+    label: profile.name,
+    blurb: "Perfil personalizado",
+    background: profile.background ?? Background.PAPER,
+    accent: profile.accent ?? "#2c2a27",
+    density: profile.density ?? Density.NORMAL,
+    custom: true,
+  };
 }
 
 function applyTheme(
@@ -168,8 +212,9 @@ function applyTheme(
 }
 
 export function useTheme() {
-  const { config } = useCadernoService();
+  const { config, ids } = useCadernoService();
   const moodKey = useState<string>("caderno:theme:mood", () => DEFAULT_MOOD);
+  const customProfiles = useState<Profile[]>("caderno:theme:customs", () => []);
   const textScale = useState<number>(
     "caderno:theme:text",
     () => DEFAULT_TEXT_SCALE,
@@ -185,7 +230,15 @@ export function useTheme() {
   const zen = useState<boolean>("caderno:theme:zen", () => false);
   const hydrated = useState<boolean>("caderno:theme:hydrated", () => false);
 
-  const activeMood = computed(() => resolveMood(moodKey.value));
+  const customMoods = computed(() => customProfiles.value.map(profileToMood));
+  const allMoods = computed(() => [...MOODS, ...customMoods.value]);
+  const activeMood = computed(() =>
+    resolveMood(moodKey.value, customMoods.value),
+  );
+
+  async function reloadProfiles() {
+    customProfiles.value = await config.profiles.list();
+  }
 
   watchEffect(() =>
     applyTheme(
@@ -203,6 +256,7 @@ export function useTheme() {
 
   async function hydrate() {
     if (hydrated.value) return;
+    await reloadProfiles();
     const prefs = await config.preferences.get(PREF_ID);
     if (prefs?.homeProfile) moodKey.value = prefs.homeProfile;
     if (prefs?.textScale) textScale.value = prefs.textScale;
@@ -237,6 +291,27 @@ export function useTheme() {
     await persist({ zen: value });
   }
 
+  async function saveProfile(draft: ProfileDraft) {
+    const profile: Profile = {
+      id: await ids.newId(),
+      name: draft.name.trim() || "Meu perfil",
+      contextMode: ContextMode.FREE,
+      background: draft.background,
+      accent: draft.accent as Color,
+      density: draft.density,
+    };
+    await config.profiles.put(profile);
+    await reloadProfiles();
+    await setMood(profile.id);
+    return profile;
+  }
+
+  async function deleteProfile(id: string) {
+    await config.profiles.delete(id as Id);
+    await reloadProfiles();
+    if (moodKey.value === id) await setMood(DEFAULT_MOOD);
+  }
+
   async function restoreDefaults() {
     moodKey.value = DEFAULT_MOOD;
     textScale.value = DEFAULT_TEXT_SCALE;
@@ -255,6 +330,7 @@ export function useTheme() {
   return {
     moodKey,
     activeMood,
+    allMoods,
     textScale,
     headingFont,
     screenDensity,
@@ -265,6 +341,8 @@ export function useTheme() {
     setHeadingFont,
     setScreenDensity,
     setZen,
+    saveProfile,
+    deleteProfile,
     restoreDefaults,
   };
 }
