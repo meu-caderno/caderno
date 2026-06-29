@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SCREEN_DENSITIES, useTheme } from "~/composables/useTheme";
 
-const { screenDensity, setScreenDensity } = useTheme();
+const { screenDensity, setScreenDensity, zen, setZen } = useTheme();
 </script>
 
 <template>
@@ -22,6 +22,17 @@ const { screenDensity, setScreenDensity } = useTheme();
         <span class="display-card__label">{{ option.label }}</span>
         <span class="display-card__blurb">{{ option.blurb }}</span>
       </button>
+    </div>
+
+    <div class="display-card__zen">
+      <div class="display-card__zen-text">
+        <b>Ambiente de foco</b>
+        <small>Recolhe a moldura e deixa só o conteúdo.</small>
+      </div>
+      <UISwitch
+        :model-value="zen"
+        @update:model-value="setZen($event)"
+      />
     </div>
   </UICard>
 </template>
@@ -68,6 +79,26 @@ const { screenDensity, setScreenDensity } = useTheme();
   font-weight: 700;
 }
 .display-card__blurb {
+  font-size: calc(12px * var(--pt-text-scale));
+  color: var(--pt-ink-muted);
+}
+.display-card__zen {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1.5px dashed var(--pt-border-faint);
+}
+.display-card__zen-text {
+  display: flex;
+  flex-direction: column;
+}
+.display-card__zen-text b {
+  font-size: calc(14px * var(--pt-text-scale));
+  font-weight: 600;
+}
+.display-card__zen-text small {
   font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }

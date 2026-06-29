@@ -298,6 +298,7 @@ export interface Preferences {
   textScale?: number;
   headingFont?: string;
   screenDensity?: string;
+  zen?: boolean;
 }
 
 export enum OpKind {

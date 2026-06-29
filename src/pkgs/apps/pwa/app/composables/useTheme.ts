@@ -182,6 +182,7 @@ export function useTheme() {
     "caderno:theme:screen",
     () => DEFAULT_SCREEN,
   );
+  const zen = useState<boolean>("caderno:theme:zen", () => false);
   const hydrated = useState<boolean>("caderno:theme:hydrated", () => false);
 
   const activeMood = computed(() => resolveMood(moodKey.value));
@@ -207,6 +208,7 @@ export function useTheme() {
     if (prefs?.textScale) textScale.value = prefs.textScale;
     if (prefs?.headingFont) headingFont.value = prefs.headingFont;
     if (prefs?.screenDensity) screenDensity.value = prefs.screenDensity;
+    if (prefs?.zen != null) zen.value = prefs.zen;
     hydrated.value = true;
   }
 
@@ -230,16 +232,23 @@ export function useTheme() {
     await persist({ screenDensity: value });
   }
 
+  async function setZen(value: boolean) {
+    zen.value = value;
+    await persist({ zen: value });
+  }
+
   async function restoreDefaults() {
     moodKey.value = DEFAULT_MOOD;
     textScale.value = DEFAULT_TEXT_SCALE;
     headingFont.value = DEFAULT_HEADING;
     screenDensity.value = DEFAULT_SCREEN;
+    zen.value = false;
     await persist({
       homeProfile: DEFAULT_MOOD,
       textScale: DEFAULT_TEXT_SCALE,
       headingFont: DEFAULT_HEADING,
       screenDensity: DEFAULT_SCREEN,
+      zen: false,
     });
   }
 
@@ -249,11 +258,13 @@ export function useTheme() {
     textScale,
     headingFont,
     screenDensity,
+    zen,
     hydrate,
     setMood,
     setTextScale,
     setHeadingFont,
     setScreenDensity,
+    setZen,
     restoreDefaults,
   };
 }
