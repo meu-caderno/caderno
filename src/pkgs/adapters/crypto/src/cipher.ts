@@ -24,7 +24,7 @@ export async function generateKey(): Promise<string> {
 
 export function createCipher(keyBase64: string): Cipher {
   let context: Promise<SodiumContext> | null = null;
-  const init = () => {
+  const initialize = () => {
     context ??= ready().then((sodiumApi) => ({
       sodiumApi,
       key: sodiumApi.from_base64(keyBase64),
@@ -33,7 +33,7 @@ export function createCipher(keyBase64: string): Cipher {
   };
   return {
     encrypt: async (plaintext) => {
-      const { sodiumApi, key } = await init();
+      const { sodiumApi, key } = await initialize();
       const nonce = sodiumApi.randombytes_buf(
         sodiumApi.crypto_secretbox_NONCEBYTES,
       );
@@ -45,7 +45,7 @@ export function createCipher(keyBase64: string): Cipher {
       return `${sodiumApi.to_base64(nonce)}${NONCE_SEPARATOR}${sodiumApi.to_base64(ciphertext)}`;
     },
     decrypt: async (envelope) => {
-      const { sodiumApi, key } = await init();
+      const { sodiumApi, key } = await initialize();
       const separator = envelope.indexOf(NONCE_SEPARATOR);
       const nonce = sodiumApi.from_base64(envelope.slice(0, separator));
       const ciphertext = sodiumApi.from_base64(envelope.slice(separator + 1));

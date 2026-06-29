@@ -49,11 +49,11 @@ function encryptedOpLog(blob: BlobLog, cipher: Cipher): OpLogStore {
     append: (entry) => encode(entry).then((data) => blob.append(data)),
     appendMany: (entries) =>
       Promise.all(entries.map(encode)).then((data) => blob.appendMany(data)),
-    since: (ts) =>
+    since: (timestamp) =>
       blob
         .list()
         .then((list) => Promise.all(list.map(decode)))
-        .then((entries) => entries.filter((entry) => entry.ts >= ts)),
+        .then((entries) => entries.filter((entry) => entry.ts >= timestamp)),
     forId: (id) =>
       blob
         .list()

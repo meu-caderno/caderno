@@ -49,7 +49,7 @@ export interface GraphRepository {
 export interface OpLogStore {
   append(entry: OpLogEntry): Promise<void>;
   appendMany(entries: readonly OpLogEntry[]): Promise<void>;
-  since(ts: Timestamp): Promise<OpLogEntry[]>;
+  since(timestamp: Timestamp): Promise<OpLogEntry[]>;
   forId(id: Id): Promise<OpLogEntry[]>;
 }
 
@@ -82,7 +82,7 @@ export interface ReadonlyGraphRepository {
 }
 
 export interface ReadonlyOpLog {
-  since(ts: Timestamp): Promise<OpLogEntry[]>;
+  since(timestamp: Timestamp): Promise<OpLogEntry[]>;
   forId(id: Id): Promise<OpLogEntry[]>;
 }
 

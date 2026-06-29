@@ -4,9 +4,9 @@ export function makeOp(
   entity: string,
   op: OpKind,
   id: Id,
-  ts: Timestamp,
+  timestamp: Timestamp,
 ): OpLogEntry {
-  return { ts, entity, op, id };
+  return { ts: timestamp, entity, op, id };
 }
 
 export function appendOp(

@@ -3,7 +3,7 @@ import { ContextSchema, SubjectSchema } from "./schemas";
 
 describe("schemas", () => {
   it("parses a valid context", () => {
-    const ctx = ContextSchema.parse({
+    const context = ContextSchema.parse({
       id: "c1",
       name: "Faculdade",
       goal: "UNIVERSITY",
@@ -19,7 +19,7 @@ describe("schemas", () => {
         certificate: false,
       },
     });
-    expect(ctx.id).toBe("c1");
+    expect(context.id).toBe("c1");
   });
 
   it("rejects an invalid color", () => {

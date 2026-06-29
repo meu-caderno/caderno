@@ -124,12 +124,12 @@ describe("CadernoService", () => {
       clock: fixedClock(1 as Timestamp, "2026-03-01" as DayIso),
       ids: counterIds("c"),
     });
-    const ctx = await svc.createContext({ ...sampleContext() });
-    expect(ctx.ok).toBe(true);
-    if (!ctx.ok) return;
-    expect(await store.oplog.forId(ctx.value.id)).toHaveLength(1);
+    const context = await svc.createContext({ ...sampleContext() });
+    expect(context.ok).toBe(true);
+    if (!context.ok) return;
+    expect(await store.oplog.forId(context.value.id)).toHaveLength(1);
     const sub = await svc.createSubject(
-      subjectInput({ contextId: ctx.value.id }),
+      subjectInput({ contextId: context.value.id }),
     );
     expect(sub.ok).toBe(true);
   });

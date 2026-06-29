@@ -1,5 +1,5 @@
 import type { DayIso } from "../domain";
-import * as num from "./math";
+import * as numeric from "./math";
 import { addDays } from "./schedule";
 
 export const XP_PER_PRESENCE = 5;
@@ -18,9 +18,9 @@ export interface XpInput {
 }
 
 export function totalXp(input: XpInput): number {
-  return num.add(
-    num.multiply(input.presences, XP_PER_PRESENCE),
-    num.multiply(input.completedActivities, XP_PER_ACTIVITY),
+  return numeric.add(
+    numeric.multiply(input.presences, XP_PER_PRESENCE),
+    numeric.multiply(input.completedActivities, XP_PER_ACTIVITY),
   );
 }
 
@@ -33,13 +33,16 @@ export interface Level {
 
 export function levelFromXp(xp: number): Level {
   const safeXp = Math.max(0, xp);
-  const level = num.add(num.floor(num.divide(safeXp, XP_PER_LEVEL)), 1);
-  const intoLevel = num.remainder(safeXp, XP_PER_LEVEL);
+  const level = numeric.add(
+    numeric.floor(numeric.divide(safeXp, XP_PER_LEVEL)),
+    1,
+  );
+  const intoLevel = numeric.remainder(safeXp, XP_PER_LEVEL);
   return {
     level,
     intoLevel,
-    toNextLevel: num.subtract(XP_PER_LEVEL, intoLevel),
-    ratio: num.divide(intoLevel, XP_PER_LEVEL),
+    toNextLevel: numeric.subtract(XP_PER_LEVEL, intoLevel),
+    ratio: numeric.divide(intoLevel, XP_PER_LEVEL),
   };
 }
 
@@ -79,7 +82,7 @@ export function achievements(input: GamificationInput): Achievement[] {
       label: "Primeiro passo",
       icon: "👣",
       unlocked:
-        num.add(input.presences, input.completedActivities) >=
+        numeric.add(input.presences, input.completedActivities) >=
         FIRST_ACTION_THRESHOLD,
     },
     {

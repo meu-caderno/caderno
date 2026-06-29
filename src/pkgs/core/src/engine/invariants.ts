@@ -1,8 +1,8 @@
 import type { Assessment, DayIso, Id, Term } from "../domain";
-import * as num from "./math";
+import * as numeric from "./math";
 
 export function weightTotal(assessments: readonly Assessment[]): number {
-  return num.sum(assessments.map((assessment) => assessment.weight));
+  return numeric.sum(assessments.map((assessment) => assessment.weight));
 }
 
 export function weightsBalanced(
@@ -10,7 +10,7 @@ export function weightsBalanced(
   tolerance = 0.001,
 ): boolean {
   if (assessments.length === 0) return true;
-  return Math.abs(num.subtract(weightTotal(assessments), 1)) <= tolerance;
+  return Math.abs(numeric.subtract(weightTotal(assessments), 1)) <= tolerance;
 }
 
 type DatedTerm = Term & { start: DayIso; end: DayIso };

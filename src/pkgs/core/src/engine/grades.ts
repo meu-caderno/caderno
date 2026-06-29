@@ -1,5 +1,5 @@
 import type { Assessment, Grade } from "../domain";
-import * as num from "./math";
+import * as numeric from "./math";
 
 type AssessmentScore = Pick<Assessment, "weight" | "grade">;
 
@@ -17,14 +17,16 @@ export function weightedAverage(
 ): number | null {
   const graded = assessments.filter(isGraded);
   if (graded.length === 0) return null;
-  const totalWeight = num.sum(graded.map((assessment) => assessment.weight));
+  const totalWeight = numeric.sum(
+    graded.map((assessment) => assessment.weight),
+  );
   if (totalWeight === 0) return null;
-  const weighted = num.sum(
+  const weighted = numeric.sum(
     graded.map((assessment) =>
-      num.multiply(assessment.grade, assessment.weight),
+      numeric.multiply(assessment.grade, assessment.weight),
     ),
   );
-  return num.divide(weighted, totalWeight);
+  return numeric.divide(weighted, totalWeight);
 }
 
 export interface NeededGrade {
@@ -39,17 +41,19 @@ export function neededGrade(
   target: number,
   max = 10,
 ): NeededGrade | null {
-  const totalWeight = num.sum(
+  const totalWeight = numeric.sum(
     assessments.map((assessment) => assessment.weight),
   );
   if (totalWeight === 0) return null;
 
-  const earned = num.sum(
+  const earned = numeric.sum(
     assessments
       .filter(isGraded)
-      .map((assessment) => num.multiply(assessment.grade, assessment.weight)),
+      .map((assessment) =>
+        numeric.multiply(assessment.grade, assessment.weight),
+      ),
   );
-  const remainingWeight = num.sum(
+  const remainingWeight = numeric.sum(
     assessments
       .filter((assessment) => assessment.grade == null)
       .map((assessment) => assessment.weight),
@@ -57,8 +61,8 @@ export function neededGrade(
 
   if (remainingWeight === 0) return null;
 
-  const needed = num.divide(
-    num.subtract(num.multiply(target, totalWeight), earned),
+  const needed = numeric.divide(
+    numeric.subtract(numeric.multiply(target, totalWeight), earned),
     remainingWeight,
   );
   return {

@@ -47,9 +47,9 @@ export async function runStoreContract(
 ): Promise<void> {
   const store = makeStore();
 
-  const ctx = sampleContext();
-  await store.contexts.put(ctx);
-  expect(await store.contexts.get(ctx.id)).toEqual(ctx);
+  const context = sampleContext();
+  await store.contexts.put(context);
+  expect(await store.contexts.get(context.id)).toEqual(context);
   expect(await store.contexts.list()).toHaveLength(1);
 
   await store.transaction(async (tx) => {

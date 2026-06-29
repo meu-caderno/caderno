@@ -88,8 +88,8 @@ export function createInMemoryContextStore(): ContextStore {
     async appendMany(entries) {
       log.push(...entries);
     },
-    async since(ts: Timestamp) {
-      return log.filter((entry) => entry.ts >= ts);
+    async since(timestamp: Timestamp) {
+      return log.filter((entry) => entry.ts >= timestamp);
     },
     async forId(id) {
       return log.filter((entry) => entry.id === id);

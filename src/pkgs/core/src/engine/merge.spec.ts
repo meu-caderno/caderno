@@ -4,7 +4,7 @@ import { EntityName } from "../domain";
 import { MergeStrategy, mergeCollection } from "./merge";
 
 const id = (value: string) => value as Id;
-const ts = 1 as Timestamp;
+const timestamp = 1 as Timestamp;
 const subject = (identifier: string, name: string): Subject => ({
   id: id(identifier),
   contextId: id("ctx"),
@@ -22,7 +22,7 @@ describe("mergeCollection", () => {
       EntityName.SUBJECT,
       current,
       incoming,
-      ts,
+      timestamp,
     );
     expect(merged).toHaveLength(2);
     expect(ops).toHaveLength(2);
@@ -34,7 +34,7 @@ describe("mergeCollection", () => {
       EntityName.SUBJECT,
       current,
       [subject("a", "A")],
-      ts,
+      timestamp,
     );
     expect(ops).toHaveLength(0);
   });
@@ -46,7 +46,7 @@ describe("mergeCollection", () => {
       EntityName.SUBJECT,
       current,
       incoming,
-      ts,
+      timestamp,
       MergeStrategy.REPLACE,
     );
     expect(merged).toHaveLength(1);

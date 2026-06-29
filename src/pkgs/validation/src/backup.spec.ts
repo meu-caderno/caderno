@@ -7,7 +7,7 @@ import {
 } from "./backup";
 import { TimestampSchema } from "./schemas";
 
-const ts = TimestampSchema.parse(1_700_000_000_000);
+const timestamp = TimestampSchema.parse(1_700_000_000_000);
 
 const empty = {
   contexts: [],
@@ -21,9 +21,9 @@ const empty = {
 
 describe("exportBackup / parseBackup", () => {
   it("stamps a version-2 envelope and round-trips through JSON", () => {
-    const backup = exportBackup(empty, ts);
+    const backup = exportBackup(empty, timestamp);
     expect(backup.version).toBe(2);
-    expect(backup.exportedAt).toBe(ts);
+    expect(backup.exportedAt).toBe(timestamp);
     expect(parseBackup(JSON.parse(JSON.stringify(backup)))).toEqual(backup);
   });
 
@@ -41,11 +41,11 @@ describe("migrateBackup", () => {
       ...empty,
     });
     expect(migrated.version).toBe(2);
-    expect(migrated.exportedAt).toBe(ts);
+    expect(migrated.exportedAt).toBe(timestamp);
   });
 
   it("passes a valid version-2 backup straight through", () => {
-    const v2 = exportBackup(empty, ts);
+    const v2 = exportBackup(empty, timestamp);
     expect(migrateBackup(JSON.parse(JSON.stringify(v2))).version).toBe(2);
   });
 

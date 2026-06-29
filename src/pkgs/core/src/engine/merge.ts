@@ -58,7 +58,7 @@ export function mergeCollection<T extends Identified>(
   entity: EntityName,
   current: readonly T[],
   incoming: readonly T[],
-  ts: Timestamp,
+  timestamp: Timestamp,
   strategy: MergeStrategy = MergeStrategy.UPSERT,
 ): CollectionMergeResult<T> {
   const merged = indexById(current);
@@ -69,7 +69,7 @@ export function mergeCollection<T extends Identified>(
     const existing = merged.get(item.id);
     if (!existing || !sameValue(existing, item)) {
       merged.set(item.id, item);
-      ops.push(makeOp(entity, OpKind.PUT, item.id, ts));
+      ops.push(makeOp(entity, OpKind.PUT, item.id, timestamp));
     }
   }
 
@@ -77,7 +77,7 @@ export function mergeCollection<T extends Identified>(
     for (const item of current) {
       if (!incomingIds.has(item.id)) {
         merged.delete(item.id);
-        ops.push(makeOp(entity, OpKind.DELETE, item.id, ts));
+        ops.push(makeOp(entity, OpKind.DELETE, item.id, timestamp));
       }
     }
   }
@@ -100,7 +100,7 @@ const MERGE_TARGETS: ReadonlyArray<[keyof Collections, EntityName]> = [
 export function mergeBackup(
   store: Collections,
   backup: Backup,
-  ts: Timestamp,
+  timestamp: Timestamp,
   strategy: MergeStrategy = MergeStrategy.UPSERT,
 ): MergeResult {
   const merged: Collections = {
@@ -120,7 +120,13 @@ export function mergeBackup(
   for (const [key, entity] of MERGE_TARGETS) {
     const current = store[key] as ReadonlyArray<Identified>;
     const incoming = (backup[key] ?? []) as ReadonlyArray<Identified>;
-    const result = mergeCollection(entity, current, incoming, ts, strategy);
+    const result = mergeCollection(
+      entity,
+      current,
+      incoming,
+      timestamp,
+      strategy,
+    );
     writableMerged[key] = result.merged;
     ops.push(...result.ops);
   }

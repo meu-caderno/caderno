@@ -1,14 +1,14 @@
 import type { Bucket, DayIso, Id, Term } from "../domain";
 import { CLASS_HOURS_PER_CREDIT } from "./attendance";
-import * as num from "./math";
+import * as numeric from "./math";
 import { type DateRange, daysBetween } from "./schedule";
 
 export function creditsToClassHours(credits: number): number {
-  return num.multiply(credits, CLASS_HOURS_PER_CREDIT);
+  return numeric.multiply(credits, CLASS_HOURS_PER_CREDIT);
 }
 
 export function classHoursToCredits(hours: number): number {
-  return num.divide(hours, CLASS_HOURS_PER_CREDIT);
+  return numeric.divide(hours, CLASS_HOURS_PER_CREDIT);
 }
 
 export interface BucketProgress {
@@ -36,17 +36,19 @@ export function degreeProgress(buckets: ReadonlyArray<Bucket>): DegreeProgress {
     ratio:
       bucket.goal === 0
         ? 1
-        : num.clamp(num.divide(bucket.done, bucket.goal), 0, 1),
+        : numeric.clamp(numeric.divide(bucket.done, bucket.goal), 0, 1),
     complete: bucket.done >= bucket.goal,
   }));
-  const totalDone = num.sum(buckets.map((bucket) => bucket.done));
-  const totalGoal = num.sum(buckets.map((bucket) => bucket.goal));
+  const totalDone = numeric.sum(buckets.map((bucket) => bucket.done));
+  const totalGoal = numeric.sum(buckets.map((bucket) => bucket.goal));
   return {
     buckets: mapped,
     totalDone,
     totalGoal,
     ratio:
-      totalGoal === 0 ? 1 : num.clamp(num.divide(totalDone, totalGoal), 0, 1),
+      totalGoal === 0
+        ? 1
+        : numeric.clamp(numeric.divide(totalDone, totalGoal), 0, 1),
   };
 }
 
@@ -75,5 +77,9 @@ export function termProgress(term: Term, today: DayIso): number {
   if (today >= term.end) return 1;
   const total = daysBetween(term.start, term.end);
   if (total <= 0) return 0;
-  return num.clamp(num.divide(daysBetween(term.start, today), total), 0, 1);
+  return numeric.clamp(
+    numeric.divide(daysBetween(term.start, today), total),
+    0,
+    1,
+  );
 }

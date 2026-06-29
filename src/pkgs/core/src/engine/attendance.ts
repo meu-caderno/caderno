@@ -1,6 +1,6 @@
 import type { Record as AttendanceRecord, Id, Subject } from "../domain";
 import { AttendanceStatus } from "../domain";
-import * as num from "./math";
+import * as numeric from "./math";
 
 export const DEFAULT_ATTENDANCE_FLOOR = 0.75;
 
@@ -88,16 +88,21 @@ export function computeAttendance(
 ): AttendanceSummary {
   const totalClassHours =
     subject.totalClassHours ??
-    num.multiply(subject.credits ?? 0, CLASS_HOURS_PER_CREDIT);
-  const sessionHours = num.multiply(
+    numeric.multiply(subject.credits ?? 0, CLASS_HOURS_PER_CREDIT);
+  const sessionHours = numeric.multiply(
     subject.hoursPerClass,
     subject.classesPerSession,
   );
   const floor = subject.floor ?? options.floor ?? DEFAULT_ATTENDANCE_FLOOR;
 
-  const maxAbsenceHours = num.multiply(totalClassHours, num.subtract(1, floor));
+  const maxAbsenceHours = numeric.multiply(
+    totalClassHours,
+    numeric.subtract(1, floor),
+  );
   const maxAbsences =
-    sessionHours > 0 ? num.floor(num.divide(maxAbsenceHours, sessionHours)) : 0;
+    sessionHours > 0
+      ? numeric.floor(numeric.divide(maxAbsenceHours, sessionHours))
+      : 0;
 
   const rule: AbsenceRule = {
     lateIsHalf: subject.lateIsHalf,
@@ -110,13 +115,13 @@ export function computeAttendance(
     counts[record.status] += 1;
     if (HELD.has(record.status)) held += 1;
   }
-  const absencesUsed = num.sum(
+  const absencesUsed = numeric.sum(
     records.map((record) => absenceWeight(record.status, rule)),
   );
 
-  const remaining = num.subtract(maxAbsences, absencesUsed);
+  const remaining = numeric.subtract(maxAbsences, absencesUsed);
   const frequency =
-    held === 0 ? 1 : num.divide(num.subtract(held, absencesUsed), held);
+    held === 0 ? 1 : numeric.divide(numeric.subtract(held, absencesUsed), held);
 
   return {
     totalClassHours,
@@ -127,7 +132,7 @@ export function computeAttendance(
     remaining,
     held,
     frequency,
-    frequencyPct: num.round(num.multiply(frequency, 100)),
+    frequencyPct: numeric.round(numeric.multiply(frequency, 100)),
     meetsFloor: frequency >= floor,
     counts,
   };
@@ -156,14 +161,14 @@ export function simulateAbsences(
   extraAbsences: number,
 ): AbsenceScenario {
   const extra = Math.max(0, extraAbsences);
-  const remaining = num.subtract(summary.remaining, extra);
+  const remaining = numeric.subtract(summary.remaining, extra);
   return { extraAbsences: extra, remaining, meetsBudget: remaining >= 0 };
 }
 
 export function absencesUntilFloor(
   summary: Pick<AttendanceSummary, "remaining">,
 ): number {
-  return Math.max(0, num.floor(summary.remaining));
+  return Math.max(0, numeric.floor(summary.remaining));
 }
 
 export interface FrequencyProjection {
@@ -177,12 +182,13 @@ export function projectFrequency(
   futureHeld: number,
   futureAbsences: number,
 ): FrequencyProjection {
-  const held = num.add(summary.held, Math.max(0, futureHeld));
-  const used = num.add(summary.absencesUsed, Math.max(0, futureAbsences));
-  const frequency = held === 0 ? 1 : num.divide(num.subtract(held, used), held);
+  const held = numeric.add(summary.held, Math.max(0, futureHeld));
+  const used = numeric.add(summary.absencesUsed, Math.max(0, futureAbsences));
+  const frequency =
+    held === 0 ? 1 : numeric.divide(numeric.subtract(held, used), held);
   return {
     projectedFrequency: frequency,
-    projectedFrequencyPct: num.round(num.multiply(frequency, 100)),
+    projectedFrequencyPct: numeric.round(numeric.multiply(frequency, 100)),
     meetsFloor: frequency >= summary.floor,
   };
 }
@@ -196,7 +202,7 @@ export function attendanceRisk(
   }
   const threshold = Math.max(
     1,
-    num.ceil(num.multiply(summary.maxAbsences, warnAt)),
+    numeric.ceil(numeric.multiply(summary.maxAbsences, warnAt)),
   );
   if (summary.remaining <= threshold) return AttendanceRiskLevel.WARNING;
   return AttendanceRiskLevel.SAFE;
@@ -229,17 +235,17 @@ export function aggregateAttendance(
       RISK_RANK[subjectRisk.risk] > RISK_RANK[worst] ? subjectRisk.risk : worst,
     AttendanceRiskLevel.SAFE,
   );
-  const totalMaxAbsences = num.sum(
+  const totalMaxAbsences = numeric.sum(
     perSubject.map((subjectRisk) => subjectRisk.summary.maxAbsences),
   );
-  const totalAbsencesUsed = num.sum(
+  const totalAbsencesUsed = numeric.sum(
     perSubject.map((subjectRisk) => subjectRisk.summary.absencesUsed),
   );
   return {
     perSubject,
     totalMaxAbsences,
     totalAbsencesUsed,
-    totalRemaining: num.subtract(totalMaxAbsences, totalAbsencesUsed),
+    totalRemaining: numeric.subtract(totalMaxAbsences, totalAbsencesUsed),
     worstRisk,
   };
 }

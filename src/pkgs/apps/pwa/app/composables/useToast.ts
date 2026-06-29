@@ -7,12 +7,12 @@ export interface ToastItem {
 }
 
 const toasts = shallowRef<ToastItem[]>([]);
-let seq = 0;
+let sequence = 0;
 
 export function useToast() {
   function toast(opts: Omit<ToastItem, "id">) {
-    seq += 1;
-    const id = seq;
+    sequence += 1;
+    const id = sequence;
     toasts.value = [...toasts.value, { ...opts, id }];
     return id;
   }

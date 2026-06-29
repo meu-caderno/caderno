@@ -28,8 +28,8 @@ const ENTITY_LABEL: Record<string, string> = {
 function label(entity: string) {
   return ENTITY_LABEL[entity] ?? entity;
 }
-function when(ts: number) {
-  return format(new Date(ts), "dd/MM HH:mm:ss");
+function when(timestamp: number) {
+  return format(new Date(timestamp), "dd/MM HH:mm:ss");
 }
 
 onMounted(refresh);

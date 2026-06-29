@@ -85,10 +85,10 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
     entity: EntityName,
     value: T,
   ): Promise<void> => {
-    const ts = await clock.now();
+    const timestamp = await clock.now();
     await store.transaction(async (tx) => {
       await select(tx).put(value);
-      await tx.oplog.append(makeOp(entity, OpKind.PUT, value.id, ts));
+      await tx.oplog.append(makeOp(entity, OpKind.PUT, value.id, timestamp));
     });
   };
 
@@ -97,10 +97,10 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
     entity: EntityName,
     id: Id,
   ): Promise<void> => {
-    const ts = await clock.now();
+    const timestamp = await clock.now();
     await store.transaction(async (tx) => {
       await select(tx).delete(id);
-      await tx.oplog.append(makeOp(entity, OpKind.DELETE, id, ts));
+      await tx.oplog.append(makeOp(entity, OpKind.DELETE, id, timestamp));
     });
   };
 
@@ -302,23 +302,23 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
       const activities = await store.activities.where(
         (activity) => activity.subjectId === id,
       );
-      const ts = await clock.now();
+      const timestamp = await clock.now();
       await store.transaction(async (tx) => {
         for (const record of records) {
           await tx.records.delete(record.id);
           await tx.oplog.append(
-            makeOp(EntityName.RECORD, OpKind.DELETE, record.id, ts),
+            makeOp(EntityName.RECORD, OpKind.DELETE, record.id, timestamp),
           );
         }
         for (const activity of activities) {
           await tx.activities.delete(activity.id);
           await tx.oplog.append(
-            makeOp(EntityName.ACTIVITY, OpKind.DELETE, activity.id, ts),
+            makeOp(EntityName.ACTIVITY, OpKind.DELETE, activity.id, timestamp),
           );
         }
         await tx.subjects.delete(id);
         await tx.oplog.append(
-          makeOp(EntityName.SUBJECT, OpKind.DELETE, id, ts),
+          makeOp(EntityName.SUBJECT, OpKind.DELETE, id, timestamp),
         );
       });
       await hooks?.callHook("subject:deleted", id);
@@ -408,22 +408,24 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
         ...(await store.graph.edgesFrom(id)),
         ...(await store.graph.edgesTo(id)),
       ];
-      const ts = await clock.now();
+      const timestamp = await clock.now();
       await store.transaction(async (tx) => {
         for (const child of children) {
           await tx.graph.nodes.put({ ...child, parentId: node.parentId });
           await tx.oplog.append(
-            makeOp(EntityName.NODE, OpKind.PUT, child.id, ts),
+            makeOp(EntityName.NODE, OpKind.PUT, child.id, timestamp),
           );
         }
         for (const edge of incident) {
           await tx.graph.edges.delete(edge.id);
           await tx.oplog.append(
-            makeOp(EntityName.EDGE, OpKind.DELETE, edge.id, ts),
+            makeOp(EntityName.EDGE, OpKind.DELETE, edge.id, timestamp),
           );
         }
         await tx.graph.nodes.delete(id);
-        await tx.oplog.append(makeOp(EntityName.NODE, OpKind.DELETE, id, ts));
+        await tx.oplog.append(
+          makeOp(EntityName.NODE, OpKind.DELETE, id, timestamp),
+        );
       });
       await hooks?.callHook("node:deleted", id);
       return ok(undefined);

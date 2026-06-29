@@ -98,8 +98,10 @@ export function createDexieContextStore(name = "caderno"): ContextStore {
     appendMany: async (entries) => {
       await oplogTable.bulkAdd(entries.map(toRow));
     },
-    since: async (ts) =>
-      (await oplogTable.where("ts").aboveOrEqual(ts).toArray()).map(toEntry),
+    since: async (timestamp) =>
+      (await oplogTable.where("ts").aboveOrEqual(timestamp).toArray()).map(
+        toEntry,
+      ),
     forId: async (id) =>
       (await oplogTable.where("id").equals(id).toArray()).map(toEntry),
   };

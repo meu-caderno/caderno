@@ -104,8 +104,8 @@ describe("createCaderno", () => {
         impact: CapabilityImpact.LOW,
         origin: OriginKind.PLUGIN,
       },
-      setup(ctx) {
-        ctx.hooks.hook("attendance:marked", (record) => {
+      setup(context) {
+        context.hooks.hook("attendance:marked", (record) => {
           marked.push(record);
         });
       },

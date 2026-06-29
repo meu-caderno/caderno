@@ -17,7 +17,7 @@ describe("presetForGoal", () => {
 
 describe("applyPreset", () => {
   it("keeps user values and only adds missing modules (preset é convite)", () => {
-    const ctx: Context = {
+    const context: Context = {
       id: id("c"),
       name: "x",
       goal: Goal.UNIVERSITY,
@@ -34,7 +34,7 @@ describe("applyPreset", () => {
         certificate: false,
       },
     };
-    const out = applyPreset(ctx, presetForGoal(Goal.UNIVERSITY));
+    const out = applyPreset(context, presetForGoal(Goal.UNIVERSITY));
     expect(out.attendanceFloor).toBe(0.6);
     expect(out.modules.term).toBe(true);
     expect(out.modules.attendance).toBe(true);

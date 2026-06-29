@@ -3,7 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
-const dir = dirname(fileURLToPath(import.meta.url));
+const directory = dirname(fileURLToPath(import.meta.url));
 
 const FORBIDDEN: Array<[string, RegExp]> = [
   ["zod import", /from ["']zod["']/],
@@ -16,7 +16,7 @@ const FORBIDDEN: Array<[string, RegExp]> = [
 ];
 
 describe("domain purity", () => {
-  const files = readdirSync(dir, { recursive: true })
+  const files = readdirSync(directory, { recursive: true })
     .filter(
       (file): file is string =>
         typeof file === "string" && file.endsWith(".ts"),
@@ -25,9 +25,11 @@ describe("domain purity", () => {
 
   for (const file of files) {
     it(`${file} stays free of infra and nondeterminism`, () => {
-      const src = readFileSync(join(dir, file), "utf8");
+      const source = readFileSync(join(directory, file), "utf8");
       for (const [label, pattern] of FORBIDDEN) {
-        expect(src, `${file} must not contain ${label}`).not.toMatch(pattern);
+        expect(source, `${file} must not contain ${label}`).not.toMatch(
+          pattern,
+        );
       }
     });
   }

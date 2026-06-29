@@ -56,22 +56,24 @@ const riskyPlugin: Plugin = {
 
 describe("loadPlugins", () => {
   it("runs setup and registers the plugin's capabilities", () => {
-    const ctx = makeContext();
-    const loaded = loadPlugins([numbersPlugin], ctx);
+    const context = makeContext();
+    const loaded = loadPlugins([numbersPlugin], context);
     expect(loaded).toHaveLength(1);
-    expect(ctx.registry.source<number>("numbers")?.list()).toEqual([1, 2, 3]);
+    expect(context.registry.source<number>("numbers")?.list()).toEqual([
+      1, 2, 3,
+    ]);
   });
 
   it("blocks HIGH-impact plugins by default (consent required)", () => {
-    const ctx = makeContext();
-    expect(loadPlugins([riskyPlugin], ctx)).toHaveLength(0);
-    expect(ctx.registry.source("risky")).toBeUndefined();
+    const context = makeContext();
+    expect(loadPlugins([riskyPlugin], context)).toHaveLength(0);
+    expect(context.registry.source("risky")).toBeUndefined();
   });
 
   it("loads HIGH-impact plugins when consent allows it", () => {
-    const ctx = makeContext();
-    const loaded = loadPlugins([riskyPlugin], ctx, () => true);
+    const context = makeContext();
+    const loaded = loadPlugins([riskyPlugin], context, () => true);
     expect(loaded).toHaveLength(1);
-    expect(ctx.registry.source("risky")).toBeDefined();
+    expect(context.registry.source("risky")).toBeDefined();
   });
 });

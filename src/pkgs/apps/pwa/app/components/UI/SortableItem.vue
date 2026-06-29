@@ -14,7 +14,7 @@ import { SORTABLE_KEY } from "~/utils/sortable";
 const props = defineProps<{ id: string }>();
 
 const context = inject(SORTABLE_KEY);
-const el = ref<HTMLElement | null>(null);
+const elementRef = ref<HTMLElement | null>(null);
 const handle = ref<HTMLElement | null>(null);
 const edge = ref<Edge | null>(null);
 const dragging = ref(false);
@@ -22,7 +22,7 @@ const dragging = ref(false);
 let cleanup = () => {};
 
 onMounted(() => {
-  const element = el.value;
+  const element = elementRef.value;
   const dragHandle = handle.value;
   if (!element || !dragHandle || !context) return;
   cleanup = combine(
@@ -75,7 +75,7 @@ onUnmounted(() => cleanup());
 
 <template>
   <div
-    ref="el"
+    ref="elementRef"
     class="uisortable-item"
     :class="{ 'uisortable-item--dragging': dragging }"
   >
