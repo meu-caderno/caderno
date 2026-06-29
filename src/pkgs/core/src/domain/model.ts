@@ -301,6 +301,9 @@ export interface Preferences {
   zen?: boolean;
   profileContexts?: Id[];
   activityView?: string;
+  homeWidgets?: string[];
+  tabItems?: string[];
+  railItems?: string[];
 }
 
 export enum OpKind {

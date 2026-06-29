@@ -7,6 +7,7 @@
     <SectionSettingsMoodsCard />
     <SectionSettingsDisplayCard />
     <SectionSettingsTypographyCard />
+    <SectionSettingsLayoutCard />
     <SectionSettingsContextProfileCard />
     <SectionSettingsGeneralCard />
     <SectionSettingsBackupCard />

@@ -2,12 +2,12 @@
 import { SwitchRoot, SwitchThumb } from "reka-ui";
 
 const model = defineModel<boolean>({ default: false });
-defineProps<{ label?: string; hint?: string }>();
+defineProps<{ label?: string; hint?: string; disabled?: boolean }>();
 </script>
 
 <template>
-  <label class="uisw">
-    <SwitchRoot v-model="model" class="uisw__root">
+  <label class="uisw" :class="{ 'uisw--disabled': disabled }">
+    <SwitchRoot v-model="model" :disabled="disabled" class="uisw__root">
       <SwitchThumb class="uisw__thumb" />
     </SwitchRoot>
     <span v-if="label || hint" class="uisw__text">
@@ -18,6 +18,10 @@ defineProps<{ label?: string; hint?: string }>();
 </template>
 
 <style scoped>
+.uisw--disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
 .uisw {
   display: flex;
   align-items: center;

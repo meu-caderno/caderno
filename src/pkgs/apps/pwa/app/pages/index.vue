@@ -22,6 +22,8 @@ const {
 const { service } = useCadernoService();
 const { toast } = useToast();
 const { reviewing, close: closeOnboarding } = useOnboarding();
+const { homeWidgets, isVisible } = useLayout();
+const showWidget = (key: string) => isVisible(homeWidgets.value, key);
 
 const creatingContext = ref(false);
 const editingContext = ref(false);
@@ -140,15 +142,26 @@ const period = computed(() => {
       @create-context="creatingContext = true"
       @open-settings="editingContext = true"
     />
-    <SectionHomeTodayRoll :roll="roll" :date-label="todayLabel" @mark="mark" />
-    <SectionHomeRiskAlert :stats="stats" @detail="detailSubjectId = $event" />
+    <SectionHomeTodayRoll
+      v-if="showWidget('roll')"
+      :roll="roll"
+      :date-label="todayLabel"
+      @mark="mark"
+    />
+    <SectionHomeRiskAlert
+      v-if="showWidget('risk')"
+      :stats="stats"
+      @detail="detailSubjectId = $event"
+    />
     <SectionHomeSubjectsSection
+      v-if="showWidget('subjects')"
       :stats="stats"
       @create="creatingSubject = true"
       @notas="notasSubjectId = $event"
       @detail="detailSubjectId = $event"
     />
     <SectionHomeActivitiesSection
+      v-if="showWidget('activities')"
       :activities="pendingActivities"
       :subjects="subjects"
       :stats="stats"

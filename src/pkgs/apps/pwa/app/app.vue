@@ -11,7 +11,11 @@ useHead({
 });
 
 const { hydrate: hydrateTheme } = useTheme();
-onMounted(hydrateTheme);
+const { hydrate: hydrateLayout } = useLayout();
+onMounted(() => {
+  hydrateTheme();
+  hydrateLayout();
+});
 </script>
 
 <template>

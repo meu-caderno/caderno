@@ -1,5 +1,8 @@
 <script setup lang="ts">
-const items = useNav();
+const { railItems, isVisible } = useLayout();
+const items = computed(() =>
+  useNav().filter((item) => isVisible(railItems.value, item.key)),
+);
 </script>
 
 <template>
@@ -11,8 +14,10 @@ const items = useNav();
     <nav class="rail__nav">
       <SectionShellNavItem
         v-for="item in items"
-        :key="item.to"
-        v-bind="item"
+        :key="item.key"
+        :to="item.to"
+        :icon="item.icon"
+        :label="item.label"
         layout="rail"
       />
     </nav>
