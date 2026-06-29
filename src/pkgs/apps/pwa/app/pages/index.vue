@@ -21,6 +21,7 @@ const {
 
 const { service } = useCadernoService();
 const { toast } = useToast();
+const { reviewing, close: closeOnboarding } = useOnboarding();
 
 const creatingContext = ref(false);
 const editingContext = ref(false);
@@ -117,7 +118,12 @@ const period = computed(() => {
 
 <template>
   <div v-if="booting" class="boot">carregando…</div>
-  <SectionOnboardingWizard v-else-if="!ready" />
+  <SectionOnboardingWizard
+    v-else-if="!ready || reviewing"
+    :reviewing="reviewing"
+    @done="closeOnboarding"
+    @cancel="closeOnboarding"
+  />
   <SectionHomeOnboarding
     v-else-if="creatingContext"
     cancelable

@@ -2,7 +2,8 @@
 import type { Id, Modules } from "@meu-caderno/core";
 import { AbsenceStance, Goal, Link } from "@meu-caderno/core";
 
-const emit = defineEmits<{ done: [] }>();
+defineProps<{ reviewing?: boolean }>();
+const emit = defineEmits<{ done: []; cancel: [] }>();
 
 const { service, config } = useCadernoService();
 const { setActive } = useActiveContext();
@@ -114,6 +115,14 @@ async function startDemo() {
       >
         <UIIcon icon="chevron-left" :size="16" /> voltar
       </button>
+      <button
+        v-if="reviewing"
+        type="button"
+        class="wizard__close"
+        @click="emit('cancel')"
+      >
+        fechar <UIIcon icon="x" :size="16" />
+      </button>
     </div>
 
     <SectionOnboardingWelcomeStep
@@ -159,10 +168,14 @@ async function startDemo() {
   padding: 32px 16px 64px;
 }
 .wizard__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   min-height: 28px;
   margin-bottom: 12px;
 }
-.wizard__back {
+.wizard__back,
+.wizard__close {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -174,5 +187,8 @@ async function startDemo() {
   color: var(--pt-ink-muted);
   cursor: pointer;
   padding: 0;
+}
+.wizard__close {
+  margin-left: auto;
 }
 </style>

@@ -1,16 +1,14 @@
 <script setup lang="ts">
+import { MOODS } from "~/composables/useTheme";
+
 const profile = defineModel<string>("profile", { default: "calmo" });
 const emit = defineEmits<{ finish: []; back: [] }>();
 
-const profileOptions = [
-  { value: "calmo", label: "🌿 Calmo", desc: "Tela enxuta, sem distração." },
-  { value: "foco", label: "🎯 Foco", desc: "O essencial do dia em destaque." },
-  {
-    value: "tudo",
-    label: "🎨 Tudo à mostra",
-    desc: "Todos os widgets de uma vez.",
-  },
-];
+const profileOptions = MOODS.map((mood) => ({
+  value: mood.key,
+  label: `${mood.emoji} ${mood.label}`,
+  desc: mood.blurb,
+}));
 </script>
 
 <template>

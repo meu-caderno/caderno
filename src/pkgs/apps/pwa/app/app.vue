@@ -10,8 +10,8 @@ useHead({
   titleTemplate: (t) => (t ? `${t} · Meu Caderno` : "Meu Caderno"),
 });
 
-const { hydrate: hydrateAppearance } = useAppearance();
-onMounted(hydrateAppearance);
+const { hydrate: hydrateTheme } = useTheme();
+onMounted(hydrateTheme);
 </script>
 
 <template>

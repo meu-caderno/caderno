@@ -4,7 +4,8 @@
       <h1 class="pt-hand ajustes__title">Ajustes</h1>
       <p class="ajustes__sub">Dados deste aparelho</p>
     </header>
-    <SectionSettingsAppearanceCard />
+    <SectionSettingsMoodsCard />
+    <SectionSettingsGeneralCard />
     <SectionSettingsBackupCard />
   </div>
 </template>
