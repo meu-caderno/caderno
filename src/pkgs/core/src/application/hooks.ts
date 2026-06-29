@@ -3,8 +3,10 @@ import type {
   Activity,
   Record as AttendanceRecord,
   Context,
+  Edge,
   Id,
   LibraryItem,
+  Node,
   Subject,
 } from "../domain";
 
@@ -18,6 +20,9 @@ export interface CadernoHooks {
   "grade:set": (subject: Subject) => void;
   "activity:upserted": (activity: Activity) => void;
   "library:changed": (item: LibraryItem) => void;
+  "node:upserted": (node: Node) => void;
+  "node:deleted": (id: Id) => void;
+  "edge:upserted": (edge: Edge) => void;
 }
 
 export type CadernoHookBus = Hookable<CadernoHooks>;

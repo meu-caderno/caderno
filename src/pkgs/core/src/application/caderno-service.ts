@@ -6,15 +6,17 @@ import type {
   Context,
   ContextStore,
   ContextTx,
+  Edge,
   Grade,
   Id,
   IdGenerator,
   LibraryItem,
+  Node,
   Repository,
   Subject,
 } from "../domain";
-import { EntityName, OpKind } from "../domain";
-import { createsCycle, makeOp } from "../engine";
+import { type EdgeKind, EntityName, OpKind } from "../domain";
+import { canReparent, createsCycle, makeOp } from "../engine";
 import { type DomainError, DomainErrorCode, domainError } from "./errors";
 import type { CadernoHookBus } from "./hooks";
 import { err, ok, type Result } from "./result";
@@ -57,6 +59,15 @@ export interface CadernoService {
     item: LibraryItem,
   ): Promise<Result<LibraryItem, DomainError>>;
   deleteLibraryItem(id: Id): Promise<Result<void, DomainError>>;
+  createNode(input: Omit<Node, "id">): Promise<Result<Node, DomainError>>;
+  updateNode(node: Node): Promise<Result<Node, DomainError>>;
+  deleteNode(id: Id): Promise<Result<void, DomainError>>;
+  linkNodes(
+    from: Id,
+    to: Id,
+    kind: EdgeKind,
+  ): Promise<Result<Edge, DomainError>>;
+  unlinkNodes(id: Id): Promise<Result<void, DomainError>>;
 }
 
 export function createCadernoService(deps: CadernoDeps): CadernoService {
@@ -330,6 +341,125 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
         await tx.oplog.append(
           makeOp(EntityName.LIBRARY, OpKind.DELETE, id, ts),
         );
+      });
+      return ok(undefined);
+    },
+
+    async createNode(input) {
+      if (input.parentId && !(await store.graph.nodes.get(input.parentId))) {
+        return fail(
+          DomainErrorCode.INVARIANT_FK_MISSING,
+          { parentId: input.parentId },
+          EntityName.NODE,
+        );
+      }
+      const node: Node = { ...input, id: await ids.newId() };
+      await commitPut((tx) => tx.graph.nodes, EntityName.NODE, node);
+      await hooks?.callHook("node:upserted", node);
+      return ok(node);
+    },
+
+    async updateNode(node) {
+      if (!(await store.graph.nodes.get(node.id))) {
+        return fail(
+          DomainErrorCode.NOT_FOUND,
+          { id: node.id },
+          EntityName.NODE,
+        );
+      }
+      if (node.parentId) {
+        if (!(await store.graph.nodes.get(node.parentId))) {
+          return fail(
+            DomainErrorCode.INVARIANT_FK_MISSING,
+            { parentId: node.parentId },
+            EntityName.NODE,
+          );
+        }
+        const nodes = await store.graph.nodes.list();
+        if (!canReparent(nodes, node.id, node.parentId)) {
+          return fail(
+            DomainErrorCode.INVARIANT_CYCLE,
+            { id: node.id, parentId: node.parentId },
+            EntityName.NODE,
+          );
+        }
+      }
+      await commitPut((tx) => tx.graph.nodes, EntityName.NODE, node);
+      await hooks?.callHook("node:upserted", node);
+      return ok(node);
+    },
+
+    async deleteNode(id) {
+      const node = await store.graph.nodes.get(id);
+      if (!node) {
+        return fail(DomainErrorCode.NOT_FOUND, { id }, EntityName.NODE);
+      }
+      const children = await store.graph.childrenOf(id);
+      const incident = [
+        ...(await store.graph.edgesFrom(id)),
+        ...(await store.graph.edgesTo(id)),
+      ];
+      const ts = await clock.now();
+      await store.transaction(async (tx) => {
+        for (const child of children) {
+          await tx.graph.nodes.put({ ...child, parentId: node.parentId });
+          await tx.oplog.append(
+            makeOp(EntityName.NODE, OpKind.PUT, child.id, ts),
+          );
+        }
+        for (const edge of incident) {
+          await tx.graph.edges.delete(edge.id);
+          await tx.oplog.append(
+            makeOp(EntityName.EDGE, OpKind.DELETE, edge.id, ts),
+          );
+        }
+        await tx.graph.nodes.delete(id);
+        await tx.oplog.append(makeOp(EntityName.NODE, OpKind.DELETE, id, ts));
+      });
+      await hooks?.callHook("node:deleted", id);
+      return ok(undefined);
+    },
+
+    async linkNodes(from, to, kind) {
+      if (from === to) {
+        return fail(
+          DomainErrorCode.INVARIANT_CYCLE,
+          { from, to },
+          EntityName.EDGE,
+        );
+      }
+      if (!(await store.graph.nodes.get(from))) {
+        return fail(
+          DomainErrorCode.INVARIANT_FK_MISSING,
+          { from },
+          EntityName.EDGE,
+        );
+      }
+      if (!(await store.graph.nodes.get(to))) {
+        return fail(
+          DomainErrorCode.INVARIANT_FK_MISSING,
+          { to },
+          EntityName.EDGE,
+        );
+      }
+      const existing = (await store.graph.edgesFrom(from)).find(
+        (e) => e.to === to && e.kind === kind,
+      );
+      if (existing) return ok(existing);
+      const edge: Edge = { id: await ids.newId(), from, to, kind };
+      await commitPut((tx) => tx.graph.edges, EntityName.EDGE, edge);
+      await hooks?.callHook("edge:upserted", edge);
+      return ok(edge);
+    },
+
+    async unlinkNodes(id) {
+      if (!(await store.graph.edges.get(id))) {
+        return fail(DomainErrorCode.NOT_FOUND, { id }, EntityName.EDGE);
+      }
+      const ts = await clock.now();
+      await store.transaction(async (tx) => {
+        await tx.graph.edges.delete(id);
+        await tx.oplog.append(makeOp(EntityName.EDGE, OpKind.DELETE, id, ts));
       });
       return ok(undefined);
     },

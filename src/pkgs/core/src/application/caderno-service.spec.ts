@@ -12,7 +12,9 @@ import {
   AbsenceStance,
   ActivityKind,
   ActivityStatus,
+  Aspect,
   AttendanceStatus,
+  EdgeKind,
   Goal,
   Link,
   Root,
@@ -269,5 +271,99 @@ describe("CadernoService", () => {
     const r = await svc.updateLibraryItem({ id: "ghost" as Id, title: "X" });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.error.code).toBe(DomainErrorCode.NOT_FOUND);
+  });
+
+  const node = (title: string) => ({
+    aspects: [Aspect.NOTE],
+    title,
+  });
+
+  it("creates a child node and rejects a parentless reference", async () => {
+    const { store, svc } = await service();
+    const root = await svc.createNode(node("Álgebra"));
+    if (!root.ok) throw new Error("setup failed");
+    const child = await svc.createNode({
+      ...node("Matrizes"),
+      parentId: root.value.id,
+    });
+    expect(child.ok).toBe(true);
+    expect(await store.graph.nodes.list()).toHaveLength(2);
+    const orphan = await svc.createNode({
+      ...node("Solto"),
+      parentId: "ghost" as Id,
+    });
+    expect(orphan.ok).toBe(false);
+    if (!orphan.ok)
+      expect(orphan.error.code).toBe(DomainErrorCode.INVARIANT_FK_MISSING);
+  });
+
+  it("rejects reparenting a node under its own descendant", async () => {
+    const { svc } = await service();
+    const root = await svc.createNode(node("Raiz"));
+    if (!root.ok) throw new Error("setup failed");
+    const child = await svc.createNode({
+      ...node("Filho"),
+      parentId: root.value.id,
+    });
+    if (!child.ok) throw new Error("setup failed");
+    const r = await svc.updateNode({
+      ...root.value,
+      parentId: child.value.id,
+    });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error.code).toBe(DomainErrorCode.INVARIANT_CYCLE);
+  });
+
+  it("promotes children and drops edges when deleting a node", async () => {
+    const { store, svc } = await service();
+    const root = await svc.createNode(node("Raiz"));
+    if (!root.ok) throw new Error("setup failed");
+    const mid = await svc.createNode({
+      ...node("Meio"),
+      parentId: root.value.id,
+    });
+    if (!mid.ok) throw new Error("setup failed");
+    const leaf = await svc.createNode({
+      ...node("Folha"),
+      parentId: mid.value.id,
+    });
+    if (!leaf.ok) throw new Error("setup failed");
+    await svc.linkNodes(root.value.id, mid.value.id, EdgeKind.PREPARES);
+    await svc.deleteNode(mid.value.id);
+    expect(await store.graph.nodes.get(mid.value.id)).toBeUndefined();
+    const promoted = await store.graph.nodes.get(leaf.value.id);
+    expect(promoted?.parentId).toBe(root.value.id);
+    expect(await store.graph.edges.list()).toHaveLength(0);
+  });
+
+  it("links nodes idempotently and unlinks", async () => {
+    const { store, svc } = await service();
+    const a = await svc.createNode(node("A"));
+    const b = await svc.createNode(node("B"));
+    if (!a.ok || !b.ok) throw new Error("setup failed");
+    const first = await svc.linkNodes(
+      a.value.id,
+      b.value.id,
+      EdgeKind.SOURCE_OF,
+    );
+    const again = await svc.linkNodes(
+      a.value.id,
+      b.value.id,
+      EdgeKind.SOURCE_OF,
+    );
+    expect(first.ok && again.ok).toBe(true);
+    if (first.ok && again.ok) expect(first.value.id).toBe(again.value.id);
+    expect(await store.graph.edges.list()).toHaveLength(1);
+    if (first.ok) await svc.unlinkNodes(first.value.id);
+    expect(await store.graph.edges.list()).toHaveLength(0);
+  });
+
+  it("rejects linking a node to itself", async () => {
+    const { svc } = await service();
+    const a = await svc.createNode(node("A"));
+    if (!a.ok) throw new Error("setup failed");
+    const r = await svc.linkNodes(a.value.id, a.value.id, EdgeKind.SOURCE_OF);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error.code).toBe(DomainErrorCode.INVARIANT_CYCLE);
   });
 });
