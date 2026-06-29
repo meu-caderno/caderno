@@ -8,6 +8,22 @@
 > alguns ajustes de acessibilidade. Marque `- [x]` ao corrigir; rode o gate (biome ci · typecheck · test ·
 > build) a cada item.
 
+## ✅ Concluído (rodadas de refatoração — gate verde em cada commit)
+- **Nomes descritivos** (`f03a8a9`): ~202 identificadores de uma letra eliminados.
+- **Tipos nomeados** (`5f43a3e`): 7 tipos anônimos nomeados; 11 generics `{ id: Id }` → `Identified`;
+  removido `as unknown as`.
+- **Ganhos rápidos** (`92d0a80`): removido `vue-query` morto (plugin + dep); `Grade` brandado (+ type
+  predicate em `grades.ts`, sem `as number`); `commitDelete` extraído; cores de domínio tokenizadas
+  (`AttendanceSimulator`, `ActivityItem`); constantes nomeadas (gamification thresholds, `nextRecurrence`
+  7/14, `soonDays`, `presets` 0.75→`DEFAULT_ATTENDANCE_FLOOR`); `gamification` via `math.ts` (+ `remainder`);
+  comentários do `NavItem` removidos; dead code `ClockTime` removido.
+- **Sem abreviação** (`12e2573`): `ts`→`timestamp`, `num`→`numeric`, `ctx`→`context`, `seq`→`sequence`,
+  `el`→`elementRef`, `init`→`initialize`, `dir`→`directory`, `src`→`source` (locais/params).
+
+> Pendente de decisão: o **campo público `OpLogEntry.ts`** (e `RemoteChange.ts`) segue como `ts` — renomear
+> para `timestamp` é mudança coordenada de tipo de domínio + zod schema + mapeamento Dexie + serialização.
+> Avise se quer expandir também.
+
 ## Estado por camada
 
 | Camada | Estado | Pior achado |
