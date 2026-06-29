@@ -291,6 +291,13 @@ export interface Profile {
   headingFont?: string;
 }
 
+export interface Workbench {
+  id: Id;
+  name: string;
+  route: string;
+  contextId?: Id;
+}
+
 export interface Preferences {
   id: Id;
   activeContextId?: Id;
@@ -306,6 +313,7 @@ export interface Preferences {
   railItems?: string[];
   consents?: string[];
   lastSeenDay?: string;
+  workbenches?: Workbench[];
 }
 
 export enum OpKind {

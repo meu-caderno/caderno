@@ -13,10 +13,12 @@ useHead({
 const { hydrate: hydrateTheme } = useTheme();
 const { hydrate: hydrateLayout } = useLayout();
 const { hydrate: hydrateConsent } = useConsent();
+const { hydrate: hydrateWorkbenches } = useWorkbenches();
 onMounted(() => {
   hydrateTheme();
   hydrateLayout();
   hydrateConsent();
+  hydrateWorkbenches();
 });
 </script>
 
