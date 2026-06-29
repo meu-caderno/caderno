@@ -13,6 +13,7 @@ import {
   type AttendanceSummary,
   attendanceRisk,
   computeAttendance,
+  nextRecurrence,
   Root,
   recordsOf,
   sortByDue,
@@ -121,7 +122,7 @@ export interface TodayClass {
 }
 
 export function useCaderno() {
-  const { service, store, clock } = useCadernoService();
+  const { service, store, clock, ids } = useCadernoService();
   const { activeId, hydrate, setActive } = useActiveContext();
 
   const today = useState<string>("caderno:today", () => "1970-01-01");
@@ -232,11 +233,14 @@ export function useCaderno() {
   const { toast } = useToast();
   async function completeActivity(act: Activity) {
     await service.upsertActivity({ ...act, status: ActivityStatus.DONE });
+    const next = nextRecurrence(act, await ids.newId());
+    if (next) await service.upsertActivity(next);
     toast({
-      title: "Atividade concluída",
+      title: next ? "Concluída · próxima agendada" : "Atividade concluída",
       actionLabel: "desfazer",
       onAction: () => {
         void service.upsertActivity({ ...act, status: ActivityStatus.OPEN });
+        if (next) void service.deleteActivity(next.id);
       },
     });
   }

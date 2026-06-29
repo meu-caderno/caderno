@@ -7,6 +7,7 @@ import {
   dueBucket,
   expandRecurrence,
   inboxItems,
+  nextRecurrence,
   sortByDue,
   syncPreparesLinks,
   triage,
@@ -43,6 +44,47 @@ describe("expandRecurrence", () => {
         () => id("x"),
       ),
     ).toHaveLength(1);
+  });
+});
+
+describe("nextRecurrence", () => {
+  it("advances a weekly activity by 7 days and shares the series", () => {
+    const next = nextRecurrence(
+      act({ dueDate: d("2026-03-02"), recurrence: Recurrence.WEEKLY }),
+      id("gen"),
+    );
+    expect(next?.dueDate).toBe("2026-03-09");
+    expect(next?.seriesId).toBe("act");
+    expect(next?.status).toBe(ActivityStatus.OPEN);
+  });
+
+  it("advances a biweekly activity by 14 days", () => {
+    const next = nextRecurrence(
+      act({ dueDate: d("2026-03-02"), recurrence: Recurrence.BIWEEKLY }),
+      id("gen"),
+    );
+    expect(next?.dueDate).toBe("2026-03-16");
+  });
+
+  it("returns null when not recurring or without a due date", () => {
+    expect(
+      nextRecurrence(act({ dueDate: d("2026-03-02") }), id("x")),
+    ).toBeNull();
+    expect(
+      nextRecurrence(act({ recurrence: Recurrence.WEEKLY }), id("x")),
+    ).toBeNull();
+  });
+
+  it("resets subtasks on the next occurrence", () => {
+    const next = nextRecurrence(
+      act({
+        dueDate: d("2026-03-02"),
+        recurrence: Recurrence.WEEKLY,
+        subtasks: [{ id: id("s1"), text: "ler", done: true }],
+      }),
+      id("gen"),
+    );
+    expect(next?.subtasks?.[0]?.done).toBe(false);
   });
 });
 

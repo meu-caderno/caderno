@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Activity } from "@meu-caderno/core";
-import { ActivityKind } from "@meu-caderno/core";
+import { ActivityKind, Recurrence } from "@meu-caderno/core";
 import { daysFromToday, formatDay } from "~/composables/useCaderno";
 
 type DueTone = "perigo" | "atencao" | "neutro";
@@ -23,6 +23,11 @@ const kindIcon: Record<ActivityKind, string> = {
 
 const doneSubtasks = computed(
   () => props.activity.subtasks?.filter((task) => task.done).length ?? 0,
+);
+const repeats = computed(
+  () =>
+    props.activity.recurrence != null &&
+    props.activity.recurrence !== Recurrence.NONE,
 );
 
 function dueBadge(date: string | undefined): { label: string; tone: DueTone } {
@@ -62,6 +67,7 @@ const due = computed(() => dueBadge(props.activity.dueDate));
         <span v-if="activity.subtasks?.length" class="activity-item__subtasks">
           {{ doneSubtasks }}/{{ activity.subtasks.length }} subtarefas
         </span>
+        <span v-if="repeats" class="activity-item__repeat">🔁</span>
       </div>
     </button>
     <UIBadge :tone="due.tone" size="md" :label="due.label" />

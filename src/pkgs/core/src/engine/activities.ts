@@ -55,6 +55,28 @@ export function expandRecurrence(
   return out.length > 0 ? out : [{ ...activity, seriesId }];
 }
 
+export function nextRecurrence(
+  activity: Activity,
+  nextId: Id,
+): Activity | null {
+  if (
+    !activity.recurrence ||
+    activity.recurrence === Recurrence.NONE ||
+    !activity.dueDate
+  ) {
+    return null;
+  }
+  const interval = activity.recurrence === Recurrence.BIWEEKLY ? 14 : 7;
+  return {
+    ...activity,
+    id: nextId,
+    dueDate: addDays(activity.dueDate, interval),
+    seriesId: activity.seriesId ?? activity.id,
+    status: ActivityStatus.OPEN,
+    subtasks: activity.subtasks?.map((s) => ({ ...s, done: false })),
+  };
+}
+
 export function syncPreparesLinks(
   activities: ReadonlyArray<Activity>,
 ): Activity[] {

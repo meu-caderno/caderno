@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import type { Activity, DayIso, Id, Subject, Subtask } from "@meu-caderno/core";
-import { ActivityKind, ActivityStatus, Root } from "@meu-caderno/core";
+import {
+  ActivityKind,
+  ActivityStatus,
+  Recurrence,
+  Root,
+} from "@meu-caderno/core";
 
 const props = defineProps<{ subjects: Subject[]; activity?: Activity }>();
 const emit = defineEmits<{ done: []; cancel: [] }>();
@@ -21,11 +26,17 @@ const subjectOptions = computed(() => [
   { value: "", label: "— sem disciplina —" },
   ...props.subjects.map((s) => ({ value: s.id as string, label: s.name })),
 ]);
+const recurrenceOptions = [
+  { value: Recurrence.NONE, label: "Não repete" },
+  { value: Recurrence.WEEKLY, label: "Semanal" },
+  { value: Recurrence.BIWEEKLY, label: "Quinzenal" },
+];
 
 const title = ref(props.activity?.title ?? "");
 const subjectId = ref<string>(props.activity?.subjectId ?? "");
 const kind = ref<string>(props.activity?.kind ?? ActivityKind.TASK);
 const due = ref(props.activity?.dueDate ?? "");
+const recurrence = ref<string>(props.activity?.recurrence ?? Recurrence.NONE);
 const subtasks = ref<Subtask[]>([...(props.activity?.subtasks ?? [])]);
 const newSubtask = ref("");
 const saving = ref(false);
@@ -60,6 +71,10 @@ async function save() {
     subjectId: subjectId.value ? (subjectId.value as Id) : undefined,
     kind: kind.value as ActivityKind,
     dueDate: due.value ? (due.value as DayIso) : undefined,
+    recurrence:
+      recurrence.value === Recurrence.NONE
+        ? undefined
+        : (recurrence.value as Recurrence),
     subtasks: subtasks.value.length ? subtasks.value : undefined,
   });
   saving.value = false;
@@ -95,6 +110,9 @@ async function save() {
       </UIField>
       <UIField label="Data de entrega">
         <input v-model="due" class="af__input" type="date" />
+      </UIField>
+      <UIField v-if="due" label="Recorrência">
+        <UISelect v-model="recurrence" :options="recurrenceOptions" />
       </UIField>
 
       <UIField label="Subtarefas">
