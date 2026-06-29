@@ -76,7 +76,7 @@ async function save() {
 }
 .marker__input {
   font-family: inherit;
-  font-size: 15px;
+  font-size: calc(15px * var(--pt-text-scale));
   padding: 10px 12px;
   border-radius: var(--pt-radius-sm);
   border: 1.5px solid var(--pt-border-muted);
@@ -89,7 +89,7 @@ async function save() {
   border-color: var(--pt-ink);
 }
 .marker__hint {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   line-height: 1.4;
   color: var(--pt-ink-muted);
   margin: -4px 0 0;

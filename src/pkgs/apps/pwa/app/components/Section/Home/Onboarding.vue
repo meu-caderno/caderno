@@ -118,7 +118,7 @@ async function create() {
   background: none;
   border: none;
   font-family: inherit;
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   font-weight: 600;
   color: var(--pt-ink-muted);
   cursor: pointer;
@@ -128,16 +128,16 @@ async function create() {
   text-align: center;
 }
 .onb__mark {
-  font-size: 44px;
+  font-size: calc(44px * var(--pt-text-scale));
   line-height: 1;
 }
 .onb__title {
-  font-size: 30px;
+  font-size: calc(30px * var(--pt-text-scale));
   font-weight: 700;
   margin: 12px 0 6px;
 }
 .onb__sub {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   line-height: 1.5;
   color: var(--pt-ink-muted);
   margin: 0;
@@ -148,12 +148,12 @@ async function create() {
   gap: 14px;
 }
 .onb__label {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   font-weight: 600;
 }
 .onb__input {
   font-family: inherit;
-  font-size: 16px;
+  font-size: calc(16px * var(--pt-text-scale));
   padding: 12px 14px;
   border-radius: var(--pt-radius-sm);
   border: 1.5px solid var(--pt-border-muted);
@@ -175,7 +175,7 @@ async function create() {
   align-items: center;
   gap: 8px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   font-weight: 600;
   padding: 10px 12px;
   border-radius: var(--pt-radius-sm);
@@ -190,6 +190,6 @@ async function create() {
   background: var(--pt-paper);
 }
 .onb__goal-icon {
-  font-size: 16px;
+  font-size: calc(16px * var(--pt-text-scale));
 }
 </style>

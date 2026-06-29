@@ -53,7 +53,7 @@ const displayLabel = computed(() => {
   align-items: center;
   gap: 4px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   font-weight: 700;
   cursor: pointer;
   white-space: nowrap;

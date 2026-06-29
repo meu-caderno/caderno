@@ -134,13 +134,13 @@ const ruleLabel = computed(
   flex: 1;
 }
 .subject-detail__rest-n {
-  font-size: 38px;
+  font-size: calc(38px * var(--pt-text-scale));
   font-weight: 800;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 .subject-detail__rest-l {
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   margin-top: 4px;
 }
@@ -158,15 +158,15 @@ const ruleLabel = computed(
 }
 .subject-detail__count b {
   display: block;
-  font-size: 20px;
+  font-size: calc(20px * var(--pt-text-scale));
   font-variant-numeric: tabular-nums;
 }
 .subject-detail__count span {
-  font-size: 11px;
+  font-size: calc(11px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
 .subject-detail__rule {
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   color: var(--pt-ink-soft);
   padding: 10px 12px;
   border-radius: var(--pt-radius-sm);
@@ -178,7 +178,7 @@ const ruleLabel = computed(
   justify-content: space-between;
   width: 100%;
   font-family: inherit;
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   font-weight: 600;
   padding: 12px 14px;
   border-radius: var(--pt-radius-sm);
@@ -209,7 +209,7 @@ const ruleLabel = computed(
   justify-content: space-between;
   padding: 8px 2px;
   border-bottom: 1.5px dashed var(--pt-border-faint);
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
 }
 .subject-detail__row-status {
   font-weight: 600;

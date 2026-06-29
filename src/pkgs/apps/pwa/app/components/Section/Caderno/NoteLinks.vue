@@ -99,10 +99,10 @@ async function removeLink(id: Id) {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
 }
 .note-links__kind {
-  font-size: 11px;
+  font-size: calc(11px * var(--pt-text-scale));
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.03em;

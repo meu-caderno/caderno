@@ -82,13 +82,13 @@ const kids = computed(() => children(props.nodes, props.node.id));
   gap: 6px;
 }
 .note-detail__body {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   line-height: 1.6;
   white-space: pre-wrap;
   margin: 0;
 }
 .note-detail__empty {
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   margin: 0;
 }
@@ -103,7 +103,7 @@ const kids = computed(() => children(props.nodes, props.node.id));
   justify-content: space-between;
   width: 100%;
   font-family: inherit;
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   font-weight: 600;
   padding: 10px 12px;
   border-radius: var(--pt-radius-sm);

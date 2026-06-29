@@ -35,7 +35,7 @@ defineProps<{ options: Option[]; multiple?: boolean }>();
 }
 .uitg__item {
   font-family: inherit;
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   font-weight: 600;
   padding: 8px 12px;
   border-radius: var(--pt-radius-sm);

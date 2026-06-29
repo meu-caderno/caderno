@@ -49,7 +49,7 @@ const verdict = computed(() =>
   flex-wrap: wrap;
 }
 .simulator__q {
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   color: var(--pt-ink-soft);
 }
 .simulator__result {
@@ -58,13 +58,13 @@ const verdict = computed(() =>
   gap: 8px;
 }
 .simulator__rest {
-  font-size: 26px;
+  font-size: calc(26px * var(--pt-text-scale));
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 .simulator__label {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   font-weight: 600;
 }
 </style>

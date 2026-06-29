@@ -56,11 +56,11 @@ defineProps<{ label?: string; hint?: string }>();
   flex-direction: column;
 }
 .uisw__label {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   font-weight: 600;
 }
 .uisw__hint {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
 </style>

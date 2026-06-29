@@ -91,12 +91,12 @@ async function confirmDelete() {
   justify-content: space-between;
 }
 .acervo__title {
-  font-size: 26px;
+  font-size: calc(26px * var(--pt-text-scale));
   font-weight: 800;
   margin: 0;
 }
 .acervo__sub {
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   margin: 4px 0 0;
 }

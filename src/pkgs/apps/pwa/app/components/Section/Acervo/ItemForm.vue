@@ -116,7 +116,7 @@ async function save() {
 }
 .item-form__input {
   font-family: inherit;
-  font-size: 15px;
+  font-size: calc(15px * var(--pt-text-scale));
   padding: 10px 12px;
   border-radius: var(--pt-radius-sm);
   border: 1.5px solid var(--pt-border-muted);
@@ -136,7 +136,7 @@ async function save() {
   gap: 4px;
 }
 .item-form__star {
-  font-size: 24px;
+  font-size: calc(24px * var(--pt-text-scale));
   line-height: 1;
   background: none;
   border: none;

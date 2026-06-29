@@ -75,21 +75,21 @@ function timeLabel(blocks: { start: string; end: string }[]): string {
 .day-row__weekday {
   font-weight: 700;
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   letter-spacing: 0.04em;
 }
 .day-row__date {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
 .day-row__today {
   margin-left: auto;
-  font-size: 11px;
+  font-size: calc(11px * var(--pt-text-scale));
   font-weight: 700;
   color: var(--pt-ink);
 }
 .day-row__empty {
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
 .day-row__items {
@@ -101,7 +101,7 @@ function timeLabel(blocks: { start: string; end: string }[]): string {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
 }
 .day-row__dot {
   width: 9px;
@@ -110,7 +110,7 @@ function timeLabel(blocks: { start: string; end: string }[]): string {
   flex-shrink: 0;
 }
 .day-row__kind {
-  font-size: 15px;
+  font-size: calc(15px * var(--pt-text-scale));
   line-height: 1;
   flex-shrink: 0;
 }
@@ -120,7 +120,7 @@ function timeLabel(blocks: { start: string; end: string }[]): string {
   min-width: 0;
 }
 .day-row__time {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   font-variant-numeric: tabular-nums;
 }

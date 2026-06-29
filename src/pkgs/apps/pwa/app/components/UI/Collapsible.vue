@@ -31,7 +31,7 @@ defineProps<{ label?: string }>();
   gap: 8px;
   width: 100%;
   font-family: inherit;
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   font-weight: 600;
   padding: 0;
   background: none;

@@ -29,7 +29,7 @@ defineEmits<(e: "click", ev: MouseEvent) => void>();
   align-items: center;
   gap: 5px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   font-weight: 600;
   line-height: 1.2;
   padding: 7px 13px;
@@ -47,7 +47,7 @@ defineEmits<(e: "click", ev: MouseEvent) => void>();
   border-color: var(--pt-ink);
 }
 .pt-chip__icon {
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   line-height: 1;
 }
 </style>

@@ -90,7 +90,7 @@ async function discard(item: Activity) {
   background: var(--pt-card);
 }
 .inbox__title {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   font-weight: 600;
 }
 .inbox__actions {
@@ -105,7 +105,7 @@ async function discard(item: Activity) {
 }
 .inbox__discard {
   font-family: inherit;
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   font-weight: 600;
   color: var(--pt-ink-muted);
   background: none;

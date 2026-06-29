@@ -64,19 +64,19 @@ const canContinue = computed(() => name.value.trim().length > 0);
   gap: 14px;
 }
 .context-step__title {
-  font-size: 26px;
+  font-size: calc(26px * var(--pt-text-scale));
   font-weight: 700;
   margin: 0;
 }
 .context-step__sub {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   line-height: 1.5;
   color: var(--pt-ink-muted);
   margin: -6px 0 4px;
 }
 .context-step__input {
   font-family: inherit;
-  font-size: 16px;
+  font-size: calc(16px * var(--pt-text-scale));
   padding: 11px 13px;
   border-radius: var(--pt-radius-sm);
   border: 1.5px solid var(--pt-border-muted);

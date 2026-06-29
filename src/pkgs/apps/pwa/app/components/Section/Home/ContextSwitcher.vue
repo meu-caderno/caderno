@@ -58,11 +58,11 @@ function onSelect(value: string) {
   font-family: inherit;
 }
 .cs__icon {
-  font-size: 26px;
+  font-size: calc(26px * var(--pt-text-scale));
   line-height: 1;
 }
 .cs__name {
-  font-size: 26px;
+  font-size: calc(26px * var(--pt-text-scale));
   font-weight: 700;
   line-height: 1.05;
 }

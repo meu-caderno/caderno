@@ -59,12 +59,12 @@ async function reset() {
   gap: 12px;
 }
 .general-card__title {
-  font-size: 19px;
+  font-size: calc(19px * var(--pt-text-scale));
   font-weight: 700;
   margin: 0;
 }
 .general-card__sub {
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   margin: 4px 0 0;
 }
@@ -88,7 +88,7 @@ async function reset() {
   cursor: pointer;
 }
 .general-card__icon {
-  font-size: 20px;
+  font-size: calc(20px * var(--pt-text-scale));
   line-height: 1;
   flex-shrink: 0;
 }
@@ -99,11 +99,11 @@ async function reset() {
   min-width: 0;
 }
 .general-card__text b {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   font-weight: 600;
 }
 .general-card__text small {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
 </style>

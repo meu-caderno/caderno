@@ -31,7 +31,7 @@ defineProps<{ text: string }>();
 .uitt {
   z-index: 60;
   max-width: 240px;
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   font-weight: 500;
   line-height: 1.4;
   color: var(--pt-paper);

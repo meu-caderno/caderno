@@ -41,10 +41,10 @@ const isActive = computed(() =>
   gap: 3px;
   flex: 1;
   padding: 7px 4px;
-  font-size: 11px;
+  font-size: calc(11px * var(--pt-text-scale));
 }
 .nav-item--tab .nav-item__icon {
-  font-size: 21px;
+  font-size: calc(21px * var(--pt-text-scale));
 }
 .nav-item--tab.nav-item--active {
   color: var(--pt-accent);
@@ -55,10 +55,10 @@ const isActive = computed(() =>
   gap: 11px;
   padding: 10px 12px;
   border-radius: var(--pt-radius-sm);
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
 }
 .nav-item--rail .nav-item__icon {
-  font-size: 19px;
+  font-size: calc(19px * var(--pt-text-scale));
 }
 .nav-item--rail:hover {
   background: var(--pt-card);

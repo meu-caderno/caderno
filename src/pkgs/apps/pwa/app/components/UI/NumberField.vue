@@ -55,7 +55,7 @@ defineProps<{ min?: number; max?: number; step?: number }>();
   width: 56px;
   text-align: center;
   font-family: inherit;
-  font-size: 15px;
+  font-size: calc(15px * var(--pt-text-scale));
   border: none;
   background: none;
   color: var(--pt-ink);

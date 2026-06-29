@@ -45,6 +45,6 @@ defineProps<{ label?: string }>();
   display: inline-flex;
 }
 .uicb__label {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
 }
 </style>

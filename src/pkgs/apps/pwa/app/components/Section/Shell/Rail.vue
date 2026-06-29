@@ -37,11 +37,11 @@ const items = useNav();
   padding: 4px 12px 14px;
 }
 .rail__mark {
-  font-size: 24px;
+  font-size: calc(24px * var(--pt-text-scale));
   line-height: 1;
 }
 .rail__name {
-  font-size: 22px;
+  font-size: calc(22px * var(--pt-text-scale));
   font-weight: 700;
 }
 .rail__nav {
@@ -52,7 +52,7 @@ const items = useNav();
 .rail__foot {
   margin-top: auto;
   padding: 12px;
-  font-size: 11px;
+  font-size: calc(11px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
 </style>

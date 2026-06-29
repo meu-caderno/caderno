@@ -78,14 +78,14 @@ const emit = defineEmits<{ mark: [status: AttendanceStatus] }>();
   min-width: 0;
 }
 .roll-item__name {
-  font-size: 16px;
+  font-size: calc(16px * var(--pt-text-scale));
   font-weight: 600;
 }
 .roll-item__time {
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   margin-top: 2px;
 }
@@ -97,7 +97,7 @@ const emit = defineEmits<{ mark: [status: AttendanceStatus] }>();
 }
 .roll-item__mini {
   font-family: inherit;
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   font-weight: 600;
   padding: 8px 11px;
   border-radius: var(--pt-radius-sm);
@@ -127,7 +127,7 @@ const emit = defineEmits<{ mark: [status: AttendanceStatus] }>();
   background: none;
   border: none;
   font-family: inherit;
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   font-weight: 600;
   color: var(--pt-info);
   cursor: pointer;

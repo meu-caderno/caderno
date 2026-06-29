@@ -38,7 +38,7 @@ defineEmits<(e: "click", ev: MouseEvent) => void>();
   justify-content: center;
   gap: 7px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: calc(15px * var(--pt-text-scale));
   font-weight: 600;
   line-height: 1.2;
   cursor: pointer;

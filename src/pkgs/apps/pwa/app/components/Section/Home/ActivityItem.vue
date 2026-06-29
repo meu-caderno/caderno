@@ -99,7 +99,7 @@ const due = computed(() => dueBadge(props.activity.dueDate));
   color: var(--pt-ok);
 }
 .activity-item__kind {
-  font-size: 18px;
+  font-size: calc(18px * var(--pt-text-scale));
   line-height: 1;
   flex-shrink: 0;
 }
@@ -115,7 +115,7 @@ const due = computed(() => dueBadge(props.activity.dueDate));
   cursor: pointer;
 }
 .activity-item__title {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   font-weight: 600;
 }
 .activity-item__sub {
@@ -123,7 +123,7 @@ const due = computed(() => dueBadge(props.activity.dueDate));
   align-items: center;
   gap: 7px;
   margin-top: 2px;
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
 .activity-item__dot {

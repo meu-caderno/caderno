@@ -62,7 +62,7 @@ const emit = defineEmits<{ select: [value: string] }>();
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   font-weight: 600;
   padding: 9px 10px;
   border-radius: var(--pt-radius-sm);

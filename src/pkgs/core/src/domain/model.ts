@@ -295,6 +295,8 @@ export interface Preferences {
   id: Id;
   activeContextId?: Id;
   homeProfile?: string;
+  textScale?: number;
+  headingFont?: string;
 }
 
 export enum OpKind {

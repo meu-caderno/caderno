@@ -78,7 +78,7 @@ const emit = defineEmits<{
   min-width: 0;
 }
 .context-header__meta {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   margin-top: 3px;
 }
@@ -91,14 +91,14 @@ const emit = defineEmits<{
   border-top: 1.5px dashed var(--pt-border-faint);
 }
 .context-header__period-line {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   font-weight: 600;
 }
 .context-header__period-line b {
   font-variant-numeric: tabular-nums;
 }
 .context-header__period-sub {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   margin-top: 2px;
 }

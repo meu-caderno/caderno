@@ -182,7 +182,7 @@ async function startDemo() {
   background: none;
   border: none;
   font-family: inherit;
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   font-weight: 600;
   color: var(--pt-ink-muted);
   cursor: pointer;

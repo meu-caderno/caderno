@@ -60,11 +60,11 @@ function restantesLabel(stat: SubjectStats): string {
   gap: 8px;
 }
 .risk-alert__icon {
-  font-size: 18px;
+  font-size: calc(18px * var(--pt-text-scale));
   line-height: 1;
 }
 .risk-alert__title {
-  font-size: 17px;
+  font-size: calc(17px * var(--pt-text-scale));
   font-weight: 700;
   margin: 0;
 }
@@ -75,7 +75,7 @@ function restantesLabel(stat: SubjectStats): string {
   width: 100%;
   padding: 8px 4px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   text-align: left;
   background: none;
   border: none;
@@ -94,7 +94,7 @@ function restantesLabel(stat: SubjectStats): string {
   font-weight: 600;
 }
 .risk-alert__rest {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }

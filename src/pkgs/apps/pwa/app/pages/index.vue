@@ -232,7 +232,7 @@ const period = computed(() => {
   padding: 80px 16px;
   text-align: center;
   color: var(--pt-ink-muted);
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
 }
 .home {
   max-width: 720px;

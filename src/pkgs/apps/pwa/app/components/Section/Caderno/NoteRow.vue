@@ -81,7 +81,7 @@ const glyph = computed(
   flex: 1;
   min-width: 0;
   font-family: inherit;
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   text-align: left;
   padding: 8px 10px;
   border-radius: var(--pt-radius-sm);
@@ -95,7 +95,7 @@ const glyph = computed(
   border-color: var(--pt-border-faint);
 }
 .note-row__glyph {
-  font-size: 15px;
+  font-size: calc(15px * var(--pt-text-scale));
   line-height: 1;
   flex-shrink: 0;
 }
@@ -108,7 +108,7 @@ const glyph = computed(
   white-space: nowrap;
 }
 .note-row__count {
-  font-size: 11px;
+  font-size: calc(11px * var(--pt-text-scale));
   font-weight: 700;
   color: var(--pt-ink-muted);
   background: var(--pt-card);

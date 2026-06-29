@@ -52,7 +52,7 @@ const stars = computed(() => props.item.stars ?? 0);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: calc(24px * var(--pt-text-scale));
   border-radius: var(--pt-radius-sm);
   background: var(--pt-paper-2);
 }
@@ -61,11 +61,11 @@ const stars = computed(() => props.item.stars ?? 0);
   min-width: 0;
 }
 .item-card__title {
-  font-size: 15px;
+  font-size: calc(15px * var(--pt-text-scale));
   font-weight: 700;
 }
 .item-card__synopsis {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   margin-top: 2px;
   overflow: hidden;
@@ -78,7 +78,7 @@ const stars = computed(() => props.item.stars ?? 0);
   align-items: center;
   gap: 10px;
   margin-top: 6px;
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
 }
 .item-card__stars {
   color: var(--pt-warn);

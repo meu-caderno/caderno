@@ -37,12 +37,12 @@ const profileOptions = MOODS.map((mood) => ({
   gap: 14px;
 }
 .profile-step__title {
-  font-size: 26px;
+  font-size: calc(26px * var(--pt-text-scale));
   font-weight: 700;
   margin: 0;
 }
 .profile-step__sub {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   margin: -6px 0 4px;
 }

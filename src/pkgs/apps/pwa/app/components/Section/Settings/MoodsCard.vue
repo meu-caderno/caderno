@@ -41,12 +41,12 @@ function choose(key: string) {
   gap: 14px;
 }
 .moods-card__title {
-  font-size: 19px;
+  font-size: calc(19px * var(--pt-text-scale));
   font-weight: 700;
   margin: 0;
 }
 .moods-card__sub {
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   margin: 4px 0 0;
 }
@@ -73,15 +73,15 @@ function choose(key: string) {
   border-color: var(--pt-ink);
 }
 .moods-card__emoji {
-  font-size: 22px;
+  font-size: calc(22px * var(--pt-text-scale));
   line-height: 1;
 }
 .moods-card__label {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   font-weight: 700;
 }
 .moods-card__blurb {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
 .moods-card__accent {

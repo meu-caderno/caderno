@@ -72,12 +72,12 @@ function onOpenChange(value: boolean) {
   box-shadow: 0 18px 50px rgba(44, 42, 39, 0.28);
 }
 .uiad__title {
-  font-size: 21px;
+  font-size: calc(21px * var(--pt-text-scale));
   font-weight: 700;
   margin: 0 0 6px;
 }
 .uiad__desc {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   line-height: 1.5;
   color: var(--pt-ink-muted);
   margin: 0 0 18px;
@@ -89,7 +89,7 @@ function onOpenChange(value: boolean) {
 }
 .uiad__btn {
   font-family: inherit;
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   font-weight: 600;
   padding: 9px 16px;
   border-radius: var(--pt-radius-sm);

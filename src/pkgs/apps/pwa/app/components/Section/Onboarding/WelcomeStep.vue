@@ -34,16 +34,16 @@ const emit = defineEmits<{ demo: []; start: []; skip: [] }>();
   gap: 8px;
 }
 .welcome-step__mark {
-  font-size: 48px;
+  font-size: calc(48px * var(--pt-text-scale));
   line-height: 1;
 }
 .welcome-step__title {
-  font-size: 32px;
+  font-size: calc(32px * var(--pt-text-scale));
   font-weight: 700;
   margin: 8px 0 0;
 }
 .welcome-step__sub {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   line-height: 1.5;
   color: var(--pt-ink-muted);
   margin: 0;
@@ -60,7 +60,7 @@ const emit = defineEmits<{ demo: []; start: []; skip: [] }>();
   background: none;
   border: none;
   font-family: inherit;
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   font-weight: 600;
   color: var(--pt-ink-muted);
   cursor: pointer;

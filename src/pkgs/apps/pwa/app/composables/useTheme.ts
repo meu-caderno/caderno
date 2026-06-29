@@ -1,8 +1,40 @@
-import type { Id } from "@meu-caderno/core";
+import type { Id, Preferences } from "@meu-caderno/core";
 import { Background, Density } from "@meu-caderno/core";
 
 const PREF_ID = "default" as Id;
 const DEFAULT_MOOD = "calmo";
+const DEFAULT_TEXT_SCALE = 1;
+const DEFAULT_HEADING = "hand";
+
+export interface TextSizeOption {
+  value: number;
+  label: string;
+}
+
+export const TEXT_SIZES: TextSizeOption[] = [
+  { value: 0.92, label: "Pequeno" },
+  { value: 1, label: "Normal" },
+  { value: 1.1, label: "Grande" },
+];
+
+export interface HeadingFontOption {
+  key: string;
+  label: string;
+  family: string;
+}
+
+export const HEADING_FONTS: HeadingFontOption[] = [
+  { key: "hand", label: "Manuscrita", family: "var(--pt-font-hand)" },
+  { key: "serif", label: "Serifada", family: "var(--pt-font-read)" },
+  { key: "grotesk", label: "Grotesca", family: "var(--pt-font-ui)" },
+];
+
+function resolveHeadingFamily(key?: string): string {
+  return (
+    HEADING_FONTS.find((font) => font.key === key)?.family ??
+    "var(--pt-font-hand)"
+  );
+}
 
 export interface MoodPreset {
   key: string;
@@ -102,7 +134,7 @@ export function resolveMood(key?: string): MoodPreset {
   );
 }
 
-function applyTheme(mood: MoodPreset) {
+function applyTheme(mood: MoodPreset, textScale: number, headingKey: string) {
   if (!import.meta.client) return;
   const tokens = BACKGROUND_TOKENS[mood.background];
   const root = document.documentElement;
@@ -111,34 +143,79 @@ function applyTheme(mood: MoodPreset) {
   root.style.setProperty("--pt-card", tokens.card);
   root.style.setProperty("--pt-linen", tokens.linen);
   root.style.setProperty("--pt-accent", mood.accent);
+  root.style.setProperty("--pt-text-scale", String(textScale));
+  root.style.setProperty("--pt-heading-font", resolveHeadingFamily(headingKey));
   root.dataset.density = DENSITY_ATTR[mood.density];
 }
 
 export function useTheme() {
   const { config } = useCadernoService();
   const moodKey = useState<string>("caderno:theme:mood", () => DEFAULT_MOOD);
+  const textScale = useState<number>(
+    "caderno:theme:text",
+    () => DEFAULT_TEXT_SCALE,
+  );
+  const headingFont = useState<string>(
+    "caderno:theme:heading",
+    () => DEFAULT_HEADING,
+  );
   const hydrated = useState<boolean>("caderno:theme:hydrated", () => false);
 
   const activeMood = computed(() => resolveMood(moodKey.value));
 
-  watchEffect(() => applyTheme(activeMood.value));
+  watchEffect(() =>
+    applyTheme(activeMood.value, textScale.value, headingFont.value),
+  );
+
+  async function persist(patch: Partial<Preferences>) {
+    const prefs = await config.preferences.get(PREF_ID);
+    await config.preferences.put({ ...prefs, ...patch, id: PREF_ID });
+  }
 
   async function hydrate() {
     if (hydrated.value) return;
     const prefs = await config.preferences.get(PREF_ID);
     if (prefs?.homeProfile) moodKey.value = prefs.homeProfile;
+    if (prefs?.textScale) textScale.value = prefs.textScale;
+    if (prefs?.headingFont) headingFont.value = prefs.headingFont;
     hydrated.value = true;
   }
 
   async function setMood(key: string) {
     moodKey.value = key;
-    const prefs = await config.preferences.get(PREF_ID);
-    await config.preferences.put({ ...prefs, id: PREF_ID, homeProfile: key });
+    await persist({ homeProfile: key });
+  }
+
+  async function setTextScale(value: number) {
+    textScale.value = value;
+    await persist({ textScale: value });
+  }
+
+  async function setHeadingFont(key: string) {
+    headingFont.value = key;
+    await persist({ headingFont: key });
   }
 
   async function restoreDefaults() {
-    await setMood(DEFAULT_MOOD);
+    moodKey.value = DEFAULT_MOOD;
+    textScale.value = DEFAULT_TEXT_SCALE;
+    headingFont.value = DEFAULT_HEADING;
+    await persist({
+      homeProfile: DEFAULT_MOOD,
+      textScale: DEFAULT_TEXT_SCALE,
+      headingFont: DEFAULT_HEADING,
+    });
   }
 
-  return { moodKey, activeMood, hydrate, setMood, restoreDefaults };
+  return {
+    moodKey,
+    activeMood,
+    textScale,
+    headingFont,
+    hydrate,
+    setMood,
+    setTextScale,
+    setHeadingFont,
+    restoreDefaults,
+  };
 }

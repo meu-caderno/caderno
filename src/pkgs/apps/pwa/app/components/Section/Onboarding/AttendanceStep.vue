@@ -48,12 +48,12 @@ const stanceOptions = [
   gap: 14px;
 }
 .attendance-step__title {
-  font-size: 26px;
+  font-size: calc(26px * var(--pt-text-scale));
   font-weight: 700;
   margin: 0;
 }
 .attendance-step__sub {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   margin: -6px 0 4px;
 }
@@ -63,7 +63,7 @@ const stanceOptions = [
   gap: 8px;
 }
 .attendance-step__pct {
-  font-size: 15px;
+  font-size: calc(15px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
 </style>

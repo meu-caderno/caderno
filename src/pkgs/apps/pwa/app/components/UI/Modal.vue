@@ -82,12 +82,12 @@ function onOpenChange(value: boolean) {
   border-bottom: 1.5px dashed var(--pt-border-faint);
 }
 .modal__title {
-  font-size: 22px;
+  font-size: calc(22px * var(--pt-text-scale));
   font-weight: 700;
   margin: 0;
 }
 .modal__sub {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   margin: 3px 0 0;
 }

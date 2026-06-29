@@ -62,7 +62,7 @@ async function save() {
 }
 .capture__input {
   font-family: inherit;
-  font-size: 16px;
+  font-size: calc(16px * var(--pt-text-scale));
   line-height: 1.5;
   padding: 12px 14px;
   border-radius: var(--pt-radius-sm);
@@ -77,7 +77,7 @@ async function save() {
   border-color: var(--pt-ink);
 }
 .capture__hint {
-  font-size: 11px;
+  font-size: calc(11px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
 .capture__actions {

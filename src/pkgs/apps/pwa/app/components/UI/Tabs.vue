@@ -37,7 +37,7 @@ defineProps<{ tabs: Tab[] }>();
 }
 .uitabs__tab {
   font-family: inherit;
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   font-weight: 600;
   padding: 7px 13px;
   border-radius: var(--pt-radius-sm);

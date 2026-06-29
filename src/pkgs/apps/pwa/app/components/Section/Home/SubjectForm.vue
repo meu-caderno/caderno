@@ -193,13 +193,13 @@ async function save() {
   gap: 7px;
 }
 .sf__label {
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   font-weight: 600;
   margin-top: 8px;
 }
 .sf__input {
   font-family: inherit;
-  font-size: 15px;
+  font-size: calc(15px * var(--pt-text-scale));
   padding: 10px 12px;
   border-radius: var(--pt-radius-sm);
   border: 1.5px solid var(--pt-border-muted);
@@ -212,7 +212,7 @@ async function save() {
   border-color: var(--pt-ink);
 }
 .sf__hint {
-  font-size: 11px;
+  font-size: calc(11px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
 .sf__colors {
@@ -237,7 +237,7 @@ async function save() {
 }
 .sf__day {
   font-family: inherit;
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   font-weight: 600;
   padding: 8px 10px;
   border-radius: var(--pt-radius-sm);
@@ -272,7 +272,7 @@ async function save() {
   width: 72px;
 }
 .sf__pct {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
 .sf__actions {

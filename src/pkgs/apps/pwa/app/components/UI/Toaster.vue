@@ -82,18 +82,18 @@ function onOpenChange(id: number, open: boolean) {
   min-width: 0;
 }
 .uitoast__title {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   font-weight: 600;
 }
 .uitoast__desc {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   opacity: 0.8;
   margin-top: 2px;
 }
 .uitoast__action {
   flex-shrink: 0;
   font-family: inherit;
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   font-weight: 700;
   padding: 6px 10px;
   border-radius: var(--pt-radius-sm);

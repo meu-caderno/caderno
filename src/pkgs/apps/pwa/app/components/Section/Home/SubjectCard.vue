@@ -152,7 +152,7 @@ const budgetPct = computed(() => {
   flex-wrap: wrap;
 }
 .sc-name {
-  font-size: 17px;
+  font-size: calc(17px * var(--pt-text-scale));
   font-weight: 600;
   line-height: 1.25;
   font-family: inherit;
@@ -164,7 +164,7 @@ const budgetPct = computed(() => {
   text-align: left;
 }
 .sc-meta {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   margin-top: 2px;
 }
@@ -180,13 +180,13 @@ const budgetPct = computed(() => {
   min-width: 64px;
 }
 .sc-rest {
-  font-size: 34px;
+  font-size: calc(34px * var(--pt-text-scale));
   font-weight: 800;
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
 .sc-rest-cap {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   margin-top: 4px;
 }
@@ -196,7 +196,7 @@ const budgetPct = computed(() => {
   opacity: 0.3;
 }
 .sc-floor {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
 
@@ -211,11 +211,11 @@ const budgetPct = computed(() => {
   gap: 8px;
 }
 .sc-bar-title {
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   font-weight: 600;
 }
 .sc-bar-sub {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
 .sc-bar-track {
@@ -242,12 +242,12 @@ const budgetPct = computed(() => {
   border: 1.5px solid;
 }
 .sc-count-n {
-  font-size: 22px;
+  font-size: calc(22px * var(--pt-text-scale));
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
 .sc-count-l {
-  font-size: 11px;
+  font-size: calc(11px * var(--pt-text-scale));
   font-weight: 600;
 }
 .sc-count--ok {
@@ -295,17 +295,17 @@ const budgetPct = computed(() => {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   font-weight: 600;
   color: var(--pt-info);
 }
 .sc-media-l {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   font-weight: 600;
   color: var(--pt-ink-muted);
 }
 .sc-media-v {
-  font-size: 18px;
+  font-size: calc(18px * var(--pt-text-scale));
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }

@@ -31,7 +31,7 @@ defineProps<{ src?: string; fallback: string; size?: number }>();
   object-fit: cover;
 }
 .uiav__fb {
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   font-weight: 700;
   color: var(--pt-ink-soft);
   text-transform: uppercase;

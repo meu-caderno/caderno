@@ -138,12 +138,12 @@ function onGrade(id: Id, event: Event) {
   gap: 10px;
 }
 .as__avg-l {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   font-weight: 600;
   color: var(--pt-ink-muted);
 }
 .as__avg-v {
-  font-size: 24px;
+  font-size: calc(24px * var(--pt-text-scale));
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   margin-left: 8px;
@@ -167,11 +167,11 @@ function onGrade(id: Id, event: Event) {
   min-width: 0;
 }
 .as__item-name {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   font-weight: 600;
 }
 .as__item-weight {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   margin-left: 8px;
 }
@@ -179,7 +179,7 @@ function onGrade(id: Id, event: Event) {
   width: 64px;
   text-align: center;
   font-family: inherit;
-  font-size: 15px;
+  font-size: calc(15px * var(--pt-text-scale));
   padding: 7px;
   border-radius: var(--pt-radius-sm);
   border: 1.5px solid var(--pt-border-muted);
@@ -192,7 +192,7 @@ function onGrade(id: Id, event: Event) {
 }
 .as__input {
   font-family: inherit;
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   padding: 9px 11px;
   border-radius: var(--pt-radius-sm);
   border: 1.5px solid var(--pt-border-muted);
@@ -211,7 +211,7 @@ function onGrade(id: Id, event: Event) {
   border-color: var(--pt-ink);
 }
 .as__hint {
-  font-size: 11px;
+  font-size: calc(11px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   line-height: 1.4;
 }

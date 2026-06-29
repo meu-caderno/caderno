@@ -17,11 +17,11 @@ defineProps<{ label?: string; hint?: string; for?: string }>();
   gap: 5px;
 }
 .uif__label {
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   font-weight: 600;
 }
 .uif__hint {
-  font-size: 12px;
+  font-size: calc(12px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
 </style>

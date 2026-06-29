@@ -73,12 +73,12 @@ async function onFileChange(event: Event) {
   gap: 14px;
 }
 .backup-card__title {
-  font-size: 19px;
+  font-size: calc(19px * var(--pt-text-scale));
   font-weight: 700;
   margin: 0;
 }
 .backup-card__sub {
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
   margin: 4px 0 0;
 }

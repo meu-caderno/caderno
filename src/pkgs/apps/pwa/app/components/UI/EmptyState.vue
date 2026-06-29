@@ -38,18 +38,18 @@ defineEmits<(e: "action", ev: MouseEvent) => void>();
   box-shadow: var(--pt-shadow);
 }
 .pt-empty__glyph {
-  font-size: 34px;
+  font-size: calc(34px * var(--pt-text-scale));
   margin-bottom: 8px;
   line-height: 1;
 }
 .pt-empty__title {
-  font-size: 20px;
+  font-size: calc(20px * var(--pt-text-scale));
   font-weight: 700;
   margin-bottom: 4px;
   color: var(--pt-ink);
 }
 .pt-empty__sub {
-  font-size: 13px;
+  font-size: calc(13px * var(--pt-text-scale));
   color: var(--pt-ink-faint);
   margin-bottom: 14px;
   line-height: 1.45;
@@ -63,7 +63,7 @@ defineEmits<(e: "action", ev: MouseEvent) => void>();
   border-radius: 11px;
   padding: 10px 18px;
   font-family: inherit;
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   font-weight: 600;
   cursor: pointer;
 }

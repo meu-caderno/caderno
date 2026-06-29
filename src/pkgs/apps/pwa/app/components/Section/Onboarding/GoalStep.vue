@@ -36,12 +36,12 @@ const options = [
 
 <style scoped>
 .goal-step__title {
-  font-size: 26px;
+  font-size: calc(26px * var(--pt-text-scale));
   font-weight: 700;
   margin: 0 0 6px;
 }
 .goal-step__sub {
-  font-size: 14px;
+  font-size: calc(14px * var(--pt-text-scale));
   line-height: 1.5;
   color: var(--pt-ink-muted);
   margin: 0 0 18px;

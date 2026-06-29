@@ -56,7 +56,7 @@ defineProps<{ items: Item[]; multiple?: boolean }>();
   gap: 8px;
   width: 100%;
   font-family: inherit;
-  font-size: 15px;
+  font-size: calc(15px * var(--pt-text-scale));
   font-weight: 600;
   padding: 14px 2px;
   background: none;

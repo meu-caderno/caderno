@@ -171,7 +171,7 @@ async function archive() {
 }
 .context-detail__input {
   font-family: inherit;
-  font-size: 15px;
+  font-size: calc(15px * var(--pt-text-scale));
   padding: 10px 12px;
   border-radius: var(--pt-radius-sm);
   border: 1.5px solid var(--pt-border-muted);
@@ -193,7 +193,7 @@ async function archive() {
   gap: 8px;
 }
 .context-detail__pct {
-  font-size: 15px;
+  font-size: calc(15px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
 .context-detail__vocab {
