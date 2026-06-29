@@ -19,12 +19,12 @@ const props = withDefaults(
 );
 
 const clamped = computed(() => {
-  const v = Number(props.value);
-  return Number.isNaN(v) ? 0 : Math.max(0, Math.min(100, v));
+  const numeric = Number(props.value);
+  return Number.isNaN(numeric) ? 0 : Math.max(0, Math.min(100, numeric));
 });
-const c = computed(() => props.size / 2);
-const r = computed(() => (props.size - props.stroke) / 2);
-const circ = computed(() => 2 * Math.PI * r.value);
+const centerCoord = computed(() => props.size / 2);
+const radius = computed(() => (props.size - props.stroke) / 2);
+const circ = computed(() => 2 * Math.PI * radius.value);
 const offset = computed(() => circ.value * (1 - clamped.value / 100));
 const center = computed(
   () => props.centerText ?? `${Math.round(clamped.value)}%`,
@@ -45,17 +45,17 @@ const capSize = computed(() => Math.max(8, Math.round(props.size * 0.11)));
       class="pt-ring__svg"
     >
       <circle
-        :cx="c"
-        :cy="c"
-        :r="r"
+        :cx="centerCoord"
+        :cy="centerCoord"
+        :r="radius"
         fill="none"
         :stroke="track"
         :stroke-width="stroke"
       />
       <circle
-        :cx="c"
-        :cy="c"
-        :r="r"
+        :cx="centerCoord"
+        :cy="centerCoord"
+        :r="radius"
         fill="none"
         :stroke="color"
         :stroke-width="stroke"

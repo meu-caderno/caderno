@@ -52,12 +52,12 @@ function encryptedOpLog(blob: BlobLog, cipher: Cipher): OpLogStore {
       blob
         .list()
         .then((list) => Promise.all(list.map(decode)))
-        .then((entries) => entries.filter((e) => e.ts >= ts)),
+        .then((entries) => entries.filter((entry) => entry.ts >= ts)),
     forId: (id) =>
       blob
         .list()
         .then((list) => Promise.all(list.map(decode)))
-        .then((entries) => entries.filter((e) => e.id === id)),
+        .then((entries) => entries.filter((entry) => entry.id === id)),
   };
 }
 

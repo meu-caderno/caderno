@@ -6,21 +6,21 @@ import { createDexieBlobStore, createDexieContextStore } from "./dexie-store";
 
 describe("createDexieContextStore", () => {
   it("passes the shared Store contract", async () => {
-    let n = 0;
+    let attempt = 0;
     await runStoreContract(() => {
-      n += 1;
-      return createDexieContextStore(`caderno-test-${n}`);
+      attempt += 1;
+      return createDexieContextStore(`caderno-test-${attempt}`);
     });
   });
 });
 
 describe("createDexieBlobStore", () => {
   it("backs an encrypted ContextStore that passes the contract", async () => {
-    let n = 0;
+    let attempt = 0;
     await runStoreContract(() => {
-      n += 1;
+      attempt += 1;
       return createEncryptedContextStore(
-        createDexieBlobStore(`caderno-enc-test-${n}`),
+        createDexieBlobStore(`caderno-enc-test-${attempt}`),
         reversibleCipher,
       );
     });

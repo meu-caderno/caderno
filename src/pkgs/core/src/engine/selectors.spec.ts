@@ -7,8 +7,8 @@ import {
   selectTodayAgenda,
 } from "./selectors";
 
-const d = (s: string) => s as DayIso;
-const id = (s: string) => s as Id;
+const asDay = (value: string) => value as DayIso;
+const id = (value: string) => value as Id;
 
 describe("selectors", () => {
   it("selectTodayAgenda lists scheduled subjects", () => {
@@ -20,20 +20,20 @@ describe("selectors", () => {
             schedule: { kind: ScheduleKind.WEEKLY, weekdays: [1] },
           },
         ],
-        d("2026-02-09"),
+        asDay("2026-02-09"),
       ),
     ).toHaveLength(1);
   });
 
   it("selectInbox filters inbox items", () => {
-    const a: Activity = {
+    const activity: Activity = {
       id: id("x"),
       title: "t",
       kind: ActivityKind.CAPTURE,
       status: ActivityStatus.OPEN,
       root: Root.INBOX,
     };
-    expect(selectInbox([a])).toHaveLength(1);
+    expect(selectInbox([activity])).toHaveLength(1);
   });
 
   it("selectAtRiskSubjects drops safe subjects", () => {

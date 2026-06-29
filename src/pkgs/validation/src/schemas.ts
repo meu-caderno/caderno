@@ -45,19 +45,19 @@ import { z } from "zod";
 export const IdSchema = z
   .string()
   .min(1)
-  .transform((v) => v as Id);
+  .transform((value) => value as Id);
 export const DayIsoSchema = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/)
-  .transform((v) => v as DayIso);
+  .transform((value) => value as DayIso);
 export const TimestampSchema = z
   .number()
   .int()
-  .transform((v) => v as Timestamp);
+  .transform((value) => value as Timestamp);
 export const ColorSchema = z
   .string()
   .regex(/^#[0-9a-fA-F]{6}$/)
-  .transform((v) => v as Color);
+  .transform((value) => value as Color);
 export const GradeSchema = z.number().min(0).max(10);
 export const ClockTimeSchema = z.string().regex(/^\d{2}:\d{2}$/);
 

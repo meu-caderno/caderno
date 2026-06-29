@@ -26,7 +26,8 @@ const parentOptions = computed(() => {
   const blocked = new Set<string>();
   if (props.node) {
     blocked.add(props.node.id);
-    for (const d of descendants(props.nodes, props.node.id)) blocked.add(d.id);
+    for (const descendant of descendants(props.nodes, props.node.id))
+      blocked.add(descendant.id);
   }
   return [
     { value: "", label: "— sem nota-mãe —" },

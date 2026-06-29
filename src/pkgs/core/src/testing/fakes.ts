@@ -5,11 +5,11 @@ export function fixedClock(now: Timestamp, today: DayIso): Clock {
 }
 
 export function counterIds(prefix = "id"): IdGenerator {
-  let n = 0;
+  let counter = 0;
   return {
     newId: async () => {
-      const id = `${prefix}-${n}` as Id;
-      n += 1;
+      const id = `${prefix}-${counter}` as Id;
+      counter += 1;
       return id;
     },
   };

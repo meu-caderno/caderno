@@ -10,7 +10,9 @@ const LIMIT = 60;
 
 async function refresh() {
   const all = await store.oplog.since(0 as Timestamp);
-  entries.value = [...all].sort((a, b) => b.ts - a.ts).slice(0, LIMIT);
+  entries.value = [...all]
+    .sort((left, right) => right.ts - left.ts)
+    .slice(0, LIMIT);
 }
 
 const ENTITY_LABEL: Record<string, string> = {

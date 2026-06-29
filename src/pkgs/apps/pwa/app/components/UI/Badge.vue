@@ -51,11 +51,12 @@ const spec = computed(() => {
     bd = props.color ?? "#c4beb0";
     hasBorder = props.bordered;
   } else {
-    const t = TONES[props.tone as Exclude<Tone, "custom">] ?? TONES.neutro;
-    bg = t.bg;
-    bd = t.bd;
-    tx = t.tx;
-    dashed = !!t.dashed;
+    const toneStyle =
+      TONES[props.tone as Exclude<Tone, "custom">] ?? TONES.neutro;
+    bg = toneStyle.bg;
+    bd = toneStyle.bd;
+    tx = toneStyle.tx;
+    dashed = !!toneStyle.dashed;
     hasBorder = true;
   }
   const border = hasBorder

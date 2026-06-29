@@ -17,8 +17,11 @@ const FORBIDDEN: Array<[string, RegExp]> = [
 
 describe("domain purity", () => {
   const files = readdirSync(dir, { recursive: true })
-    .filter((f): f is string => typeof f === "string" && f.endsWith(".ts"))
-    .filter((f) => !f.endsWith(".spec.ts"));
+    .filter(
+      (file): file is string =>
+        typeof file === "string" && file.endsWith(".ts"),
+    )
+    .filter((file) => !file.endsWith(".spec.ts"));
 
   for (const file of files) {
     it(`${file} stays free of infra and nondeterminism`, () => {

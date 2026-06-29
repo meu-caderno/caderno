@@ -14,7 +14,7 @@ import {
   reparent,
 } from "./notebook";
 
-const id = (s: string) => s as Id;
+const id = (value: string) => value as Id;
 const node = (
   i: string,
   parent?: string,
@@ -30,15 +30,15 @@ const tree = [node("root"), node("a", "root"), node("b", "a"), node("c", "b")];
 
 describe("traversal", () => {
   it("children/ancestors/descendants", () => {
-    expect(children(tree, id("root")).map((n) => n.id)).toEqual(["a"]);
-    expect(ancestors(tree, id("c")).map((n) => n.id)).toEqual([
+    expect(children(tree, id("root")).map((node) => node.id)).toEqual(["a"]);
+    expect(ancestors(tree, id("c")).map((node) => node.id)).toEqual([
       "b",
       "a",
       "root",
     ]);
     expect(
       descendants(tree, id("root"))
-        .map((n) => n.id)
+        .map((node) => node.id)
         .sort(),
     ).toEqual(["a", "b", "c"]);
   });
@@ -55,7 +55,8 @@ describe("reparent", () => {
     expect(canReparent(tree, id("a"), id("a"))).toBe(false);
     expect(canReparent(tree, id("a"), id("root"))).toBe(true);
     expect(
-      reparent(tree, id("a"), id("c")).find((n) => n.id === "a")?.parentId,
+      reparent(tree, id("a"), id("c")).find((node) => node.id === "a")
+        ?.parentId,
     ).toBe("root");
   });
 });
@@ -63,7 +64,7 @@ describe("reparent", () => {
 describe("orphans / aspects / edges", () => {
   it("deOrphan clears dangling parentId", () => {
     const ns = [node("a", "ghost")];
-    expect(orphans(ns).map((n) => n.id)).toEqual(["a"]);
+    expect(orphans(ns).map((node) => node.id)).toEqual(["a"]);
     expect(deOrphan(ns)[0]?.parentId).toBeUndefined();
   });
 

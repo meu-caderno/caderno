@@ -163,7 +163,8 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
       }
       const existing = (
         await store.records.where(
-          (r) => r.subjectId === input.subjectId && r.day === input.day,
+          (record) =>
+            record.subjectId === input.subjectId && record.day === input.day,
         )
       )[0];
       const record: AttendanceRecord = existing
@@ -207,7 +208,7 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
         );
       }
       const assessments = subject.assessments ?? [];
-      if (!assessments.some((a) => a.id === assessmentId)) {
+      if (!assessments.some((assessment) => assessment.id === assessmentId)) {
         return fail(
           DomainErrorCode.NOT_FOUND,
           { assessmentId },
@@ -216,8 +217,10 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
       }
       const updated: Subject = {
         ...subject,
-        assessments: assessments.map((a) =>
-          a.id === assessmentId ? { ...a, grade } : a,
+        assessments: assessments.map((assessment) =>
+          assessment.id === assessmentId
+            ? { ...assessment, grade }
+            : assessment,
         ),
       };
       await commitPut((tx) => tx.subjects, EntityName.SUBJECT, updated);
@@ -248,8 +251,11 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
       }
       if (activity.preparesId) {
         const edges = (await store.activities.list())
-          .filter((a) => a.id !== activity.id && a.preparesId !== undefined)
-          .map((a) => ({ from: a.id, to: a.preparesId as Id }));
+          .filter(
+            (other) =>
+              other.id !== activity.id && other.preparesId !== undefined,
+          )
+          .map((other) => ({ from: other.id, to: other.preparesId as Id }));
         if (createsCycle(edges, activity.id, activity.preparesId)) {
           return fail(
             DomainErrorCode.INVARIANT_CYCLE,
@@ -283,22 +289,24 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
       if (!subject) {
         return fail(DomainErrorCode.NOT_FOUND, { id }, EntityName.SUBJECT);
       }
-      const records = await store.records.where((r) => r.subjectId === id);
+      const records = await store.records.where(
+        (record) => record.subjectId === id,
+      );
       const activities = await store.activities.where(
-        (a) => a.subjectId === id,
+        (activity) => activity.subjectId === id,
       );
       const ts = await clock.now();
       await store.transaction(async (tx) => {
-        for (const r of records) {
-          await tx.records.delete(r.id);
+        for (const record of records) {
+          await tx.records.delete(record.id);
           await tx.oplog.append(
-            makeOp(EntityName.RECORD, OpKind.DELETE, r.id, ts),
+            makeOp(EntityName.RECORD, OpKind.DELETE, record.id, ts),
           );
         }
-        for (const a of activities) {
-          await tx.activities.delete(a.id);
+        for (const activity of activities) {
+          await tx.activities.delete(activity.id);
           await tx.oplog.append(
-            makeOp(EntityName.ACTIVITY, OpKind.DELETE, a.id, ts),
+            makeOp(EntityName.ACTIVITY, OpKind.DELETE, activity.id, ts),
           );
         }
         await tx.subjects.delete(id);
@@ -443,7 +451,7 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
         );
       }
       const existing = (await store.graph.edgesFrom(from)).find(
-        (e) => e.to === to && e.kind === kind,
+        (edge) => edge.to === to && edge.kind === kind,
       );
       if (existing) return ok(existing);
       const edge: Edge = { id: await ids.newId(), from, to, kind };

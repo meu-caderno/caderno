@@ -14,12 +14,12 @@ defineProps<{ tabs: Tab[] }>();
   <TabsRoot v-model="model" class="uitabs">
     <TabsList class="uitabs__list">
       <TabsTrigger
-        v-for="t in tabs"
-        :key="t.value"
-        :value="t.value"
+        v-for="tab in tabs"
+        :key="tab.value"
+        :value="tab.value"
         class="uitabs__tab"
       >
-        {{ t.label }}
+        {{ tab.label }}
       </TabsTrigger>
     </TabsList>
     <slot />

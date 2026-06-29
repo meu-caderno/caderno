@@ -8,7 +8,7 @@ withDefaults(
   { selected: false },
 );
 
-defineEmits<(e: "click", ev: MouseEvent) => void>();
+defineEmits<(eventName: "click", payload: MouseEvent) => void>();
 </script>
 
 <template>

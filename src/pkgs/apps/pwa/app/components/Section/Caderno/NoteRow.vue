@@ -31,7 +31,7 @@ const isOver = ref(false);
 
 async function reparentInto(childId: Id) {
   if (childId === props.node.id) return;
-  const dragged = props.nodes.find((n) => n.id === childId);
+  const dragged = props.nodes.find((node) => node.id === childId);
   if (!dragged || dragged.parentId === props.node.id) return;
   await service.updateNode({ ...dragged, parentId: props.node.id });
 }

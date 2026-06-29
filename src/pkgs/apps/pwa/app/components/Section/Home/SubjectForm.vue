@@ -31,10 +31,10 @@ const lateIsHalf = ref(props.subject?.lateIsHalf ?? true);
 const medicalExcuses = ref(props.subject?.medicalExcuses ?? true);
 const saving = ref(false);
 
-function toggleDay(d: number) {
-  const i = weekdays.value.indexOf(d);
-  if (i >= 0) weekdays.value.splice(i, 1);
-  else weekdays.value.push(d);
+function toggleDay(weekday: number) {
+  const index = weekdays.value.indexOf(weekday);
+  if (index >= 0) weekdays.value.splice(index, 1);
+  else weekdays.value.push(weekday);
 }
 
 async function save() {
@@ -44,7 +44,7 @@ async function save() {
   const schedule = weekdays.value.length
     ? {
         kind: ScheduleKind.WEEKLY,
-        weekdays: [...weekdays.value].sort((a, b) => a - b),
+        weekdays: [...weekdays.value].sort((left, right) => left - right),
         blocks: [{ start: start.value, end: end.value }],
       }
     : undefined;
@@ -90,14 +90,14 @@ async function save() {
       <label class="sf__label">Cor</label>
       <div class="sf__colors">
         <button
-          v-for="c in colors"
-          :key="c"
+          v-for="colorOption in colors"
+          :key="colorOption"
           type="button"
           class="sf__color"
-          :class="{ 'sf__color--on': color === c }"
-          :style="{ background: c }"
-          :aria-label="`Cor ${c}`"
-          @click="color = c"
+          :class="{ 'sf__color--on': color === colorOption }"
+          :style="{ background: colorOption }"
+          :aria-label="`Cor ${colorOption}`"
+          @click="color = colorOption"
         />
       </div>
 

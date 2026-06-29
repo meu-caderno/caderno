@@ -3,15 +3,15 @@ import type { Context, Id } from "../domain";
 import { AbsenceStance, Goal, Link } from "../domain";
 import { applyPreset, presetForGoal } from "./presets";
 
-const id = (s: string) => s as Id;
+const id = (value: string) => value as Id;
 
 describe("presetForGoal", () => {
   it("university enables attendance/grades/term with a floor", () => {
-    const p = presetForGoal(Goal.UNIVERSITY);
-    expect(p.modules.attendance).toBe(true);
-    expect(p.modules.term).toBe(true);
-    expect(p.attendanceFloor).toBe(0.75);
-    expect(p.absenceStance).toBe(AbsenceStance.PLAN_ABSENCES);
+    const preset = presetForGoal(Goal.UNIVERSITY);
+    expect(preset.modules.attendance).toBe(true);
+    expect(preset.modules.term).toBe(true);
+    expect(preset.attendanceFloor).toBe(0.75);
+    expect(preset.absenceStance).toBe(AbsenceStance.PLAN_ABSENCES);
   });
 });
 

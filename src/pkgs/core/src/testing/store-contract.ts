@@ -10,7 +10,7 @@ import type {
 import { AbsenceStance, EntityName, Goal, Link, OpKind } from "../domain";
 import { makeOp } from "../engine";
 
-const id = (s: string) => s as Id;
+const id = (value: string) => value as Id;
 
 function sampleContext(): Context {
   return {

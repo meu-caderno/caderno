@@ -40,7 +40,7 @@ describe("overlappingTerms", () => {
       term("c", "2027-01-01", "2027-06-30"),
     ]);
     expect(pairs).toHaveLength(1);
-    expect(pairs[0]?.map((t) => t.id)).toEqual(["a", "b"]);
+    expect(pairs[0]?.map((term) => term.id)).toEqual(["a", "b"]);
   });
 });
 

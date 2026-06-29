@@ -57,10 +57,10 @@ describe("absenceWeight", () => {
 
 describe("computeAttendance", () => {
   it("derives the budget from credits, session weight and floor", () => {
-    const s = computeAttendance(baseSubject, { floor: 0.75 });
-    expect(s.totalClassHours).toBe(60);
-    expect(s.sessionHours).toBe(2);
-    expect(s.maxAbsences).toBe(7);
+    const summary = computeAttendance(baseSubject, { floor: 0.75 });
+    expect(summary.totalClassHours).toBe(60);
+    expect(summary.sessionHours).toBe(2);
+    expect(summary.maxAbsences).toBe(7);
   });
 
   it("spends absences (late = half) and computes frequency over held sessions", () => {
@@ -73,14 +73,14 @@ describe("computeAttendance", () => {
         AttendanceStatus.LATE,
       ]),
     };
-    const s = computeAttendance(subject, { floor: 0.75 });
-    expect(s.held).toBe(13);
-    expect(s.absencesUsed).toBe(2.5);
-    expect(s.remaining).toBe(4.5);
-    expect(s.frequencyPct).toBe(81);
-    expect(s.counts[AttendanceStatus.PRESENT]).toBe(10);
-    expect(s.counts[AttendanceStatus.ABSENT]).toBe(2);
-    expect(s.counts[AttendanceStatus.LATE]).toBe(1);
+    const summary = computeAttendance(subject, { floor: 0.75 });
+    expect(summary.held).toBe(13);
+    expect(summary.absencesUsed).toBe(2.5);
+    expect(summary.remaining).toBe(4.5);
+    expect(summary.frequencyPct).toBe(81);
+    expect(summary.counts[AttendanceStatus.PRESENT]).toBe(10);
+    expect(summary.counts[AttendanceStatus.ABSENT]).toBe(2);
+    expect(summary.counts[AttendanceStatus.LATE]).toBe(1);
   });
 
   it("excludes holiday/canceled from held sessions", () => {
@@ -93,26 +93,26 @@ describe("computeAttendance", () => {
         AttendanceStatus.PRESENT,
       ]),
     };
-    const s = computeAttendance(subject);
-    expect(s.held).toBe(2);
-    expect(s.frequencyPct).toBe(100);
-    expect(s.meetsFloor).toBe(true);
+    const summary = computeAttendance(subject);
+    expect(summary.held).toBe(2);
+    expect(summary.frequencyPct).toBe(100);
+    expect(summary.meetsFloor).toBe(true);
   });
 
   it("subject floor overrides the context floor", () => {
-    const s = computeAttendance(
+    const summary = computeAttendance(
       { ...baseSubject, floor: 0.5 },
       { floor: 0.75 },
     );
-    expect(s.floor).toBe(0.5);
-    expect(s.maxAbsences).toBe(15);
+    expect(summary.floor).toBe(0.5);
+    expect(summary.maxAbsences).toBe(15);
   });
 
   it("treats an empty history as 100% and full budget", () => {
-    const s = computeAttendance(baseSubject);
-    expect(s.frequencyPct).toBe(100);
-    expect(s.absencesUsed).toBe(0);
-    expect(s.remaining).toBe(7);
+    const summary = computeAttendance(baseSubject);
+    expect(summary.frequencyPct).toBe(100);
+    expect(summary.absencesUsed).toBe(0);
+    expect(summary.remaining).toBe(7);
   });
 });
 
@@ -122,7 +122,7 @@ describe("meetsFloor uses the exact ratio", () => {
       ...Array<AttendanceStatus>(149).fill(AttendanceStatus.PRESENT),
       ...Array<AttendanceStatus>(51).fill(AttendanceStatus.ABSENT),
     ];
-    const s = computeAttendance(
+    const summary = computeAttendance(
       {
         hoursPerClass: 1,
         classesPerSession: 1,
@@ -131,10 +131,10 @@ describe("meetsFloor uses the exact ratio", () => {
       },
       { floor: 0.75 },
     );
-    expect(s.held).toBe(200);
-    expect(s.frequencyPct).toBe(75);
-    expect(s.frequency).toBeCloseTo(0.745);
-    expect(s.meetsFloor).toBe(false);
+    expect(summary.held).toBe(200);
+    expect(summary.frequencyPct).toBe(75);
+    expect(summary.frequency).toBeCloseTo(0.745);
+    expect(summary.meetsFloor).toBe(false);
   });
 });
 
@@ -155,13 +155,13 @@ describe("simulator", () => {
   });
 
   it("projectFrequency divides over the projected held sessions", () => {
-    const p = projectFrequency(
+    const projection = projectFrequency(
       { held: 10, absencesUsed: 2, floor: 0.75 },
       10,
       3,
     );
-    expect(p.projectedFrequencyPct).toBe(75);
-    expect(p.meetsFloor).toBe(true);
+    expect(projection.projectedFrequencyPct).toBe(75);
+    expect(projection.meetsFloor).toBe(true);
   });
 
   it("attendanceRisk classifies safe/warning/over", () => {

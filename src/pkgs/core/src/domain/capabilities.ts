@@ -56,7 +56,9 @@ export function createRegistry(): MutableCapabilityRegistry {
       capabilities.set(capability.manifest.id, capability);
     },
     manifests() {
-      return [...capabilities.values()].map((c) => c.manifest);
+      return [...capabilities.values()].map(
+        (capability) => capability.manifest,
+      );
     },
     source<T>(id: string) {
       const found = capabilities.get(id);

@@ -7,7 +7,7 @@ import {
   totalXp,
 } from "./gamification";
 
-const d = (s: string) => s as DayIso;
+const asDay = (value: string) => value as DayIso;
 
 describe("totalXp", () => {
   it("sums presence and activity XP", () => {
@@ -31,22 +31,30 @@ describe("levelFromXp", () => {
 
 describe("currentStreak", () => {
   it("counts consecutive days ending today", () => {
-    const days = [d("2026-03-08"), d("2026-03-09"), d("2026-03-10")];
-    expect(currentStreak(days, d("2026-03-10"))).toBe(3);
+    const days = [
+      asDay("2026-03-08"),
+      asDay("2026-03-09"),
+      asDay("2026-03-10"),
+    ];
+    expect(currentStreak(days, asDay("2026-03-10"))).toBe(3);
   });
 
   it("allows the streak to end yesterday", () => {
-    const days = [d("2026-03-08"), d("2026-03-09")];
-    expect(currentStreak(days, d("2026-03-10"))).toBe(2);
+    const days = [asDay("2026-03-08"), asDay("2026-03-09")];
+    expect(currentStreak(days, asDay("2026-03-10"))).toBe(2);
   });
 
   it("breaks on a gap", () => {
-    const days = [d("2026-03-05"), d("2026-03-09"), d("2026-03-10")];
-    expect(currentStreak(days, d("2026-03-10"))).toBe(2);
+    const days = [
+      asDay("2026-03-05"),
+      asDay("2026-03-09"),
+      asDay("2026-03-10"),
+    ];
+    expect(currentStreak(days, asDay("2026-03-10"))).toBe(2);
   });
 
   it("is zero when the last activity is too old", () => {
-    expect(currentStreak([d("2026-03-01")], d("2026-03-10"))).toBe(0);
+    expect(currentStreak([asDay("2026-03-01")], asDay("2026-03-10"))).toBe(0);
   });
 });
 
@@ -58,7 +66,7 @@ describe("achievements", () => {
       presences: 20,
       completedActivities: 12,
     });
-    expect(unlocked.every((a) => a.unlocked)).toBe(true);
+    expect(unlocked.every((achievement) => achievement.unlocked)).toBe(true);
   });
 
   it("keeps high tiers locked early on", () => {
@@ -68,7 +76,9 @@ describe("achievements", () => {
       presences: 1,
       completedActivities: 0,
     });
-    const byKey = Object.fromEntries(list.map((a) => [a.key, a.unlocked]));
+    const byKey = Object.fromEntries(
+      list.map((achievement) => [achievement.key, achievement.unlocked]),
+    );
     expect(byKey["first-step"]).toBe(true);
     expect(byKey["streak-7"]).toBe(false);
     expect(byKey["level-5"]).toBe(false);

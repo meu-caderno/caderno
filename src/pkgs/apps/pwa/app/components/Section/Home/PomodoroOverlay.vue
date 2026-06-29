@@ -4,7 +4,7 @@ const emit = defineEmits<{ close: [] }>();
 const {
   phaseLabel,
   phase,
-  clock,
+  timeLabel,
   ratio,
   running,
   completedFocus,
@@ -27,7 +27,7 @@ onUnmounted(pause);
   >
     <div class="pomodoro" :class="`pomodoro--${phase}`">
       <span class="pomodoro__phase">{{ phaseLabel }}</span>
-      <div class="pomodoro__clock">{{ clock }}</div>
+      <div class="pomodoro__clock">{{ timeLabel }}</div>
       <div class="pomodoro__track">
         <div
           class="pomodoro__fill"

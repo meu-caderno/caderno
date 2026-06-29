@@ -25,7 +25,10 @@ const kindOptions = [
 ];
 const subjectOptions = computed(() => [
   { value: "", label: "— sem disciplina —" },
-  ...props.subjects.map((s) => ({ value: s.id as string, label: s.name })),
+  ...props.subjects.map((subject) => ({
+    value: subject.id as string,
+    label: subject.name,
+  })),
 ]);
 const recurrenceOptions = [
   { value: Recurrence.NONE, label: "Não repete" },
@@ -49,11 +52,11 @@ async function addSubtask() {
   newSubtask.value = "";
 }
 function toggleSubtask(id: Id) {
-  const task = subtasks.value.find((t) => t.id === id);
+  const task = subtasks.value.find((subtask) => subtask.id === id);
   if (task) task.done = !task.done;
 }
 function removeSubtask(id: Id) {
-  subtasks.value = subtasks.value.filter((t) => t.id !== id);
+  subtasks.value = subtasks.value.filter((subtask) => subtask.id !== id);
 }
 function onReorderSubtasks({ fromId, toId, edge }: SortablePayload) {
   subtasks.value = reorderByEdge(

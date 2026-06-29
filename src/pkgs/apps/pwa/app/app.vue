@@ -7,7 +7,7 @@ useHead({
   },
   link: head.value.link,
   meta: head.value.meta,
-  titleTemplate: (t) => (t ? `${t} · Meu Caderno` : "Meu Caderno"),
+  titleTemplate: (title) => (title ? `${title} · Meu Caderno` : "Meu Caderno"),
 });
 
 const { hydrate: hydrateTheme } = useTheme();
@@ -24,7 +24,7 @@ onMounted(() => {
 
 <template>
   <div>
-    <NuxtPwaManifest />
+    <!-- <NuxtPwaManifest /> -->
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>

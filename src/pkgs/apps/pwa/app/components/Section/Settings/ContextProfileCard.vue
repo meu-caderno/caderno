@@ -9,7 +9,9 @@ const contexts = useLiveQuery<Context[]>(
   () => store.contexts.list(),
   [],
 );
-const visible = computed(() => contexts.value.filter((c) => !c.archived));
+const visible = computed(() =>
+  contexts.value.filter((context) => !context.archived),
+);
 
 function isOn(id: Context["id"]) {
   return focusIds.value.includes(id);

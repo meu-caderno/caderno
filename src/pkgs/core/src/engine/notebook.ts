@@ -1,11 +1,11 @@
 import type { Aspect, Edge, EdgeKind, Id, Node } from "../domain";
 
 export function children(nodes: ReadonlyArray<Node>, parentId: Id): Node[] {
-  return nodes.filter((n) => n.parentId === parentId);
+  return nodes.filter((node) => node.parentId === parentId);
 }
 
 export function ancestors(nodes: ReadonlyArray<Node>, id: Id): Node[] {
-  const byId = new Map(nodes.map((n) => [n.id, n]));
+  const byId = new Map(nodes.map((node) => [node.id, node]));
   const out: Node[] = [];
   const seen = new Set<Id>();
   let parentId = byId.get(id)?.parentId;
@@ -26,7 +26,7 @@ export function descendants(nodes: ReadonlyArray<Node>, id: Id): Node[] {
   while (stack.length > 0) {
     const current = stack.pop();
     if (current === undefined) break;
-    for (const child of nodes.filter((n) => n.parentId === current)) {
+    for (const child of nodes.filter((node) => node.parentId === current)) {
       if (!seen.has(child.id)) {
         seen.add(child.id);
         out.push(child);
@@ -41,22 +41,22 @@ export function nodesByAspect(
   nodes: ReadonlyArray<Node>,
   aspect: Aspect,
 ): Node[] {
-  return nodes.filter((n) => n.aspects.includes(aspect));
+  return nodes.filter((node) => node.aspects.includes(aspect));
 }
 
 export function edgesFrom(edges: ReadonlyArray<Edge>, id: Id): Edge[] {
-  return edges.filter((e) => e.from === id);
+  return edges.filter((edge) => edge.from === id);
 }
 
 export function edgesTo(edges: ReadonlyArray<Edge>, id: Id): Edge[] {
-  return edges.filter((e) => e.to === id);
+  return edges.filter((edge) => edge.to === id);
 }
 
 export function edgesByKind(
   edges: ReadonlyArray<Edge>,
   kind: EdgeKind,
 ): Edge[] {
-  return edges.filter((e) => e.kind === kind);
+  return edges.filter((edge) => edge.kind === kind);
 }
 
 export function canReparent(
@@ -65,7 +65,7 @@ export function canReparent(
   newParentId: Id,
 ): boolean {
   if (id === newParentId) return false;
-  return !descendants(nodes, id).some((n) => n.id === newParentId);
+  return !descendants(nodes, id).some((node) => node.id === newParentId);
 }
 
 export function reparent(
@@ -76,20 +76,24 @@ export function reparent(
   if (newParentId !== undefined && !canReparent(nodes, id, newParentId)) {
     return nodes.slice();
   }
-  return nodes.map((n) => (n.id === id ? { ...n, parentId: newParentId } : n));
+  return nodes.map((node) =>
+    node.id === id ? { ...node, parentId: newParentId } : node,
+  );
 }
 
 export function orphans(nodes: ReadonlyArray<Node>): Node[] {
-  const ids = new Set(nodes.map((n) => n.id));
-  return nodes.filter((n) => n.parentId !== undefined && !ids.has(n.parentId));
+  const ids = new Set(nodes.map((node) => node.id));
+  return nodes.filter(
+    (node) => node.parentId !== undefined && !ids.has(node.parentId),
+  );
 }
 
 export function deOrphan(nodes: ReadonlyArray<Node>): Node[] {
-  const ids = new Set(nodes.map((n) => n.id));
-  return nodes.map((n) =>
-    n.parentId !== undefined && !ids.has(n.parentId)
-      ? { ...n, parentId: undefined }
-      : n,
+  const ids = new Set(nodes.map((node) => node.id));
+  return nodes.map((node) =>
+    node.parentId !== undefined && !ids.has(node.parentId)
+      ? { ...node, parentId: undefined }
+      : node,
   );
 }
 
@@ -97,6 +101,6 @@ export function orphanEdges(
   edges: ReadonlyArray<Edge>,
   nodes: ReadonlyArray<Node>,
 ): Edge[] {
-  const ids = new Set(nodes.map((n) => n.id));
-  return edges.filter((e) => !ids.has(e.from) || !ids.has(e.to));
+  const ids = new Set(nodes.map((node) => node.id));
+  return edges.filter((edge) => !ids.has(edge.from) || !ids.has(edge.to));
 }

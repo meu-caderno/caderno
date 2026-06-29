@@ -14,10 +14,10 @@ const goalIcon: Record<Goal, string> = {
 };
 
 const items = computed(() => [
-  ...props.contexts.map((c) => ({
-    value: c.id as string,
-    label: `${goalIcon[c.goal]}  ${c.name}`,
-    icon: c.id === props.active?.id ? ("check" as const) : undefined,
+  ...props.contexts.map((context) => ({
+    value: context.id as string,
+    label: `${goalIcon[context.goal]}  ${context.name}`,
+    icon: context.id === props.active?.id ? ("check" as const) : undefined,
   })),
   {
     value: "__new",

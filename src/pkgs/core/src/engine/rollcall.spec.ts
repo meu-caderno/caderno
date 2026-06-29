@@ -3,8 +3,8 @@ import type { DayIso, Id } from "../domain";
 import { AttendanceStatus, ScheduleKind } from "../domain";
 import { effectiveLoad, nextOccurrences, sessionsOn } from "./rollcall";
 
-const d = (s: string) => s as DayIso;
-const id = (s: string) => s as Id;
+const asDay = (value: string) => value as DayIso;
+const id = (value: string) => value as Id;
 
 describe("sessionsOn", () => {
   it("returns subjects scheduled on that day with their blocks", () => {
@@ -19,14 +19,14 @@ describe("sessionsOn", () => {
       },
       { id: id("b"), schedule: { kind: ScheduleKind.WEEKLY, weekdays: [2] } },
     ];
-    const wed = sessionsOn(subjects, d("2026-02-11"));
+    const wed = sessionsOn(subjects, asDay("2026-02-11"));
     expect(wed).toHaveLength(1);
     expect(wed[0]?.subjectId).toBe("a");
     expect(wed[0]?.blocks).toHaveLength(1);
   });
 
   it("ignores subjects without a schedule", () => {
-    expect(sessionsOn([{ id: id("x") }], d("2026-02-11"))).toEqual([]);
+    expect(sessionsOn([{ id: id("x") }], asDay("2026-02-11"))).toEqual([]);
   });
 });
 
@@ -34,7 +34,7 @@ describe("nextOccurrences", () => {
   it("returns the next N occurrences", () => {
     const occ = nextOccurrences(
       { kind: ScheduleKind.WEEKLY, weekdays: [1] },
-      d("2026-02-09"),
+      asDay("2026-02-09"),
       3,
     );
     expect(occ).toEqual(["2026-02-09", "2026-02-16", "2026-02-23"]);
@@ -44,7 +44,7 @@ describe("nextOccurrences", () => {
     expect(
       nextOccurrences(
         { kind: ScheduleKind.WEEKLY, weekdays: [1] },
-        d("2026-02-09"),
+        asDay("2026-02-09"),
         0,
       ),
     ).toEqual([]);
@@ -62,13 +62,13 @@ describe("effectiveLoad", () => {
             {
               id: id("r"),
               subjectId: id("a"),
-              day: d("2026-02-09"),
+              day: asDay("2026-02-09"),
               status: AttendanceStatus.CANCELED,
             },
           ],
         },
       ],
-      { from: d("2026-02-09"), to: d("2026-02-23") },
+      { from: asDay("2026-02-09"), to: asDay("2026-02-23") },
     );
     expect(load[0]?.scheduled).toBe(3);
     expect(load[0]?.canceled).toBe(1);

@@ -12,9 +12,9 @@ import type { ToastItem } from "~/composables/useToast";
 
 const { toasts, dismiss } = useToast();
 
-function runAction(t: ToastItem) {
-  t.onAction?.();
-  dismiss(t.id);
+function runAction(toast: ToastItem) {
+  toast.onAction?.();
+  dismiss(toast.id);
 }
 function onOpenChange(id: number, open: boolean) {
   if (!open) dismiss(id);
@@ -24,24 +24,24 @@ function onOpenChange(id: number, open: boolean) {
 <template>
   <ToastProvider :duration="6000">
     <ToastRoot
-      v-for="t in toasts"
-      :key="t.id"
+      v-for="toast in toasts"
+      :key="toast.id"
       class="uitoast"
-      @update:open="(o: boolean) => onOpenChange(t.id, o)"
+      @update:open="(isOpen: boolean) => onOpenChange(toast.id, isOpen)"
     >
       <div class="uitoast__body">
-        <ToastTitle class="uitoast__title">{{ t.title }}</ToastTitle>
-        <ToastDescription v-if="t.description" class="uitoast__desc">
-          {{ t.description }}
+        <ToastTitle class="uitoast__title">{{ toast.title }}</ToastTitle>
+        <ToastDescription v-if="toast.description" class="uitoast__desc">
+          {{ toast.description }}
         </ToastDescription>
       </div>
       <ToastAction
-        v-if="t.actionLabel"
-        :alt-text="t.actionLabel"
+        v-if="toast.actionLabel"
+        :alt-text="toast.actionLabel"
         class="uitoast__action"
-        @click="runAction(t)"
+        @click="runAction(toast)"
       >
-        {{ t.actionLabel }}
+        {{ toast.actionLabel }}
       </ToastAction>
       <ToastClose class="uitoast__close" aria-label="Fechar">
         <UIIcon icon="x" :size="15" />

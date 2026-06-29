@@ -10,15 +10,15 @@ function toUtc(day: DayIso): number {
 }
 
 function fromUtc(ms: number): DayIso {
-  const dt = new Date(ms);
-  const y = dt.getUTCFullYear();
-  const m = String(dt.getUTCMonth() + 1).padStart(2, "0");
-  const d = String(dt.getUTCDate()).padStart(2, "0");
-  return `${y}-${m}-${d}` as DayIso;
+  const date = new Date(ms);
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  return `${year}-${month}-${day}` as DayIso;
 }
 
-export function daysBetween(a: DayIso, b: DayIso): number {
-  return Math.round((toUtc(b) - toUtc(a)) / MS_PER_DAY);
+export function daysBetween(from: DayIso, to: DayIso): number {
+  return Math.round((toUtc(to) - toUtc(from)) / MS_PER_DAY);
 }
 
 export function addDays(day: DayIso, days: number): DayIso {
@@ -58,9 +58,9 @@ export function expandSchedule(schedule: Schedule, range: DateRange): DayIso[] {
     }
   }
 
-  for (const d of schedule.adHocDates ?? []) {
-    const ms = toUtc(d);
-    if (ms >= startMs && ms <= endMs) out.add(d);
+  for (const adHocDate of schedule.adHocDates ?? []) {
+    const ms = toUtc(adHocDate);
+    if (ms >= startMs && ms <= endMs) out.add(adHocDate);
   }
 
   return [...out].sort() as DayIso[];

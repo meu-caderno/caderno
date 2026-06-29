@@ -4,12 +4,14 @@ import * as num from "./math";
 export function weightedAverage(
   assessments: ReadonlyArray<Pick<Assessment, "weight" | "grade">>,
 ): number | null {
-  const graded = assessments.filter((a) => a.grade != null);
+  const graded = assessments.filter((assessment) => assessment.grade != null);
   if (graded.length === 0) return null;
-  const totalWeight = num.sum(graded.map((a) => a.weight));
+  const totalWeight = num.sum(graded.map((assessment) => assessment.weight));
   if (totalWeight === 0) return null;
   const weighted = num.sum(
-    graded.map((a) => num.multiply(a.grade as number, a.weight)),
+    graded.map((assessment) =>
+      num.multiply(assessment.grade as number, assessment.weight),
+    ),
   );
   return num.divide(weighted, totalWeight);
 }
@@ -26,16 +28,22 @@ export function neededGrade(
   target: number,
   max = 10,
 ): NeededGrade | null {
-  const totalWeight = num.sum(assessments.map((a) => a.weight));
+  const totalWeight = num.sum(
+    assessments.map((assessment) => assessment.weight),
+  );
   if (totalWeight === 0) return null;
 
   const earned = num.sum(
     assessments
-      .filter((a) => a.grade != null)
-      .map((a) => num.multiply(a.grade as number, a.weight)),
+      .filter((assessment) => assessment.grade != null)
+      .map((assessment) =>
+        num.multiply(assessment.grade as number, assessment.weight),
+      ),
   );
   const remainingWeight = num.sum(
-    assessments.filter((a) => a.grade == null).map((a) => a.weight),
+    assessments
+      .filter((assessment) => assessment.grade == null)
+      .map((assessment) => assessment.weight),
   );
 
   if (remainingWeight === 0) return null;

@@ -9,7 +9,7 @@ withDefaults(
   { icon: "📋", title: "Nada por aqui ainda", subtitle: "" },
 );
 
-defineEmits<(e: "action", ev: MouseEvent) => void>();
+defineEmits<(eventName: "action", payload: MouseEvent) => void>();
 </script>
 
 <template>

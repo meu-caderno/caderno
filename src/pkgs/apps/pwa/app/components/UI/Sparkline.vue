@@ -27,17 +27,19 @@ const geom = computed(() => {
   const min = Math.min(...values);
   const max = Math.max(...values);
   const span = max - min || 1;
-  const n = values.length;
-  const xAt = (i: number) =>
-    n === 1 ? width / 2 : pad + (i * (width - 2 * pad)) / (n - 1);
-  const yAt = (v: number) =>
-    height - pad - ((v - min) / span) * (height - 2 * pad);
-  const pts = values.map((v, i) => `${xAt(i).toFixed(1)},${yAt(v).toFixed(1)}`);
-  const points = pts.join(" ");
+  const count = values.length;
+  const xAt = (index: number) =>
+    count === 1 ? width / 2 : pad + (index * (width - 2 * pad)) / (count - 1);
+  const yAt = (value: number) =>
+    height - pad - ((value - min) / span) * (height - 2 * pad);
+  const pointList = values.map(
+    (value, index) => `${xAt(index).toFixed(1)},${yAt(value).toFixed(1)}`,
+  );
+  const points = pointList.join(" ");
   return {
     points,
     fillPoints: `${pad},${height - pad} ${points} ${width - pad},${height - pad}`,
-    lastX: xAt(n - 1).toFixed(1),
+    lastX: xAt(count - 1).toFixed(1),
     lastY: yAt(values.at(-1) ?? 0).toFixed(1),
     dotR: stroke + 1,
   };

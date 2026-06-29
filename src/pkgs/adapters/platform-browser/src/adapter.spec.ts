@@ -12,8 +12,8 @@ describe("browserClock", () => {
 
 describe("uuidv7", () => {
   it("produces a version-7 uuid", () => {
-    const u = uuidv7();
-    expect(u).toMatch(
+    const generatedUuid = uuidv7();
+    expect(generatedUuid).toMatch(
       /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
     );
   });

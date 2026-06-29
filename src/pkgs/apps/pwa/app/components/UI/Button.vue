@@ -15,7 +15,7 @@ withDefaults(
   { variant: "primal", icon: "", full: false, type: "button", disabled: false },
 );
 
-defineEmits<(e: "click", ev: MouseEvent) => void>();
+defineEmits<(eventName: "click", payload: MouseEvent) => void>();
 </script>
 
 <template>

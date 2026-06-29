@@ -106,12 +106,12 @@ export function computeAttendance(
   const records: AttendanceRecord[] = subject.records ?? [];
   const counts = emptyCounts();
   let held = 0;
-  for (const r of records) {
-    counts[r.status] += 1;
-    if (HELD.has(r.status)) held += 1;
+  for (const record of records) {
+    counts[record.status] += 1;
+    if (HELD.has(record.status)) held += 1;
   }
   const absencesUsed = num.sum(
-    records.map((r) => absenceWeight(r.status, rule)),
+    records.map((record) => absenceWeight(record.status, rule)),
   );
 
   const remaining = num.subtract(maxAbsences, absencesUsed);
@@ -225,14 +225,15 @@ export function aggregateAttendance(
     return { subjectId: subject.id, summary, risk: attendanceRisk(summary) };
   });
   const worstRisk = perSubject.reduce<AttendanceRiskLevel>(
-    (worst, s) => (RISK_RANK[s.risk] > RISK_RANK[worst] ? s.risk : worst),
+    (worst, subjectRisk) =>
+      RISK_RANK[subjectRisk.risk] > RISK_RANK[worst] ? subjectRisk.risk : worst,
     AttendanceRiskLevel.SAFE,
   );
   const totalMaxAbsences = num.sum(
-    perSubject.map((s) => s.summary.maxAbsences),
+    perSubject.map((subjectRisk) => subjectRisk.summary.maxAbsences),
   );
   const totalAbsencesUsed = num.sum(
-    perSubject.map((s) => s.summary.absencesUsed),
+    perSubject.map((subjectRisk) => subjectRisk.summary.absencesUsed),
   );
   return {
     perSubject,

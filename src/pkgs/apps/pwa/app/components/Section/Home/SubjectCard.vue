@@ -9,30 +9,32 @@ const { screenDensity } = useTheme();
 const showCounts = computed(() => screenDensity.value !== "essencial");
 const showHeat = computed(() => screenDensity.value === "tudo");
 
-const s = computed(() => props.stat);
-const subject = computed(() => s.value.subject);
+const subject = computed(() => props.stat.subject);
 
 const credits = computed(() => subject.value.credits);
 const scheduleLabel = computed(() => {
-  const wd = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+  const weekdayLabels = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
   const days = (subject.value.schedule?.weekdays ?? [])
-    .map((d) => wd[d])
+    .map((weekday) => weekdayLabels[weekday])
     .join(" · ");
   return days;
 });
 
 const headline = computed(() => {
-  const r = s.value.restantes;
-  if (r <= 0) return "no limite de faltas";
-  return `pode faltar ${r} ${r === 1 ? "aula" : "aulas"}`;
+  const remaining = props.stat.restantes;
+  if (remaining <= 0) return "no limite de faltas";
+  return `pode faltar ${remaining} ${remaining === 1 ? "aula" : "aulas"}`;
 });
 
 const budgetLabel = computed(
-  () => `${s.value.faltasUsadas} de ${s.value.maxFaltas} faltas`,
+  () => `${props.stat.faltasUsadas} de ${props.stat.maxFaltas} faltas`,
 );
 const budgetPct = computed(() => {
-  if (s.value.maxFaltas <= 0) return "100%";
-  const used = Math.min(100, (s.value.faltasUsadas / s.value.maxFaltas) * 100);
+  if (props.stat.maxFaltas <= 0) return "100%";
+  const used = Math.min(
+    100,
+    (props.stat.faltasUsadas / props.stat.maxFaltas) * 100,
+  );
   return `${used}%`;
 });
 </script>
@@ -50,13 +52,13 @@ const budgetPct = computed(() => {
             tone="custom"
             size="md"
             bordered
-            :color="s.status.color"
-            :bg="s.status.soft"
-            :label="s.status.label"
+            :color="stat.status.color"
+            :bg="stat.status.soft"
+            :label="stat.status.label"
           />
         </div>
         <div class="sc-meta">
-          <template v-if="credits">{{ credits }} créditos · {{ s.totalHours }}h</template>
+          <template v-if="credits">{{ credits }} créditos · {{ stat.totalHours }}h</template>
           <template v-if="scheduleLabel"> · {{ scheduleLabel }}</template>
         </div>
       </div>
@@ -64,20 +66,20 @@ const budgetPct = computed(() => {
 
     <div class="sc-budget">
       <div class="sc-budget-num">
-        <div class="sc-rest" :style="{ color: s.status.color }">
-          {{ s.restantes > 0 ? s.restantes : 0 }}
+        <div class="sc-rest" :style="{ color: stat.status.color }">
+          {{ stat.restantes > 0 ? stat.restantes : 0 }}
         </div>
         <div class="sc-rest-cap">aulas que ainda<br >pode faltar</div>
       </div>
-      <div class="sc-divider" :style="{ background: s.status.color }" />
+      <div class="sc-divider" :style="{ background: stat.status.color }" />
       <UIProgressRing
-        :value="s.freqPct"
-        :color="s.status.color"
+        :value="stat.freqPct"
+        :color="stat.status.color"
         :size="72"
         :stroke="8"
       />
       <div class="sc-floor">
-        frequência atual<br >(piso {{ Math.round(s.floor * 100) }}%)
+        frequência atual<br >(piso {{ Math.round(stat.floor * 100) }}%)
       </div>
     </div>
 
@@ -86,42 +88,42 @@ const budgetPct = computed(() => {
         <span class="sc-bar-title">{{ headline }}</span>
         <span class="sc-bar-sub">{{ budgetLabel }}</span>
       </div>
-      <div class="sc-bar-track" :style="{ borderColor: s.status.color }">
+      <div class="sc-bar-track" :style="{ borderColor: stat.status.color }">
         <div
           class="sc-bar-fill"
-          :style="{ width: budgetPct, background: s.status.color }"
+          :style="{ width: budgetPct, background: stat.status.color }"
         />
       </div>
     </div>
 
     <div v-if="showCounts" class="sc-counts">
       <div class="sc-count sc-count--ok">
-        <div class="sc-count-n">{{ s.counts.present }}</div>
+        <div class="sc-count-n">{{ stat.counts.present }}</div>
         <div class="sc-count-l">presenças</div>
       </div>
       <div class="sc-count sc-count--danger">
-        <div class="sc-count-n">{{ s.counts.absent }}</div>
+        <div class="sc-count-n">{{ stat.counts.absent }}</div>
         <div class="sc-count-l">faltas</div>
       </div>
       <div class="sc-count sc-count--warn">
-        <div class="sc-count-n">{{ s.counts.late }}</div>
+        <div class="sc-count-n">{{ stat.counts.late }}</div>
         <div class="sc-count-l">atrasos</div>
       </div>
       <div class="sc-count sc-count--info">
-        <div class="sc-count-n">{{ s.counts.medical }}</div>
+        <div class="sc-count-n">{{ stat.counts.medical }}</div>
         <div class="sc-count-l">atestados</div>
       </div>
     </div>
 
     <div v-if="showHeat" class="sc-heat">
       <div class="pt-eyebrow sc-heat-title">Ritmo de presença</div>
-      <UIHeatmap :cells="s.heat" :cell-size="14" :gap="4" />
+      <UIHeatmap :cells="stat.heat" :cell-size="14" :gap="4" />
     </div>
 
     <button class="sc-media" type="button" @click="emit('notas')">
-      <template v-if="s.media != null">
+      <template v-if="stat.media != null">
         <span class="sc-media-l">média parcial</span>
-        <span class="sc-media-v">{{ s.media.toFixed(1) }}</span>
+        <span class="sc-media-v">{{ stat.media.toFixed(1) }}</span>
       </template>
       <template v-else>
         <span class="sc-media-l">avaliações</span>

@@ -20,9 +20,9 @@ export function opsForEntity(
   log: readonly OpLogEntry[],
   entity: string,
 ): OpLogEntry[] {
-  return log.filter((e) => e.entity === entity);
+  return log.filter((entry) => entry.entity === entity);
 }
 
 export function opsForId(log: readonly OpLogEntry[], id: Id): OpLogEntry[] {
-  return log.filter((e) => e.id === id);
+  return log.filter((entry) => entry.id === id);
 }

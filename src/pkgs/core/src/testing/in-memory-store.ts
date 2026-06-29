@@ -70,13 +70,13 @@ export function createInMemoryContextStore(): ContextStore {
     nodes,
     edges,
     async childrenOf(parentId) {
-      return (await nodes.list()).filter((n) => n.parentId === parentId);
+      return (await nodes.list()).filter((node) => node.parentId === parentId);
     },
     async edgesFrom(from) {
-      return (await edges.list()).filter((e) => e.from === from);
+      return (await edges.list()).filter((edge) => edge.from === from);
     },
     async edgesTo(to) {
-      return (await edges.list()).filter((e) => e.to === to);
+      return (await edges.list()).filter((edge) => edge.to === to);
     },
   };
 
@@ -89,10 +89,10 @@ export function createInMemoryContextStore(): ContextStore {
       log.push(...entries);
     },
     async since(ts: Timestamp) {
-      return log.filter((e) => e.ts >= ts);
+      return log.filter((entry) => entry.ts >= ts);
     },
     async forId(id) {
-      return log.filter((e) => e.id === id);
+      return log.filter((entry) => entry.id === id);
     },
   };
 
@@ -119,13 +119,15 @@ export function createInMemoryContextStore(): ContextStore {
   return {
     ...tx,
     async transaction(work) {
-      const snaps = snapshotables.map((r) => r.snapshot());
+      const snaps = snapshotables.map((snapshotable) =>
+        snapshotable.snapshot(),
+      );
       const logSnap = [...log];
       try {
         return await work(tx);
       } catch (error) {
-        snapshotables.forEach((r, i) => {
-          r.restore(snaps[i]);
+        snapshotables.forEach((snapshotable, index) => {
+          snapshotable.restore(snaps[index]);
         });
         log = [...logSnap];
         throw error;

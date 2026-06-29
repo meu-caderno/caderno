@@ -79,14 +79,14 @@ async function create() {
 
       <div class="onb__goals">
         <button
-          v-for="g in goals"
-          :key="g.value"
+          v-for="goalOption in goals"
+          :key="goalOption.value"
           type="button"
           class="onb__goal"
-          :class="{ 'onb__goal--on': goal === g.value }"
-          @click="goal = g.value"
+          :class="{ 'onb__goal--on': goal === goalOption.value }"
+          @click="goal = goalOption.value"
         >
-          <span class="onb__goal-icon">{{ g.icon }}</span>{{ g.label }}
+          <span class="onb__goal-icon">{{ goalOption.icon }}</span>{{ goalOption.label }}
         </button>
       </div>
 

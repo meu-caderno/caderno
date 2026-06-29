@@ -74,11 +74,11 @@ describe("store contract (in-memory)", () => {
 describe("CadernoService", () => {
   it("creates a subject and appends an oplog entry", async () => {
     const { store, svc } = await service();
-    const r = await svc.createSubject(subjectInput());
-    expect(r.ok).toBe(true);
-    if (r.ok) {
-      expect(await store.subjects.get(r.value.id)).toBeDefined();
-      expect(await store.oplog.forId(r.value.id)).toHaveLength(1);
+    const result = await svc.createSubject(subjectInput());
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(await store.subjects.get(result.value.id)).toBeDefined();
+      expect(await store.oplog.forId(result.value.id)).toHaveLength(1);
     }
   });
 
@@ -101,18 +101,20 @@ describe("CadernoService", () => {
     expect(stored?.name).toBe("Cálculo II");
     expect(stored?.floor).toBe(0.6);
     expect(
-      await store.records.where((r) => r.subjectId === created.value.id),
+      await store.records.where(
+        (record) => record.subjectId === created.value.id,
+      ),
     ).toHaveLength(1);
   });
 
   it("rejects updating a missing subject", async () => {
     const { svc } = await service();
-    const r = await svc.updateSubject({
+    const result = await svc.updateSubject({
       ...subjectInput(),
       id: "ghost" as Id,
     });
-    expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.error.code).toBe(DomainErrorCode.NOT_FOUND);
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error.code).toBe(DomainErrorCode.NOT_FOUND);
   });
 
   it("creates a context that a subject can reference", async () => {
@@ -134,13 +136,14 @@ describe("CadernoService", () => {
 
   it("rejects attendance for a missing subject", async () => {
     const { svc } = await service();
-    const r = await svc.markAttendance({
+    const result = await svc.markAttendance({
       subjectId: "nope" as Id,
       day: "2026-03-01" as DayIso,
       status: AttendanceStatus.PRESENT,
     });
-    expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.error.code).toBe(DomainErrorCode.INVARIANT_FK_MISSING);
+    expect(result.ok).toBe(false);
+    if (!result.ok)
+      expect(result.error.code).toBe(DomainErrorCode.INVARIANT_FK_MISSING);
   });
 
   it("upserts attendance for the same subject and day", async () => {
@@ -158,7 +161,7 @@ describe("CadernoService", () => {
       status: AttendanceStatus.ABSENT,
     });
     const records = await store.records.where(
-      (r) => r.subjectId === subj.value.id,
+      (record) => record.subjectId === subj.value.id,
     );
     expect(records).toHaveLength(1);
     expect(records[0]?.status).toBe(AttendanceStatus.ABSENT);
@@ -166,11 +169,12 @@ describe("CadernoService", () => {
 
   it("rejects a subject whose context does not exist", async () => {
     const { svc } = await service();
-    const r = await svc.createSubject(
+    const result = await svc.createSubject(
       subjectInput({ contextId: "nope" as Id }),
     );
-    expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.error.code).toBe(DomainErrorCode.INVARIANT_FK_MISSING);
+    expect(result.ok).toBe(false);
+    if (!result.ok)
+      expect(result.error.code).toBe(DomainErrorCode.INVARIANT_FK_MISSING);
   });
 
   const activity = (over: Partial<Activity>): Activity => ({
@@ -184,11 +188,12 @@ describe("CadernoService", () => {
 
   it("rejects an activity that prepares itself (cycle)", async () => {
     const { svc } = await service();
-    const r = await svc.upsertActivity(
+    const result = await svc.upsertActivity(
       activity({ id: "a1" as Id, preparesId: "a1" as Id }),
     );
-    expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.error.code).toBe(DomainErrorCode.INVARIANT_CYCLE);
+    expect(result.ok).toBe(false);
+    if (!result.ok)
+      expect(result.error.code).toBe(DomainErrorCode.INVARIANT_CYCLE);
   });
 
   it("rejects a prepares chain that closes a cycle", async () => {
@@ -196,11 +201,12 @@ describe("CadernoService", () => {
     await svc.upsertActivity(
       activity({ id: "a1" as Id, preparesId: "a2" as Id }),
     );
-    const r = await svc.upsertActivity(
+    const result = await svc.upsertActivity(
       activity({ id: "a2" as Id, preparesId: "a1" as Id }),
     );
-    expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.error.code).toBe(DomainErrorCode.INVARIANT_CYCLE);
+    expect(result.ok).toBe(false);
+    if (!result.ok)
+      expect(result.error.code).toBe(DomainErrorCode.INVARIANT_CYCLE);
   });
 
   it("cascades records and activities when deleting a subject", async () => {
@@ -268,9 +274,12 @@ describe("CadernoService", () => {
 
   it("rejects updating a missing library item", async () => {
     const { svc } = await service();
-    const r = await svc.updateLibraryItem({ id: "ghost" as Id, title: "X" });
-    expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.error.code).toBe(DomainErrorCode.NOT_FOUND);
+    const result = await svc.updateLibraryItem({
+      id: "ghost" as Id,
+      title: "X",
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error.code).toBe(DomainErrorCode.NOT_FOUND);
   });
 
   const node = (title: string) => ({
@@ -306,12 +315,13 @@ describe("CadernoService", () => {
       parentId: root.value.id,
     });
     if (!child.ok) throw new Error("setup failed");
-    const r = await svc.updateNode({
+    const result = await svc.updateNode({
       ...root.value,
       parentId: child.value.id,
     });
-    expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.error.code).toBe(DomainErrorCode.INVARIANT_CYCLE);
+    expect(result.ok).toBe(false);
+    if (!result.ok)
+      expect(result.error.code).toBe(DomainErrorCode.INVARIANT_CYCLE);
   });
 
   it("promotes children and drops edges when deleting a node", async () => {
@@ -338,17 +348,17 @@ describe("CadernoService", () => {
 
   it("links nodes idempotently and unlinks", async () => {
     const { store, svc } = await service();
-    const a = await svc.createNode(node("A"));
-    const b = await svc.createNode(node("B"));
-    if (!a.ok || !b.ok) throw new Error("setup failed");
+    const nodeA = await svc.createNode(node("A"));
+    const nodeB = await svc.createNode(node("B"));
+    if (!nodeA.ok || !nodeB.ok) throw new Error("setup failed");
     const first = await svc.linkNodes(
-      a.value.id,
-      b.value.id,
+      nodeA.value.id,
+      nodeB.value.id,
       EdgeKind.SOURCE_OF,
     );
     const again = await svc.linkNodes(
-      a.value.id,
-      b.value.id,
+      nodeA.value.id,
+      nodeB.value.id,
       EdgeKind.SOURCE_OF,
     );
     expect(first.ok && again.ok).toBe(true);
@@ -360,10 +370,15 @@ describe("CadernoService", () => {
 
   it("rejects linking a node to itself", async () => {
     const { svc } = await service();
-    const a = await svc.createNode(node("A"));
-    if (!a.ok) throw new Error("setup failed");
-    const r = await svc.linkNodes(a.value.id, a.value.id, EdgeKind.SOURCE_OF);
-    expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.error.code).toBe(DomainErrorCode.INVARIANT_CYCLE);
+    const nodeA = await svc.createNode(node("A"));
+    if (!nodeA.ok) throw new Error("setup failed");
+    const result = await svc.linkNodes(
+      nodeA.value.id,
+      nodeA.value.id,
+      EdgeKind.SOURCE_OF,
+    );
+    expect(result.ok).toBe(false);
+    if (!result.ok)
+      expect(result.error.code).toBe(DomainErrorCode.INVARIANT_CYCLE);
   });
 });

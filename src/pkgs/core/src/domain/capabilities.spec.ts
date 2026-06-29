@@ -27,7 +27,7 @@ describe("capability registry", () => {
     };
     const engine: CapabilityEngine<number, number> = {
       manifest: manifest("double"),
-      run: (n) => n * 2,
+      run: (value) => value * 2,
     };
     registry.register(source);
     registry.register(engine);

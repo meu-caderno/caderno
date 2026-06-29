@@ -28,16 +28,19 @@ export interface DegreeProgress {
 }
 
 export function degreeProgress(buckets: ReadonlyArray<Bucket>): DegreeProgress {
-  const mapped = buckets.map((b) => ({
-    id: b.id,
-    name: b.name,
-    done: b.done,
-    goal: b.goal,
-    ratio: b.goal === 0 ? 1 : num.clamp(num.divide(b.done, b.goal), 0, 1),
-    complete: b.done >= b.goal,
+  const mapped = buckets.map((bucket) => ({
+    id: bucket.id,
+    name: bucket.name,
+    done: bucket.done,
+    goal: bucket.goal,
+    ratio:
+      bucket.goal === 0
+        ? 1
+        : num.clamp(num.divide(bucket.done, bucket.goal), 0, 1),
+    complete: bucket.done >= bucket.goal,
   }));
-  const totalDone = num.sum(buckets.map((b) => b.done));
-  const totalGoal = num.sum(buckets.map((b) => b.goal));
+  const totalDone = num.sum(buckets.map((bucket) => bucket.done));
+  const totalGoal = num.sum(buckets.map((bucket) => bucket.goal));
   return {
     buckets: mapped,
     totalDone,
@@ -63,7 +66,7 @@ export function activeTerm(
   terms: ReadonlyArray<Term>,
   today: DayIso,
 ): Term | null {
-  return terms.find((t) => isInTerm(t, today)) ?? null;
+  return terms.find((term) => isInTerm(term, today)) ?? null;
 }
 
 export function termProgress(term: Term, today: DayIso): number {

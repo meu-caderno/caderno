@@ -13,7 +13,7 @@ const props = withDefaults(
   { variant: "more", expanded: false, color: "var(--pt-info)" },
 );
 
-defineEmits<(e: "toggle", ev: Event) => void>();
+defineEmits<(eventName: "toggle", payload: Event) => void>();
 
 const iconName = computed<IconName>(() => {
   if (props.variant === "advanced") {

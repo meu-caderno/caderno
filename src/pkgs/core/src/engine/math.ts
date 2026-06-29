@@ -1,19 +1,19 @@
 import Decimal from "decimal.js";
 
-export function add(a: number, b: number): number {
-  return new Decimal(a).plus(b).toNumber();
+export function add(left: number, right: number): number {
+  return new Decimal(left).plus(right).toNumber();
 }
 
-export function subtract(a: number, b: number): number {
-  return new Decimal(a).minus(b).toNumber();
+export function subtract(left: number, right: number): number {
+  return new Decimal(left).minus(right).toNumber();
 }
 
-export function multiply(a: number, b: number): number {
-  return new Decimal(a).times(b).toNumber();
+export function multiply(left: number, right: number): number {
+  return new Decimal(left).times(right).toNumber();
 }
 
-export function divide(a: number, b: number): number {
-  return new Decimal(a).dividedBy(b).toNumber();
+export function divide(left: number, right: number): number {
+  return new Decimal(left).dividedBy(right).toNumber();
 }
 
 export function sum(values: readonly number[]): number {

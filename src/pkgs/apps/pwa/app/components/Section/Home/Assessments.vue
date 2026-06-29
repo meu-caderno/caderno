@@ -10,7 +10,10 @@ const { service } = useCadernoService();
 const assessments = computed(() => props.subject.assessments ?? []);
 const balanced = computed(() => weightsBalanced(assessments.value));
 const totalPct = computed(() =>
-  Math.round(assessments.value.reduce((s, a) => s + a.weight, 0) * 100),
+  Math.round(
+    assessments.value.reduce((sum, assessment) => sum + assessment.weight, 0) *
+      100,
+  ),
 );
 const average = computed(() => weightedAverage(assessments.value));
 
@@ -20,11 +23,11 @@ const grade = ref<number | null>(null);
 const adding = ref(false);
 
 async function add() {
-  const n = name.value.trim();
-  if (!n || weight.value == null || adding.value) return;
+  const trimmedName = name.value.trim();
+  if (!trimmedName || weight.value == null || adding.value) return;
   adding.value = true;
   await service.addAssessment(props.subject.id, {
-    name: n,
+    name: trimmedName,
     weight: weight.value / 100,
     grade: grade.value != null ? (grade.value as Grade) : undefined,
   });
@@ -62,10 +65,10 @@ function onGrade(id: Id, event: Event) {
       </div>
 
       <div v-if="assessments.length" class="as__list">
-        <div v-for="a in assessments" :key="a.id" class="as__item">
+        <div v-for="assessment in assessments" :key="assessment.id" class="as__item">
           <div class="as__item-info">
-            <span class="as__item-name">{{ a.name }}</span>
-            <span class="as__item-weight">peso {{ Math.round(a.weight * 100) }}%</span>
+            <span class="as__item-name">{{ assessment.name }}</span>
+            <span class="as__item-weight">peso {{ Math.round(assessment.weight * 100) }}%</span>
           </div>
           <input
             class="as__grade"
@@ -73,9 +76,9 @@ function onGrade(id: Id, event: Event) {
             min="0"
             max="10"
             step="0.1"
-            :value="a.grade ?? ''"
+            :value="assessment.grade ?? ''"
             placeholder="nota"
-            @change="onGrade(a.id, $event)"
+            @change="onGrade(assessment.id, $event)"
           />
         </div>
       </div>

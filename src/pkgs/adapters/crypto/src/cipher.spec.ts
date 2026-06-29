@@ -21,11 +21,11 @@ describe("libsodium cipher", () => {
   });
 
   it("produces a different envelope each time (random nonce)", async () => {
-    const a = await cipher.encrypt("same");
-    const b = await cipher.encrypt("same");
-    expect(a).not.toBe(b);
-    expect(await cipher.decrypt(a)).toBe("same");
-    expect(await cipher.decrypt(b)).toBe("same");
+    const firstEnvelope = await cipher.encrypt("same");
+    const secondEnvelope = await cipher.encrypt("same");
+    expect(firstEnvelope).not.toBe(secondEnvelope);
+    expect(await cipher.decrypt(firstEnvelope)).toBe("same");
+    expect(await cipher.decrypt(secondEnvelope)).toBe("same");
   });
 
   it("loads or creates a key from a KeyStore", async () => {

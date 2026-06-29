@@ -49,7 +49,10 @@ export function expandRecurrence(
         dueDate,
         seriesId,
         status: ActivityStatus.OPEN,
-        subtasks: activity.subtasks?.map((s) => ({ ...s, done: false })),
+        subtasks: activity.subtasks?.map((subtask) => ({
+          ...subtask,
+          done: false,
+        })),
       };
     });
   return out.length > 0 ? out : [{ ...activity, seriesId }];
@@ -73,25 +76,31 @@ export function nextRecurrence(
     dueDate: addDays(activity.dueDate, interval),
     seriesId: activity.seriesId ?? activity.id,
     status: ActivityStatus.OPEN,
-    subtasks: activity.subtasks?.map((s) => ({ ...s, done: false })),
+    subtasks: activity.subtasks?.map((subtask) => ({
+      ...subtask,
+      done: false,
+    })),
   };
 }
 
 export function syncPreparesLinks(
   activities: ReadonlyArray<Activity>,
 ): Activity[] {
-  const byId = new Map(activities.map((a) => [a.id, a]));
-  return activities.map((a) => {
-    if (!a.preparesId || a.gapDays === undefined) return a;
-    const target = byId.get(a.preparesId);
-    if (!target) return a;
-    if (!target.dueDate) return { ...a, dueDate: undefined };
-    return { ...a, dueDate: derivePrepDueDate(target.dueDate, a.gapDays) };
+  const byId = new Map(activities.map((activity) => [activity.id, activity]));
+  return activities.map((activity) => {
+    if (!activity.preparesId || activity.gapDays === undefined) return activity;
+    const target = byId.get(activity.preparesId);
+    if (!target) return activity;
+    if (!target.dueDate) return { ...activity, dueDate: undefined };
+    return {
+      ...activity,
+      dueDate: derivePrepDueDate(target.dueDate, activity.gapDays),
+    };
   });
 }
 
 export function inboxItems(activities: ReadonlyArray<Activity>): Activity[] {
-  return activities.filter((a) => a.root === Root.INBOX);
+  return activities.filter((activity) => activity.root === Root.INBOX);
 }
 
 export function triage(
@@ -146,14 +155,15 @@ export function groupByDue(
     [DueBucket.LATER]: [],
     [DueBucket.NONE]: [],
   };
-  for (const a of activities) groups[dueBucket(a, today, soonDays)].push(a);
+  for (const activity of activities)
+    groups[dueBucket(activity, today, soonDays)].push(activity);
   return groups;
 }
 
 export function sortByDue(activities: ReadonlyArray<Activity>): Activity[] {
-  return activities.slice().sort((a, b) => {
-    if (!a.dueDate) return 1;
-    if (!b.dueDate) return -1;
-    return a.dueDate.localeCompare(b.dueDate);
+  return activities.slice().sort((left, right) => {
+    if (!left.dueDate) return 1;
+    if (!right.dueDate) return -1;
+    return left.dueDate.localeCompare(right.dueDate);
   });
 }

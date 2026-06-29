@@ -33,11 +33,11 @@ export function usePomodoro() {
   }
 
   const phaseLabel = computed(() => PHASE_LABEL[phase.value]);
-  const clock = computed(() => {
+  const timeLabel = computed(() => {
     const total = Math.max(0, remaining.value);
-    const m = Math.floor(total / 60);
-    const s = total % 60;
-    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+    const minutes = Math.floor(total / 60);
+    const seconds = total % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   });
   const ratio = computed(() => {
     const full = minutesFor(phase.value) * 60;
@@ -123,7 +123,7 @@ export function usePomodoro() {
     remaining,
     running,
     completedFocus,
-    clock,
+    timeLabel,
     ratio,
     focusMin,
     breakMin,

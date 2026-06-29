@@ -3,10 +3,10 @@ import type { Color, Id, Subject, Timestamp } from "../domain";
 import { EntityName } from "../domain";
 import { MergeStrategy, mergeCollection } from "./merge";
 
-const id = (s: string) => s as Id;
+const id = (value: string) => value as Id;
 const ts = 1 as Timestamp;
-const subject = (i: string, name: string): Subject => ({
-  id: id(i),
+const subject = (identifier: string, name: string): Subject => ({
+  id: id(identifier),
   contextId: id("ctx"),
   name,
   color: "#c0392b" as Color,
@@ -50,6 +50,6 @@ describe("mergeCollection", () => {
       MergeStrategy.REPLACE,
     );
     expect(merged).toHaveLength(1);
-    expect(ops.some((o) => o.op === "DELETE")).toBe(true);
+    expect(ops.some((operation) => operation.op === "DELETE")).toBe(true);
   });
 });

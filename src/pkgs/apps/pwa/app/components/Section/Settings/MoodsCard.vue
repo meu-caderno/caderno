@@ -7,7 +7,7 @@ const creating = ref(false);
 const removing = ref<string | null>(null);
 
 const removingLabel = computed(
-  () => allMoods.value.find((m) => m.key === removing.value)?.label ?? "",
+  () => allMoods.value.find((mood) => mood.key === removing.value)?.label ?? "",
 );
 
 function choose(key: string) {

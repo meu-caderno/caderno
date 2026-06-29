@@ -13,8 +13,8 @@ import {
   triage,
 } from "./activities";
 
-const d = (s: string) => s as DayIso;
-const id = (s: string) => s as Id;
+const asDay = (value: string) => value as DayIso;
+const id = (value: string) => value as Id;
 const act = (over: Partial<Activity> = {}): Activity => ({
   id: id("act"),
   title: "t",
@@ -27,12 +27,12 @@ const act = (over: Partial<Activity> = {}): Activity => ({
 describe("expandRecurrence", () => {
   it("weekly series shares seriesId and mints fresh ids", () => {
     const occ = expandRecurrence(
-      act({ dueDate: d("2026-03-02"), recurrence: Recurrence.WEEKLY }),
-      { from: d("2026-03-01"), to: d("2026-03-30") },
-      (i) => id(`gen-${i}`),
+      act({ dueDate: asDay("2026-03-02"), recurrence: Recurrence.WEEKLY }),
+      { from: asDay("2026-03-01"), to: asDay("2026-03-30") },
+      (index) => id(`gen-${index}`),
     );
     expect(occ).toHaveLength(5);
-    expect(new Set(occ.map((o) => o.seriesId)).size).toBe(1);
+    expect(new Set(occ.map((occurrence) => occurrence.seriesId)).size).toBe(1);
     expect(occ[1]?.id).not.toBe(occ[0]?.id);
   });
 
@@ -40,7 +40,7 @@ describe("expandRecurrence", () => {
     expect(
       expandRecurrence(
         act(),
-        { from: d("2026-03-01"), to: d("2026-03-30") },
+        { from: asDay("2026-03-01"), to: asDay("2026-03-30") },
         () => id("x"),
       ),
     ).toHaveLength(1);
@@ -50,7 +50,7 @@ describe("expandRecurrence", () => {
 describe("nextRecurrence", () => {
   it("advances a weekly activity by 7 days and shares the series", () => {
     const next = nextRecurrence(
-      act({ dueDate: d("2026-03-02"), recurrence: Recurrence.WEEKLY }),
+      act({ dueDate: asDay("2026-03-02"), recurrence: Recurrence.WEEKLY }),
       id("gen"),
     );
     expect(next?.dueDate).toBe("2026-03-09");
@@ -60,7 +60,7 @@ describe("nextRecurrence", () => {
 
   it("advances a biweekly activity by 14 days", () => {
     const next = nextRecurrence(
-      act({ dueDate: d("2026-03-02"), recurrence: Recurrence.BIWEEKLY }),
+      act({ dueDate: asDay("2026-03-02"), recurrence: Recurrence.BIWEEKLY }),
       id("gen"),
     );
     expect(next?.dueDate).toBe("2026-03-16");
@@ -68,7 +68,7 @@ describe("nextRecurrence", () => {
 
   it("returns null when not recurring or without a due date", () => {
     expect(
-      nextRecurrence(act({ dueDate: d("2026-03-02") }), id("x")),
+      nextRecurrence(act({ dueDate: asDay("2026-03-02") }), id("x")),
     ).toBeNull();
     expect(
       nextRecurrence(act({ recurrence: Recurrence.WEEKLY }), id("x")),
@@ -78,7 +78,7 @@ describe("nextRecurrence", () => {
   it("resets subtasks on the next occurrence", () => {
     const next = nextRecurrence(
       act({
-        dueDate: d("2026-03-02"),
+        dueDate: asDay("2026-03-02"),
         recurrence: Recurrence.WEEKLY,
         subtasks: [{ id: id("s1"), text: "ler", done: true }],
       }),
@@ -90,30 +90,32 @@ describe("nextRecurrence", () => {
 
 describe("prepares link", () => {
   it("derivePrepDueDate subtracts the gap", () => {
-    expect(derivePrepDueDate(d("2026-03-10"), 3)).toBe("2026-03-07");
+    expect(derivePrepDueDate(asDay("2026-03-10"), 3)).toBe("2026-03-07");
   });
 
   it("syncPreparesLinks follows the target's dueDate", () => {
-    const target = act({ id: id("exam"), dueDate: d("2026-03-10") });
+    const target = act({ id: id("exam"), dueDate: asDay("2026-03-10") });
     const prep = act({ id: id("study"), preparesId: id("exam"), gapDays: 3 });
     expect(
-      syncPreparesLinks([target, prep]).find((a) => a.id === "study")?.dueDate,
+      syncPreparesLinks([target, prep]).find(
+        (activity) => activity.id === "study",
+      )?.dueDate,
     ).toBe("2026-03-07");
   });
 });
 
 describe("buckets / inbox / sort", () => {
-  const today = d("2026-03-10");
+  const today = asDay("2026-03-10");
 
   it("dueBucket classifies", () => {
-    expect(dueBucket(act({ dueDate: d("2026-03-08") }), today)).toBe(
+    expect(dueBucket(act({ dueDate: asDay("2026-03-08") }), today)).toBe(
       DueBucket.OVERDUE,
     );
     expect(dueBucket(act({ dueDate: today }), today)).toBe(DueBucket.TODAY);
-    expect(dueBucket(act({ dueDate: d("2026-03-12") }), today)).toBe(
+    expect(dueBucket(act({ dueDate: asDay("2026-03-12") }), today)).toBe(
       DueBucket.SOON,
     );
-    expect(dueBucket(act({ dueDate: d("2026-03-30") }), today)).toBe(
+    expect(dueBucket(act({ dueDate: asDay("2026-03-30") }), today)).toBe(
       DueBucket.LATER,
     );
     expect(
@@ -130,8 +132,8 @@ describe("buckets / inbox / sort", () => {
       }).root,
     ).toBe(Root.CONTEXT);
     const sorted = sortByDue([
-      act({ dueDate: d("2026-03-20") }),
-      act({ dueDate: d("2026-03-05") }),
+      act({ dueDate: asDay("2026-03-20") }),
+      act({ dueDate: asDay("2026-03-05") }),
     ]);
     expect(sorted[0]?.dueDate).toBe("2026-03-05");
   });

@@ -41,11 +41,11 @@ export interface MergeResult {
 export function indexById<T extends { id: Id }>(
   items: readonly T[],
 ): Map<Id, T> {
-  return new Map(items.map((i) => [i.id, i]));
+  return new Map(items.map((item) => [item.id, item]));
 }
 
-function sameValue(a: unknown, b: unknown): boolean {
-  return JSON.stringify(a) === JSON.stringify(b);
+function sameValue(left: unknown, right: unknown): boolean {
+  return JSON.stringify(left) === JSON.stringify(right);
 }
 
 export function mergeCollection<T extends { id: Id }>(
@@ -56,7 +56,7 @@ export function mergeCollection<T extends { id: Id }>(
   strategy: MergeStrategy = MergeStrategy.UPSERT,
 ): { merged: T[]; ops: OpLogEntry[] } {
   const merged = indexById(current);
-  const incomingIds = new Set(incoming.map((i) => i.id));
+  const incomingIds = new Set(incoming.map((item) => item.id));
   const ops: OpLogEntry[] = [];
 
   for (const item of incoming) {

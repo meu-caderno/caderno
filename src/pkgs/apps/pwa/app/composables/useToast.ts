@@ -17,7 +17,7 @@ export function useToast() {
     return id;
   }
   function dismiss(id: number) {
-    toasts.value = toasts.value.filter((t) => t.id !== id);
+    toasts.value = toasts.value.filter((toast) => toast.id !== id);
   }
   return { toasts, toast, dismiss };
 }

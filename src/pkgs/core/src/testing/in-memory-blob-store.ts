@@ -76,12 +76,14 @@ export function createInMemoryBlobStore(): BlobStore {
   return {
     ...tx,
     async transaction(work) {
-      const snaps = snapshotables.map((s) => s.snapshot());
+      const snaps = snapshotables.map((snapshotable) =>
+        snapshotable.snapshot(),
+      );
       try {
         return await work(tx);
       } catch (error) {
-        snapshotables.forEach((s, i) => {
-          s.restore(snaps[i]);
+        snapshotables.forEach((snapshotable, index) => {
+          snapshotable.restore(snaps[index]);
         });
         throw error;
       }

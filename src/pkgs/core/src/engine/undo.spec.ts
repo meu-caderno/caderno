@@ -7,7 +7,7 @@ interface Thing {
   id: Id;
   v: number;
 }
-const id = (s: string) => s as Id;
+const id = (value: string) => value as Id;
 
 describe("invert", () => {
   it("inverts a create (no before) into a delete", () => {

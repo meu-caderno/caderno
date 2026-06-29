@@ -63,13 +63,13 @@ async function save() {
       <UIField label="Avaliação">
         <div class="item-form__stars">
           <button
-            v-for="n in 5"
-            :key="n"
+            v-for="starValue in 5"
+            :key="starValue"
             type="button"
             class="item-form__star"
-            :class="{ 'item-form__star--on': n <= stars }"
-            :aria-label="`${n} estrelas`"
-            @click="setStars(n)"
+            :class="{ 'item-form__star--on': starValue <= stars }"
+            :aria-label="`${starValue} estrelas`"
+            @click="setStars(starValue)"
           >
             ★
           </button>

@@ -90,9 +90,9 @@ describe("createCaderno", () => {
   it("starts with no plugins, only the storage capability", async () => {
     const caderno = await createCaderno(config());
     expect(caderno.plugins).toHaveLength(0);
-    expect(caderno.capabilities.manifests().map((m) => m.id)).toEqual([
-      "storage:memory",
-    ]);
+    expect(
+      caderno.capabilities.manifests().map((manifest) => manifest.id),
+    ).toEqual(["storage:memory"]);
   });
 
   it("invokes lifecycle hooks that plugins subscribe to", async () => {

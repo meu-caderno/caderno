@@ -96,7 +96,7 @@ export function deriveStats(
   const summary = computeAttendance(subject, { floor: contextFloor });
   const heat = (subject.records ?? [])
     .slice(-24)
-    .map((r) => HEAT_BY_STATUS[r.status]);
+    .map((record) => HEAT_BY_STATUS[record.status]);
   return {
     subject,
     summary,
@@ -140,12 +140,17 @@ export function useCaderno() {
   const contexts = computed(() => {
     const focus = focusIds.value;
     return [...allContexts.value]
-      .filter((c) => !c.archived)
+      .filter((context) => !context.archived)
       .filter(
-        (c) =>
-          focus.length === 0 || focus.includes(c.id) || c.id === activeId.value,
+        (context) =>
+          focus.length === 0 ||
+          focus.includes(context.id) ||
+          context.id === activeId.value,
       )
-      .sort((a, b) => Number(b.pinned ?? false) - Number(a.pinned ?? false));
+      .sort(
+        (left, right) =>
+          Number(right.pinned ?? false) - Number(left.pinned ?? false),
+      );
   });
 
   onMounted(async () => {
@@ -172,48 +177,55 @@ export function useCaderno() {
 
   watchEffect(() => {
     const available = contexts.value;
-    const active = available.find((c) => c.id === activeId.value);
+    const active = available.find((context) => context.id === activeId.value);
     if (!active && available.length) {
       activeId.value = available[0]?.id ?? null;
     }
   });
 
   const context = computed(
-    () => contexts.value.find((c) => c.id === activeId.value) ?? null,
+    () =>
+      contexts.value.find((context) => context.id === activeId.value) ?? null,
   );
 
   const subjects = computed<Subject[]>(() =>
     allSubjects.value
-      .filter((s) => s.contextId === activeId.value)
-      .map((s) => ({ ...s, records: recordsOf(allRecords.value, s.id) })),
+      .filter((subject) => subject.contextId === activeId.value)
+      .map((subject) => ({
+        ...subject,
+        records: recordsOf(allRecords.value, subject.id),
+      })),
   );
 
   const activities = computed(() =>
     allActivities.value.filter(
-      (a) => !a.contextId || a.contextId === activeId.value,
+      (activity) =>
+        !activity.contextId || activity.contextId === activeId.value,
     ),
   );
 
   const stats = computed(() =>
-    subjects.value.map((s) => deriveStats(s, context.value?.attendanceFloor)),
+    subjects.value.map((subject) =>
+      deriveStats(subject, context.value?.attendanceFloor),
+    ),
   );
 
   const roll = computed<TodayClass[]>(() => {
     const weekday = parseISO(today.value).getDay();
     return subjects.value
-      .filter((s) => s.schedule?.weekdays?.includes(weekday))
-      .map((s) => {
-        const st =
-          stats.value.find((x) => x.subject.id === s.id) ??
-          deriveStats(s, context.value?.attendanceFloor);
-        const block = s.schedule?.blocks?.[0];
+      .filter((subject) => subject.schedule?.weekdays?.includes(weekday))
+      .map((subject) => {
+        const subjectStats =
+          stats.value.find((entry) => entry.subject.id === subject.id) ??
+          deriveStats(subject, context.value?.attendanceFloor);
+        const block = subject.schedule?.blocks?.[0];
         return {
-          subject: s,
-          stats: st,
+          subject,
+          stats: subjectStats,
           block: block ? `${block.start}–${block.end}` : undefined,
           marked:
-            (s.records ?? []).find((r) => r.day === today.value)?.status ??
-            null,
+            (subject.records ?? []).find((record) => record.day === today.value)
+              ?.status ?? null,
         };
       });
   });
@@ -221,13 +233,16 @@ export function useCaderno() {
   const pendingActivities = computed(() =>
     sortByDue(
       activities.value.filter(
-        (a) => a.status === ActivityStatus.OPEN && a.root !== Root.INBOX,
+        (activity) =>
+          activity.status === ActivityStatus.OPEN &&
+          activity.root !== Root.INBOX,
       ),
     ),
   );
   const inboxItems = computed(() =>
     allActivities.value.filter(
-      (a) => a.status === ActivityStatus.OPEN && a.root === Root.INBOX,
+      (activity) =>
+        activity.status === ActivityStatus.OPEN && activity.root === Root.INBOX,
     ),
   );
 
@@ -237,17 +252,17 @@ export function useCaderno() {
       0,
     );
     const completedActivities = activities.value.filter(
-      (a) => a.status === ActivityStatus.DONE,
+      (activity) => activity.status === ActivityStatus.DONE,
     ).length;
     const activeDays = [
       ...new Set(
         allRecords.value
           .filter(
-            (r) =>
-              r.status === AttendanceStatus.PRESENT ||
-              r.status === AttendanceStatus.LATE,
+            (record) =>
+              record.status === AttendanceStatus.PRESENT ||
+              record.status === AttendanceStatus.LATE,
           )
-          .map((r) => r.day),
+          .map((record) => record.day),
       ),
     ] as DayIso[];
     const xp = totalXp({ presences, completedActivities });

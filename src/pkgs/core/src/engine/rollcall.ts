@@ -21,11 +21,15 @@ export function sessionsOn(
 ): Session[] {
   return subjects
     .filter(
-      (s) =>
-        s.schedule != null &&
-        expandSchedule(s.schedule, { from: day, to: day }).length > 0,
+      (subject) =>
+        subject.schedule != null &&
+        expandSchedule(subject.schedule, { from: day, to: day }).length > 0,
     )
-    .map((s) => ({ subjectId: s.id, day, blocks: s.schedule?.blocks ?? [] }));
+    .map((subject) => ({
+      subjectId: subject.id,
+      day,
+      blocks: subject.schedule?.blocks ?? [],
+    }));
 }
 
 export function nextOccurrences(
@@ -58,17 +62,17 @@ export function effectiveLoad(
   subjects: ReadonlyArray<Pick<Subject, "id" | "schedule" | "records">>,
   range: DateRange,
 ): SessionLoad[] {
-  return subjects.map((s) => {
-    const scheduledDays = s.schedule
-      ? new Set<string>(expandSchedule(s.schedule, range))
+  return subjects.map((subject) => {
+    const scheduledDays = subject.schedule
+      ? new Set<string>(expandSchedule(subject.schedule, range))
       : new Set<string>();
-    const records: AttendanceRecord[] = s.records ?? [];
+    const records: AttendanceRecord[] = subject.records ?? [];
     const canceled = records.filter(
-      (r) => REDUCES.has(r.status) && scheduledDays.has(r.day),
+      (record) => REDUCES.has(record.status) && scheduledDays.has(record.day),
     ).length;
     const scheduled = scheduledDays.size;
     return {
-      subjectId: s.id,
+      subjectId: subject.id,
       scheduled,
       canceled,
       effective: Math.max(0, scheduled - canceled),

@@ -20,20 +20,20 @@ describe("engine properties", () => {
           day: "2026-01-01" as DayIso,
           status,
         }));
-        const s = computeAttendance(
+        const summary = computeAttendance(
           { hoursPerClass: 1, classesPerSession: 1, credits: 4, records: recs },
           { floor: 0.75 },
         );
-        return s.frequencyPct >= 0 && s.frequencyPct <= 100;
+        return summary.frequencyPct >= 0 && summary.frequencyPct <= 100;
       }),
     );
   });
 
   it("addDays is reversible", () => {
     fc.assert(
-      fc.property(fc.integer({ min: -3650, max: 3650 }), (n) => {
+      fc.property(fc.integer({ min: -3650, max: 3650 }), (offset) => {
         const base = "2026-06-15" as DayIso;
-        return addDays(addDays(base, n), -n) === base;
+        return addDays(addDays(base, offset), -offset) === base;
       }),
     );
   });

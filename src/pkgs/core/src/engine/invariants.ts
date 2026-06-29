@@ -21,11 +21,21 @@ export function overlappingTerms(terms: readonly Term[]): [Term, Term][] {
       term.start !== undefined && term.end !== undefined,
   );
   const pairs: [Term, Term][] = [];
-  for (let i = 0; i < dated.length; i += 1) {
-    for (let j = i + 1; j < dated.length; j += 1) {
-      const a = dated[i];
-      const b = dated[j];
-      if (a && b && a.start <= b.end && b.start <= a.end) pairs.push([a, b]);
+  for (let firstIndex = 0; firstIndex < dated.length; firstIndex += 1) {
+    for (
+      let secondIndex = firstIndex + 1;
+      secondIndex < dated.length;
+      secondIndex += 1
+    ) {
+      const firstTerm = dated[firstIndex];
+      const secondTerm = dated[secondIndex];
+      if (
+        firstTerm &&
+        secondTerm &&
+        firstTerm.start <= secondTerm.end &&
+        secondTerm.start <= firstTerm.end
+      )
+        pairs.push([firstTerm, secondTerm]);
     }
   }
   return pairs;

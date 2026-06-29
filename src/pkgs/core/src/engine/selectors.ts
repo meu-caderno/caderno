@@ -45,6 +45,6 @@ export function selectAtRiskSubjects(
   options: AttendanceOptions = {},
 ): SubjectAttendanceRisk[] {
   return aggregateAttendance(subjects, options).perSubject.filter(
-    (s) => s.risk !== AttendanceRiskLevel.SAFE,
+    (subjectRisk) => subjectRisk.risk !== AttendanceRiskLevel.SAFE,
   );
 }
