@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Bucket, Context, Id } from "@meu-caderno/core";
+import { reorderByEdge, type SortablePayload } from "~/utils/sortable";
 
 const props = defineProps<{ context: Context }>();
 const emit = defineEmits<{ done: []; cancel: [] }>();
@@ -45,6 +46,15 @@ async function applyTemplate() {
 function removeBucket(id: Id) {
   buckets.value = buckets.value.filter((bucket) => bucket.id !== id);
 }
+function onReorderBuckets({ fromId, toId, edge }: SortablePayload) {
+  buckets.value = reorderByEdge(
+    buckets.value,
+    fromId,
+    toId,
+    edge,
+    (bucket) => bucket.id,
+  );
+}
 
 async function save() {
   if (saving.value) return;
@@ -72,49 +82,53 @@ async function save() {
         Sem metas ainda. Crie baldes ou use o modelo de integralização.
       </div>
 
-      <div
-        v-for="bucket in buckets"
-        :key="bucket.id"
-        class="goals-manager__row"
-      >
-        <input
-          v-model="bucket.name"
-          class="goals-manager__input goals-manager__name"
-          type="text"
-          placeholder="Nome do balde"
-        />
-        <div class="goals-manager__nums">
-          <input
-            v-model.number="bucket.done"
-            class="goals-manager__input goals-manager__num"
-            type="number"
-            min="0"
-            aria-label="Feito"
-          />
-          <span class="goals-manager__slash">/</span>
-          <input
-            v-model.number="bucket.goal"
-            class="goals-manager__input goals-manager__num"
-            type="number"
-            min="0"
-            aria-label="Meta"
-          />
-          <input
-            v-model="bucket.unit"
-            class="goals-manager__input goals-manager__unit"
-            type="text"
-            placeholder="un."
-          />
-          <button
-            type="button"
-            class="goals-manager__x"
-            aria-label="Remover balde"
-            @click="removeBucket(bucket.id)"
-          >
-            <UIIcon icon="x" :size="14" />
-          </button>
-        </div>
-      </div>
+      <UISortable @reorder="onReorderBuckets">
+        <UISortableItem
+          v-for="bucket in buckets"
+          :id="bucket.id"
+          :key="bucket.id"
+        >
+          <div class="goals-manager__row">
+            <input
+              v-model="bucket.name"
+              class="goals-manager__input goals-manager__name"
+              type="text"
+              placeholder="Nome do balde"
+            />
+            <div class="goals-manager__nums">
+              <input
+                v-model.number="bucket.done"
+                class="goals-manager__input goals-manager__num"
+                type="number"
+                min="0"
+                aria-label="Feito"
+              />
+              <span class="goals-manager__slash">/</span>
+              <input
+                v-model.number="bucket.goal"
+                class="goals-manager__input goals-manager__num"
+                type="number"
+                min="0"
+                aria-label="Meta"
+              />
+              <input
+                v-model="bucket.unit"
+                class="goals-manager__input goals-manager__unit"
+                type="text"
+                placeholder="un."
+              />
+              <button
+                type="button"
+                class="goals-manager__x"
+                aria-label="Remover balde"
+                @click="removeBucket(bucket.id)"
+              >
+                <UIIcon icon="x" :size="14" />
+              </button>
+            </div>
+          </div>
+        </UISortableItem>
+      </UISortable>
 
       <div class="goals-manager__tools">
         <UIButton

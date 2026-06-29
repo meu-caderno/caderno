@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { HOME_WIDGETS, useLayout } from "~/composables/useLayout";
 import { NAV_ITEMS, PINNED_NAV_KEYS } from "~/composables/useNav";
+import { reorderByEdge, type SortablePayload } from "~/utils/sortable";
 
 const {
   homeWidgets,
@@ -13,6 +14,9 @@ const {
   moveWidget,
   moveTab,
   moveRail,
+  reorderWidgets,
+  reorderTabs,
+  reorderRail,
 } = useLayout();
 
 const widgetKeys = HOME_WIDGETS.map((widget) => widget.key);
@@ -38,6 +42,20 @@ function split(list: string[] | null, allKeys: string[]) {
 const widgets = computed(() => split(homeWidgets.value, widgetKeys));
 const tabs = computed(() => split(tabItems.value, navKeys));
 const rails = computed(() => split(railItems.value, navKeys));
+
+const same = (key: string) => key;
+
+function onReorderWidgets({ fromId, toId, edge }: SortablePayload) {
+  reorderWidgets(
+    reorderByEdge(widgets.value.visible, fromId, toId, edge, same),
+  );
+}
+function onReorderTabs({ fromId, toId, edge }: SortablePayload) {
+  reorderTabs(reorderByEdge(tabs.value.visible, fromId, toId, edge, same));
+}
+function onReorderRail({ fromId, toId, edge }: SortablePayload) {
+  reorderRail(reorderByEdge(rails.value.visible, fromId, toId, edge, same));
+}
 </script>
 
 <template>
@@ -45,43 +63,47 @@ const rails = computed(() => split(railItems.value, navKeys));
     <div class="layout-card__head">
       <h2 class="pt-hand layout-card__title">Layout</h2>
       <p class="layout-card__sub">
-        Mostre, esconda e reordene a Home e a navegação.
+        Arraste pela alça (ou use ↑/↓) para reordenar; ligue/desligue à direita.
       </p>
     </div>
 
     <div class="layout-card__group">
       <span class="pt-eyebrow">Widgets da Home</span>
-      <div
-        v-for="(key, index) in widgets.visible"
-        :key="key"
-        class="layout-card__row"
-      >
-        <div class="layout-card__move">
-          <button
-            type="button"
-            class="layout-card__arrow"
-            :disabled="index === 0"
-            aria-label="Subir"
-            @click="moveWidget(key, widgetKeys, -1)"
-          >
-            <UIIcon icon="chevron-up" :size="14" />
-          </button>
-          <button
-            type="button"
-            class="layout-card__arrow"
-            :disabled="index === widgets.visible.length - 1"
-            aria-label="Descer"
-            @click="moveWidget(key, widgetKeys, 1)"
-          >
-            <UIIcon icon="chevron-down" :size="14" />
-          </button>
-        </div>
-        <span class="layout-card__label">{{ widgetLabel(key) }}</span>
-        <UISwitch
-          :model-value="true"
-          @update:model-value="toggleWidget(key, widgetKeys)"
-        />
-      </div>
+      <UISortable @reorder="onReorderWidgets">
+        <UISortableItem
+          v-for="(key, index) in widgets.visible"
+          :id="key"
+          :key="key"
+        >
+          <div class="layout-card__rowinner">
+            <div class="layout-card__move">
+              <button
+                type="button"
+                class="layout-card__arrow"
+                :disabled="index === 0"
+                aria-label="Subir"
+                @click="moveWidget(key, widgetKeys, -1)"
+              >
+                <UIIcon icon="chevron-up" :size="14" />
+              </button>
+              <button
+                type="button"
+                class="layout-card__arrow"
+                :disabled="index === widgets.visible.length - 1"
+                aria-label="Descer"
+                @click="moveWidget(key, widgetKeys, 1)"
+              >
+                <UIIcon icon="chevron-down" :size="14" />
+              </button>
+            </div>
+            <span class="layout-card__label">{{ widgetLabel(key) }}</span>
+            <UISwitch
+              :model-value="true"
+              @update:model-value="toggleWidget(key, widgetKeys)"
+            />
+          </div>
+        </UISortableItem>
+      </UISortable>
       <div
         v-for="key in widgets.hidden"
         :key="key"
@@ -97,38 +119,42 @@ const rails = computed(() => split(railItems.value, navKeys));
 
     <div class="layout-card__group">
       <span class="pt-eyebrow">Barra do celular</span>
-      <div
-        v-for="(key, index) in tabs.visible"
-        :key="key"
-        class="layout-card__row"
-      >
-        <div class="layout-card__move">
-          <button
-            type="button"
-            class="layout-card__arrow"
-            :disabled="index === 0"
-            aria-label="Subir"
-            @click="moveTab(key, navKeys, -1)"
-          >
-            <UIIcon icon="chevron-up" :size="14" />
-          </button>
-          <button
-            type="button"
-            class="layout-card__arrow"
-            :disabled="index === tabs.visible.length - 1"
-            aria-label="Descer"
-            @click="moveTab(key, navKeys, 1)"
-          >
-            <UIIcon icon="chevron-down" :size="14" />
-          </button>
-        </div>
-        <span class="layout-card__label">{{ navLabel(key) }}</span>
-        <UISwitch
-          :model-value="true"
-          :disabled="isPinned(key)"
-          @update:model-value="toggleTab(key, navKeys, PINNED_NAV_KEYS)"
-        />
-      </div>
+      <UISortable @reorder="onReorderTabs">
+        <UISortableItem
+          v-for="(key, index) in tabs.visible"
+          :id="key"
+          :key="key"
+        >
+          <div class="layout-card__rowinner">
+            <div class="layout-card__move">
+              <button
+                type="button"
+                class="layout-card__arrow"
+                :disabled="index === 0"
+                aria-label="Subir"
+                @click="moveTab(key, navKeys, -1)"
+              >
+                <UIIcon icon="chevron-up" :size="14" />
+              </button>
+              <button
+                type="button"
+                class="layout-card__arrow"
+                :disabled="index === tabs.visible.length - 1"
+                aria-label="Descer"
+                @click="moveTab(key, navKeys, 1)"
+              >
+                <UIIcon icon="chevron-down" :size="14" />
+              </button>
+            </div>
+            <span class="layout-card__label">{{ navLabel(key) }}</span>
+            <UISwitch
+              :model-value="true"
+              :disabled="isPinned(key)"
+              @update:model-value="toggleTab(key, navKeys, PINNED_NAV_KEYS)"
+            />
+          </div>
+        </UISortableItem>
+      </UISortable>
       <div
         v-for="key in tabs.hidden"
         :key="key"
@@ -144,38 +170,42 @@ const rails = computed(() => split(railItems.value, navKeys));
 
     <div class="layout-card__group">
       <span class="pt-eyebrow">Barra lateral (desktop)</span>
-      <div
-        v-for="(key, index) in rails.visible"
-        :key="key"
-        class="layout-card__row"
-      >
-        <div class="layout-card__move">
-          <button
-            type="button"
-            class="layout-card__arrow"
-            :disabled="index === 0"
-            aria-label="Subir"
-            @click="moveRail(key, navKeys, -1)"
-          >
-            <UIIcon icon="chevron-up" :size="14" />
-          </button>
-          <button
-            type="button"
-            class="layout-card__arrow"
-            :disabled="index === rails.visible.length - 1"
-            aria-label="Descer"
-            @click="moveRail(key, navKeys, 1)"
-          >
-            <UIIcon icon="chevron-down" :size="14" />
-          </button>
-        </div>
-        <span class="layout-card__label">{{ navLabel(key) }}</span>
-        <UISwitch
-          :model-value="true"
-          :disabled="isPinned(key)"
-          @update:model-value="toggleRail(key, navKeys, PINNED_NAV_KEYS)"
-        />
-      </div>
+      <UISortable @reorder="onReorderRail">
+        <UISortableItem
+          v-for="(key, index) in rails.visible"
+          :id="key"
+          :key="key"
+        >
+          <div class="layout-card__rowinner">
+            <div class="layout-card__move">
+              <button
+                type="button"
+                class="layout-card__arrow"
+                :disabled="index === 0"
+                aria-label="Subir"
+                @click="moveRail(key, navKeys, -1)"
+              >
+                <UIIcon icon="chevron-up" :size="14" />
+              </button>
+              <button
+                type="button"
+                class="layout-card__arrow"
+                :disabled="index === rails.visible.length - 1"
+                aria-label="Descer"
+                @click="moveRail(key, navKeys, 1)"
+              >
+                <UIIcon icon="chevron-down" :size="14" />
+              </button>
+            </div>
+            <span class="layout-card__label">{{ navLabel(key) }}</span>
+            <UISwitch
+              :model-value="true"
+              :disabled="isPinned(key)"
+              @update:model-value="toggleRail(key, navKeys, PINNED_NAV_KEYS)"
+            />
+          </div>
+        </UISortableItem>
+      </UISortable>
       <div
         v-for="key in rails.hidden"
         :key="key"
@@ -212,6 +242,7 @@ const rails = computed(() => split(railItems.value, navKeys));
   flex-direction: column;
   gap: 10px;
 }
+.layout-card__rowinner,
 .layout-card__row {
   display: flex;
   align-items: center;

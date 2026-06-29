@@ -114,6 +114,21 @@ export function useLayout() {
     await persist({ railItems: next });
   }
 
+  async function reorderWidgets(visibleOrder: string[]) {
+    homeWidgets.value = visibleOrder;
+    await persist({ homeWidgets: visibleOrder });
+  }
+
+  async function reorderTabs(visibleOrder: string[]) {
+    tabItems.value = visibleOrder;
+    await persist({ tabItems: visibleOrder });
+  }
+
+  async function reorderRail(visibleOrder: string[]) {
+    railItems.value = visibleOrder;
+    await persist({ railItems: visibleOrder });
+  }
+
   return {
     homeWidgets,
     tabItems,
@@ -127,5 +142,8 @@ export function useLayout() {
     moveWidget,
     moveTab,
     moveRail,
+    reorderWidgets,
+    reorderTabs,
+    reorderRail,
   };
 }

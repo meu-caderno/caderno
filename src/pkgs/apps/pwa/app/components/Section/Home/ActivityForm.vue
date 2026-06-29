@@ -6,6 +6,7 @@ import {
   Recurrence,
   Root,
 } from "@meu-caderno/core";
+import { reorderByEdge, type SortablePayload } from "~/utils/sortable";
 
 const props = defineProps<{ subjects: Subject[]; activity?: Activity }>();
 const emit = defineEmits<{ done: []; cancel: [] }>();
@@ -53,6 +54,15 @@ function toggleSubtask(id: Id) {
 }
 function removeSubtask(id: Id) {
   subtasks.value = subtasks.value.filter((t) => t.id !== id);
+}
+function onReorderSubtasks({ fromId, toId, edge }: SortablePayload) {
+  subtasks.value = reorderByEdge(
+    subtasks.value,
+    fromId,
+    toId,
+    edge,
+    (task) => task.id,
+  );
 }
 
 async function save() {
@@ -117,25 +127,29 @@ async function save() {
 
       <UIField label="Subtarefas">
         <div class="af__subtasks">
-          <div
-            v-for="task in subtasks"
-            :key="task.id"
-            class="af__subtask"
-          >
-            <UICheckbox
-              :model-value="task.done"
-              :label="task.text"
-              @update:model-value="toggleSubtask(task.id)"
-            />
-            <button
-              type="button"
-              class="af__subtask-x"
-              aria-label="Remover subtarefa"
-              @click="removeSubtask(task.id)"
+          <UISortable @reorder="onReorderSubtasks">
+            <UISortableItem
+              v-for="task in subtasks"
+              :id="task.id"
+              :key="task.id"
             >
-              <UIIcon icon="x" :size="14" />
-            </button>
-          </div>
+              <div class="af__subtask">
+                <UICheckbox
+                  :model-value="task.done"
+                  :label="task.text"
+                  @update:model-value="toggleSubtask(task.id)"
+                />
+                <button
+                  type="button"
+                  class="af__subtask-x"
+                  aria-label="Remover subtarefa"
+                  @click="removeSubtask(task.id)"
+                >
+                  <UIIcon icon="x" :size="14" />
+                </button>
+              </div>
+            </UISortableItem>
+          </UISortable>
           <div class="af__subtask-add">
             <input
               v-model="newSubtask"

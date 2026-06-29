@@ -1,9 +1,16 @@
 <script setup lang="ts">
-import type { Node } from "@meu-caderno/core";
+import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
+import {
+  draggable,
+  dropTargetForElements,
+} from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import type { Id, Node } from "@meu-caderno/core";
 import { Aspect, children } from "@meu-caderno/core";
 
 const props = defineProps<{ node: Node; nodes: Node[]; depth?: number }>();
 const emit = defineEmits<{ select: [node: Node] }>();
+
+const { service } = useCadernoService();
 
 const ASPECT_GLYPH: Record<Aspect, string> = {
   [Aspect.NOTE]: "✏️",
@@ -17,11 +24,58 @@ const open = ref((props.depth ?? 0) < 1);
 const glyph = computed(
   () => ASPECT_GLYPH[props.node.aspects[0] ?? Aspect.NOTE],
 );
+
+const main = ref<HTMLElement | null>(null);
+const line = ref<HTMLElement | null>(null);
+const isOver = ref(false);
+
+async function reparentInto(childId: Id) {
+  if (childId === props.node.id) return;
+  const dragged = props.nodes.find((n) => n.id === childId);
+  if (!dragged || dragged.parentId === props.node.id) return;
+  await service.updateNode({ ...dragged, parentId: props.node.id });
+}
+
+let cleanup = () => {};
+
+onMounted(() => {
+  const handle = main.value;
+  const target = line.value;
+  if (!handle || !target) return;
+  cleanup = combine(
+    draggable({
+      element: handle,
+      getInitialData: () => ({ noteId: props.node.id }),
+    }),
+    dropTargetForElements({
+      element: target,
+      canDrop: ({ source }) => source.data.noteId !== props.node.id,
+      getData: () => ({ noteId: props.node.id }),
+      onDragEnter: () => {
+        isOver.value = true;
+      },
+      onDragLeave: () => {
+        isOver.value = false;
+      },
+      onDrop: ({ source }) => {
+        isOver.value = false;
+        const childId = source.data.noteId;
+        if (typeof childId === "string") void reparentInto(childId as Id);
+      },
+    }),
+  );
+});
+
+onUnmounted(() => cleanup());
 </script>
 
 <template>
   <div class="note-row">
-    <div class="note-row__line">
+    <div
+      ref="line"
+      class="note-row__line"
+      :class="{ 'note-row__line--over': isOver }"
+    >
       <button
         v-if="kids.length"
         type="button"
@@ -32,7 +86,12 @@ const glyph = computed(
         <UIIcon :icon="open ? 'chevron-down' : 'chevron-right'" :size="15" />
       </button>
       <span v-else class="note-row__spacer" />
-      <button type="button" class="note-row__main" @click="emit('select', node)">
+      <button
+        ref="main"
+        type="button"
+        class="note-row__main"
+        @click="emit('select', node)"
+      >
         <span class="note-row__glyph">{{ glyph }}</span>
         <span class="note-row__title">{{ node.title }}</span>
         <span v-if="kids.length" class="note-row__count">{{ kids.length }}</span>
@@ -60,6 +119,12 @@ const glyph = computed(
   display: flex;
   align-items: center;
   gap: 4px;
+  border-radius: var(--pt-radius-sm);
+  border: 1.5px solid transparent;
+}
+.note-row__line--over {
+  border-color: var(--pt-accent);
+  background: var(--pt-card);
 }
 .note-row__toggle,
 .note-row__spacer {

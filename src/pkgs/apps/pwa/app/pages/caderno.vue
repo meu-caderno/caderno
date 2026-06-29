@@ -1,9 +1,43 @@
 <script setup lang="ts">
+import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import type { Id, Node } from "@meu-caderno/core";
 
 const { nodes, roots, linksOf } = useNotebook();
 const { service } = useCadernoService();
 const { toast } = useToast();
+
+const treeEl = ref<HTMLElement | null>(null);
+const rootOver = ref(false);
+
+async function reparentToRoot(childId: Id) {
+  const dragged = nodes.value.find((node) => node.id === childId);
+  if (!dragged || dragged.parentId === undefined) return;
+  await service.updateNode({ ...dragged, parentId: undefined });
+}
+
+let cleanupTree = () => {};
+onMounted(() => {
+  const element = treeEl.value;
+  if (!element) return;
+  cleanupTree = dropTargetForElements({
+    element,
+    getData: () => ({ root: true }),
+    onDrag: ({ location }) => {
+      rootOver.value = location.current.dropTargets[0]?.data.root === true;
+    },
+    onDragLeave: () => {
+      rootOver.value = false;
+    },
+    onDrop: ({ source, location }) => {
+      rootOver.value = false;
+      const innermost = location.current.dropTargets[0];
+      if (innermost?.data.root !== true) return;
+      const childId = source.data.noteId;
+      if (typeof childId === "string") void reparentToRoot(childId as Id);
+    },
+  });
+});
+onUnmounted(() => cleanupTree());
 
 const creating = ref(false);
 const createParentId = ref<Id | undefined>(undefined);
@@ -56,7 +90,12 @@ async function confirmDelete() {
       action-label="Nova nota"
       @action="openCreate"
     />
-    <div v-else class="caderno__tree">
+    <div
+      v-else
+      ref="treeEl"
+      class="caderno__tree"
+      :class="{ 'caderno__tree--over': rootOver }"
+    >
       <SectionCadernoNoteRow
         v-for="node in roots"
         :key="node.id"
@@ -134,5 +173,11 @@ async function confirmDelete() {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  padding: 6px;
+  border-radius: var(--pt-radius-sm);
+  border: 1.5px dashed transparent;
+}
+.caderno__tree--over {
+  border-color: var(--pt-accent);
 }
 </style>
