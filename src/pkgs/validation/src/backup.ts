@@ -69,9 +69,13 @@ export function safeParseBackup(data: unknown) {
   return BackupSchema.safeParse(data);
 }
 
+interface VersionedPayload {
+  version?: number;
+}
+
 function versionOf(data: unknown): number | undefined {
   if (typeof data !== "object" || data === null) return undefined;
-  return (data as { version?: number }).version;
+  return (data as VersionedPayload).version;
 }
 
 export function migrateBackup(data: unknown): Backup {

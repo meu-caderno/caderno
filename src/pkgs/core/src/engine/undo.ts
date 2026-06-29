@@ -1,14 +1,14 @@
-import type { Id } from "../domain";
+import type { Id, Identified } from "../domain";
 import { OpKind } from "../domain";
 
-export interface Reversible<T extends { id: Id }> {
+export interface Reversible<T extends Identified> {
   entity: string;
   id: Id;
   before?: T;
   after?: T;
 }
 
-export interface UndoState<T extends { id: Id }> {
+export interface UndoState<T extends Identified> {
   past: Reversible<T>[];
   future: Reversible<T>[];
 }
@@ -20,18 +20,23 @@ export interface InverseOp<T> {
   value?: T;
 }
 
-export function emptyUndo<T extends { id: Id }>(): UndoState<T> {
+export interface UndoResult<T extends Identified> {
+  state: UndoState<T>;
+  apply?: InverseOp<T>;
+}
+
+export function emptyUndo<T extends Identified>(): UndoState<T> {
   return { past: [], future: [] };
 }
 
-export function recordChange<T extends { id: Id }>(
+export function recordChange<T extends Identified>(
   state: UndoState<T>,
   change: Reversible<T>,
 ): UndoState<T> {
   return { past: [...state.past, change], future: [] };
 }
 
-export function invert<T extends { id: Id }>(
+export function invert<T extends Identified>(
   change: Reversible<T>,
 ): InverseOp<T> {
   if (change.before === undefined) {
@@ -45,7 +50,7 @@ export function invert<T extends { id: Id }>(
   };
 }
 
-function forward<T extends { id: Id }>(change: Reversible<T>): InverseOp<T> {
+function forward<T extends Identified>(change: Reversible<T>): InverseOp<T> {
   if (change.after === undefined) {
     return { op: OpKind.DELETE, entity: change.entity, id: change.id };
   }
@@ -57,9 +62,7 @@ function forward<T extends { id: Id }>(change: Reversible<T>): InverseOp<T> {
   };
 }
 
-export function undo<T extends { id: Id }>(
-  state: UndoState<T>,
-): { state: UndoState<T>; apply?: InverseOp<T> } {
+export function undo<T extends Identified>(state: UndoState<T>): UndoResult<T> {
   const last = state.past.at(-1);
   if (!last) return { state };
   return {
@@ -68,9 +71,7 @@ export function undo<T extends { id: Id }>(
   };
 }
 
-export function redo<T extends { id: Id }>(
-  state: UndoState<T>,
-): { state: UndoState<T>; apply?: InverseOp<T> } {
+export function redo<T extends Identified>(state: UndoState<T>): UndoResult<T> {
   const next = state.future.at(-1);
   if (!next) return { state };
   return {

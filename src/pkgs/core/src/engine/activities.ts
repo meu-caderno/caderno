@@ -103,10 +103,13 @@ export function inboxItems(activities: ReadonlyArray<Activity>): Activity[] {
   return activities.filter((activity) => activity.root === Root.INBOX);
 }
 
-export function triage(
-  activity: Activity,
-  patch: { contextId?: Id; subjectId?: Id; kind: ActivityKind },
-): Activity {
+export interface TriagePatch {
+  contextId?: Id;
+  subjectId?: Id;
+  kind: ActivityKind;
+}
+
+export function triage(activity: Activity, patch: TriagePatch): Activity {
   return {
     ...activity,
     root: Root.CONTEXT,

@@ -5,6 +5,7 @@ import type {
   Context,
   Edge,
   Id,
+  Identified,
   LibraryItem,
   Mood,
   Node,
@@ -38,7 +39,12 @@ export interface MergeResult {
   ops: OpLogEntry[];
 }
 
-export function indexById<T extends { id: Id }>(
+export interface CollectionMergeResult<T> {
+  merged: T[];
+  ops: OpLogEntry[];
+}
+
+export function indexById<T extends Identified>(
   items: readonly T[],
 ): Map<Id, T> {
   return new Map(items.map((item) => [item.id, item]));
@@ -48,13 +54,13 @@ function sameValue(left: unknown, right: unknown): boolean {
   return JSON.stringify(left) === JSON.stringify(right);
 }
 
-export function mergeCollection<T extends { id: Id }>(
+export function mergeCollection<T extends Identified>(
   entity: EntityName,
   current: readonly T[],
   incoming: readonly T[],
   ts: Timestamp,
   strategy: MergeStrategy = MergeStrategy.UPSERT,
-): { merged: T[]; ops: OpLogEntry[] } {
+): CollectionMergeResult<T> {
   const merged = indexById(current);
   const incomingIds = new Set(incoming.map((item) => item.id));
   const ops: OpLogEntry[] = [];
@@ -109,12 +115,13 @@ export function mergeBackup(
     moods: [],
   };
   const ops: OpLogEntry[] = [];
+  const writableMerged = merged as Record<keyof Collections, Identified[]>;
 
   for (const [key, entity] of MERGE_TARGETS) {
-    const current = store[key] as ReadonlyArray<{ id: Id }>;
-    const incoming = (backup[key] ?? []) as ReadonlyArray<{ id: Id }>;
+    const current = store[key] as ReadonlyArray<Identified>;
+    const incoming = (backup[key] ?? []) as ReadonlyArray<Identified>;
     const result = mergeCollection(entity, current, incoming, ts, strategy);
-    (merged as unknown as Record<string, { id: Id }[]>)[key] = result.merged;
+    writableMerged[key] = result.merged;
     ops.push(...result.ops);
   }
 

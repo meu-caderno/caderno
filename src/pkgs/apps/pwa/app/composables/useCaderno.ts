@@ -74,6 +74,13 @@ const HEAT_BY_STATUS: Record<AttendanceStatus, string> = {
   [AttendanceStatus.CANCELED]: "none",
 };
 
+export interface SubjectCounts {
+  present: number;
+  absent: number;
+  late: number;
+  medical: number;
+}
+
 export interface SubjectStats {
   subject: Subject;
   summary: AttendanceSummary;
@@ -84,7 +91,7 @@ export interface SubjectStats {
   restantes: number;
   freqPct: number;
   floor: number;
-  counts: { present: number; absent: number; late: number; medical: number };
+  counts: SubjectCounts;
   heat: string[];
   media: number | null;
 }

@@ -1,6 +1,7 @@
 import type {
   BlobLog,
   BlobRepository,
+  BlobRow,
   BlobStore,
   BlobTx,
   Cipher,
@@ -21,7 +22,7 @@ function encryptedRepo<T extends Identified>(
   blob: BlobRepository,
   cipher: Cipher,
 ): Repository<T> {
-  const decode = (row: { data: string }) =>
+  const decode = (row: BlobRow) =>
     cipher.decrypt(row.data).then((json) => JSON.parse(json) as T);
   const encode = (entity: T) =>
     cipher

@@ -9,6 +9,7 @@ import type {
   Edge,
   Grade,
   Id,
+  Identified,
   IdGenerator,
   LibraryItem,
   Node,
@@ -79,7 +80,7 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
     entity?: EntityName,
   ): Result<never, DomainError> => err(domainError(code, params, entity));
 
-  const commitPut = async <T extends { id: Id }>(
+  const commitPut = async <T extends Identified>(
     select: (tx: ContextTx) => Repository<T>,
     entity: EntityName,
     value: T,

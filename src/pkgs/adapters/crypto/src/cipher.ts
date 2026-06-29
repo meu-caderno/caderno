@@ -3,6 +3,11 @@ import sodium from "libsodium-wrappers";
 
 type Sodium = typeof sodium;
 
+interface SodiumContext {
+  sodiumApi: Sodium;
+  key: Uint8Array;
+}
+
 const NONCE_SEPARATOR = ".";
 
 let readyPromise: Promise<Sodium> | null = null;
@@ -18,7 +23,7 @@ export async function generateKey(): Promise<string> {
 }
 
 export function createCipher(keyBase64: string): Cipher {
-  let context: Promise<{ sodiumApi: Sodium; key: Uint8Array }> | null = null;
+  let context: Promise<SodiumContext> | null = null;
   const init = () => {
     context ??= ready().then((sodiumApi) => ({
       sodiumApi,

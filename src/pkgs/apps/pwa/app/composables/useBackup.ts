@@ -108,7 +108,7 @@ export function useBackup() {
     return (
       typeof data === "object" &&
       data !== null &&
-      (data as { format?: string }).format === ENCRYPTED_FORMAT
+      (data as Partial<EncryptedEnvelope>).format === ENCRYPTED_FORMAT
     );
   }
 

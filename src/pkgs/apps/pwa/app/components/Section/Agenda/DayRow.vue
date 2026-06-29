@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { TimeBlock } from "@meu-caderno/core";
 import { ActivityKind } from "@meu-caderno/core";
 import type { AgendaDay } from "~/composables/useAgenda";
 
@@ -12,7 +13,7 @@ const kindIcon: Record<ActivityKind, string> = {
   [ActivityKind.CAPTURE]: "📥",
 };
 
-function timeLabel(blocks: { start: string; end: string }[]): string {
+function timeLabel(blocks: TimeBlock[]): string {
   const first = blocks[0];
   return first ? `${first.start}–${first.end}` : "";
 }

@@ -5,6 +5,11 @@ import { daysFromToday, formatDay } from "~/composables/useCaderno";
 
 type DueTone = "perigo" | "atencao" | "neutro";
 
+interface DueBadgeView {
+  label: string;
+  tone: DueTone;
+}
+
 const props = defineProps<{
   activity: Activity;
   subjectName?: string;
@@ -30,7 +35,7 @@ const repeats = computed(
     props.activity.recurrence !== Recurrence.NONE,
 );
 
-function dueBadge(date: string | undefined): { label: string; tone: DueTone } {
+function dueBadge(date: string | undefined): DueBadgeView {
   if (!date) return { label: "inbox", tone: "neutro" };
   const days = daysFromToday(date, props.today);
   if (days < 0) return { label: `${-days}d atrás`, tone: "perigo" };
