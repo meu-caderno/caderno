@@ -51,7 +51,7 @@
   },
   "overrides": [
     {
-      "includes": ["**/pages/**/*.vue", "**/components/UI/**/*.vue"],
+      "includes": ["**/pages/**/*.vue", "**/components/**/*.vue"],
       "linter": {
         "rules": {
           "style": {

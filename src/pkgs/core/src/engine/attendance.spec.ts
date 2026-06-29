@@ -43,6 +43,16 @@ describe("absenceWeight", () => {
     expect(absenceWeight(AttendanceStatus.MEDICAL)).toBe(0);
     expect(absenceWeight(AttendanceStatus.HOLIDAY)).toBe(0);
   });
+
+  it("respects per-subject rules", () => {
+    expect(absenceWeight(AttendanceStatus.LATE, { lateIsHalf: false })).toBe(0);
+    expect(
+      absenceWeight(AttendanceStatus.MEDICAL, { medicalExcuses: false }),
+    ).toBe(1);
+    expect(
+      absenceWeight(AttendanceStatus.WAIVED, { medicalExcuses: false }),
+    ).toBe(1);
+  });
 });
 
 describe("computeAttendance", () => {

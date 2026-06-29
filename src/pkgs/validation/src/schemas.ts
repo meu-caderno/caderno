@@ -137,6 +137,9 @@ export const ContextSchema = z.object({
   terms: z.array(TermSchema).optional(),
   buckets: z.array(BucketSchema).optional(),
   nature: z.string().optional(),
+  vision: z.string().optional(),
+  pinned: z.boolean().optional(),
+  archived: z.boolean().optional(),
 });
 
 export const TimeBlockSchema = z.object({
@@ -179,6 +182,8 @@ export const SubjectSchema = z.object({
   totalClassHours: z.number().optional(),
   credits: z.number().int().optional(),
   floor: z.number().min(0).max(1).optional(),
+  lateIsHalf: z.boolean().optional(),
+  medicalExcuses: z.boolean().optional(),
   schedule: ScheduleSchema.optional(),
   assessments: z.array(AssessmentSchema).optional(),
   records: z.array(RecordSchema).optional(),

@@ -2,6 +2,7 @@
 import type { SubjectStats } from "~/composables/useCaderno";
 
 const props = defineProps<{ stat: SubjectStats }>();
+const emit = defineEmits<{ notas: []; detail: [] }>();
 
 const s = computed(() => props.stat);
 const subject = computed(() => s.value.subject);
@@ -37,7 +38,9 @@ const budgetPct = computed(() => {
       <span class="sc-dot" :style="{ background: subject.color }" />
       <div class="sc-title-wrap">
         <div class="sc-titlerow">
-          <span class="sc-name">{{ subject.name }}</span>
+          <button class="sc-name" type="button" @click="emit('detail')">
+            {{ subject.name }}
+          </button>
           <UIBadge
             tone="custom"
             size="md"
@@ -110,10 +113,18 @@ const budgetPct = computed(() => {
       <UIHeatmap :cells="s.heat" :cell-size="14" :gap="4" />
     </div>
 
-    <div v-if="s.media != null" class="sc-media">
-      <span class="sc-media-l">média parcial</span>
-      <span class="sc-media-v">{{ s.media.toFixed(1) }}</span>
-    </div>
+    <button class="sc-media" type="button" @click="emit('notas')">
+      <template v-if="s.media != null">
+        <span class="sc-media-l">média parcial</span>
+        <span class="sc-media-v">{{ s.media.toFixed(1) }}</span>
+      </template>
+      <template v-else>
+        <span class="sc-media-l">avaliações</span>
+        <span class="sc-media-add">
+          <UIIcon icon="plus" :size="13" /> adicionar
+        </span>
+      </template>
+    </button>
   </UICard>
 </template>
 
@@ -144,6 +155,13 @@ const budgetPct = computed(() => {
   font-size: 17px;
   font-weight: 600;
   line-height: 1.25;
+  font-family: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--pt-ink);
+  cursor: pointer;
+  text-align: left;
 }
 .sc-meta {
   font-size: 12px;
@@ -262,11 +280,24 @@ const budgetPct = computed(() => {
 
 .sc-media {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
+  width: 100%;
   margin-top: 14px;
-  padding-top: 12px;
+  padding: 12px 0 0;
+  border: none;
   border-top: 1.5px dashed var(--pt-border-faint);
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
+}
+.sc-media-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--pt-info);
 }
 .sc-media-l {
   font-size: 12px;

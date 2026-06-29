@@ -77,6 +77,29 @@ body {
   color: var(--pt-ink-muted);
 }
 
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+.block__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.block__title {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+}
+.block__date,
+.block__count {
+  font-size: 13px;
+  color: var(--pt-ink-muted);
+  font-weight: 600;
+}
+
 :focus-visible {
   outline: 2px solid var(--pt-ink);
   outline-offset: 2px;

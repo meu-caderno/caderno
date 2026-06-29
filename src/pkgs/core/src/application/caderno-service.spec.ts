@@ -80,6 +80,39 @@ describe("CadernoService", () => {
     }
   });
 
+  it("updates a subject and preserves its records when omitted", async () => {
+    const { store, svc } = await service();
+    const created = await svc.createSubject(subjectInput());
+    if (!created.ok) throw new Error("setup failed");
+    await svc.markAttendance({
+      subjectId: created.value.id,
+      day: "2026-03-01" as DayIso,
+      status: AttendanceStatus.ABSENT,
+    });
+    const renamed = await svc.updateSubject({
+      ...created.value,
+      name: "Cálculo II",
+      floor: 0.6,
+    });
+    expect(renamed.ok).toBe(true);
+    const stored = await store.subjects.get(created.value.id);
+    expect(stored?.name).toBe("Cálculo II");
+    expect(stored?.floor).toBe(0.6);
+    expect(
+      await store.records.where((r) => r.subjectId === created.value.id),
+    ).toHaveLength(1);
+  });
+
+  it("rejects updating a missing subject", async () => {
+    const { svc } = await service();
+    const r = await svc.updateSubject({
+      ...subjectInput(),
+      id: "ghost" as Id,
+    });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error.code).toBe(DomainErrorCode.NOT_FOUND);
+  });
+
   it("creates a context that a subject can reference", async () => {
     const store = createInMemoryContextStore();
     const svc = createCadernoService({
@@ -106,6 +139,27 @@ describe("CadernoService", () => {
     });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.error.code).toBe(DomainErrorCode.INVARIANT_FK_MISSING);
+  });
+
+  it("upserts attendance for the same subject and day", async () => {
+    const { store, svc } = await service();
+    const subj = await svc.createSubject(subjectInput());
+    if (!subj.ok) throw new Error("setup failed");
+    await svc.markAttendance({
+      subjectId: subj.value.id,
+      day: "2026-03-01" as DayIso,
+      status: AttendanceStatus.PRESENT,
+    });
+    await svc.markAttendance({
+      subjectId: subj.value.id,
+      day: "2026-03-01" as DayIso,
+      status: AttendanceStatus.ABSENT,
+    });
+    const records = await store.records.where(
+      (r) => r.subjectId === subj.value.id,
+    );
+    expect(records).toHaveLength(1);
+    expect(records[0]?.status).toBe(AttendanceStatus.ABSENT);
   });
 
   it("rejects a subject whose context does not exist", async () => {
@@ -165,5 +219,55 @@ describe("CadernoService", () => {
     expect(await store.subjects.get(created.value.id)).toBeUndefined();
     expect(await store.records.list()).toHaveLength(0);
     expect(await store.activities.list()).toHaveLength(0);
+  });
+
+  it("adds an assessment to a subject", async () => {
+    const { svc } = await service();
+    const subj = await svc.createSubject(subjectInput());
+    if (!subj.ok) throw new Error("setup failed");
+    const res = await svc.addAssessment(subj.value.id, {
+      name: "P1",
+      weight: 0.4,
+    });
+    expect(res.ok).toBe(true);
+    if (res.ok) {
+      expect(res.value.assessments).toHaveLength(1);
+      expect(res.value.assessments?.[0]?.name).toBe("P1");
+    }
+  });
+
+  it("deletes an activity", async () => {
+    const { store, svc } = await service();
+    const subj = await svc.createSubject(subjectInput());
+    if (!subj.ok) throw new Error("setup failed");
+    await svc.upsertActivity(
+      activity({ id: "act" as Id, subjectId: subj.value.id }),
+    );
+    expect(await store.activities.list()).toHaveLength(1);
+    await svc.deleteActivity("act" as Id);
+    expect(await store.activities.list()).toHaveLength(0);
+  });
+
+  it("adds, updates and deletes a library item", async () => {
+    const { store, svc } = await service();
+    const created = await svc.addLibraryItem({ title: "Cálculo Vol. 1" });
+    expect(created.ok).toBe(true);
+    if (!created.ok) return;
+    expect(await store.library.list()).toHaveLength(1);
+    const updated = await svc.updateLibraryItem({
+      ...created.value,
+      stars: 5,
+    });
+    expect(updated.ok).toBe(true);
+    expect((await store.library.get(created.value.id))?.stars).toBe(5);
+    await svc.deleteLibraryItem(created.value.id);
+    expect(await store.library.list()).toHaveLength(0);
+  });
+
+  it("rejects updating a missing library item", async () => {
+    const { svc } = await service();
+    const r = await svc.updateLibraryItem({ id: "ghost" as Id, title: "X" });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error.code).toBe(DomainErrorCode.NOT_FOUND);
   });
 });

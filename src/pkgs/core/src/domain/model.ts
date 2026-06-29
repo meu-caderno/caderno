@@ -71,6 +71,9 @@ export interface Context {
   terms?: Term[];
   buckets?: Bucket[];
   nature?: string;
+  vision?: string;
+  pinned?: boolean;
+  archived?: boolean;
 }
 
 export enum ScheduleKind {
@@ -137,6 +140,8 @@ export interface Subject {
   totalClassHours?: number;
   credits?: number;
   floor?: number;
+  lateIsHalf?: boolean;
+  medicalExcuses?: boolean;
   schedule?: Schedule;
   assessments?: Assessment[];
   records?: Record[];
@@ -289,6 +294,7 @@ export interface Profile {
 export interface Preferences {
   id: Id;
   activeContextId?: Id;
+  homeProfile?: string;
 }
 
 export enum OpKind {

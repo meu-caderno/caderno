@@ -16,9 +16,25 @@ const HELD: ReadonlySet<AttendanceStatus> = new Set([
   AttendanceStatus.WAIVED,
 ]);
 
-export function absenceWeight(status: AttendanceStatus): number {
+export interface AbsenceRule {
+  lateIsHalf?: boolean;
+  medicalExcuses?: boolean;
+}
+
+export function absenceWeight(
+  status: AttendanceStatus,
+  rule: AbsenceRule = {},
+): number {
   if (status === AttendanceStatus.ABSENT) return 1;
-  if (status === AttendanceStatus.LATE) return LATE_WEIGHT;
+  if (status === AttendanceStatus.LATE) {
+    return (rule.lateIsHalf ?? true) ? LATE_WEIGHT : 0;
+  }
+  if (
+    status === AttendanceStatus.MEDICAL ||
+    status === AttendanceStatus.WAIVED
+  ) {
+    return (rule.medicalExcuses ?? true) ? 0 : 1;
+  }
   return 0;
 }
 
@@ -31,6 +47,8 @@ export type AttendanceInput = Pick<
   | "totalClassHours"
   | "credits"
   | "floor"
+  | "lateIsHalf"
+  | "medicalExcuses"
   | "records"
 >;
 
@@ -81,6 +99,10 @@ export function computeAttendance(
   const maxAbsences =
     sessionHours > 0 ? num.floor(num.divide(maxAbsenceHours, sessionHours)) : 0;
 
+  const rule: AbsenceRule = {
+    lateIsHalf: subject.lateIsHalf,
+    medicalExcuses: subject.medicalExcuses,
+  };
   const records: AttendanceRecord[] = subject.records ?? [];
   const counts = emptyCounts();
   let held = 0;
@@ -88,7 +110,9 @@ export function computeAttendance(
     counts[r.status] += 1;
     if (HELD.has(r.status)) held += 1;
   }
-  const absencesUsed = num.sum(records.map((r) => absenceWeight(r.status)));
+  const absencesUsed = num.sum(
+    records.map((r) => absenceWeight(r.status, rule)),
+  );
 
   const remaining = num.subtract(maxAbsences, absencesUsed);
   const frequency =

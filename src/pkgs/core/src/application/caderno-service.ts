@@ -1,5 +1,6 @@
 import type {
   Activity,
+  Assessment,
   Record as AttendanceRecord,
   Clock,
   Context,
@@ -8,6 +9,7 @@ import type {
   Grade,
   Id,
   IdGenerator,
+  LibraryItem,
   Repository,
   Subject,
 } from "../domain";
@@ -32,16 +34,29 @@ export interface CadernoService {
   createSubject(
     input: Omit<Subject, "id">,
   ): Promise<Result<Subject, DomainError>>;
+  updateSubject(subject: Subject): Promise<Result<Subject, DomainError>>;
   markAttendance(
     input: Omit<AttendanceRecord, "id">,
   ): Promise<Result<AttendanceRecord, DomainError>>;
+  addAssessment(
+    subjectId: Id,
+    input: Omit<Assessment, "id" | "subjectId">,
+  ): Promise<Result<Subject, DomainError>>;
   setGrade(
     subjectId: Id,
     assessmentId: Id,
     grade: Grade,
   ): Promise<Result<Subject, DomainError>>;
   upsertActivity(activity: Activity): Promise<Result<Activity, DomainError>>;
+  deleteActivity(id: Id): Promise<Result<void, DomainError>>;
   deleteSubject(id: Id): Promise<Result<void, DomainError>>;
+  addLibraryItem(
+    input: Omit<LibraryItem, "id">,
+  ): Promise<Result<LibraryItem, DomainError>>;
+  updateLibraryItem(
+    item: LibraryItem,
+  ): Promise<Result<LibraryItem, DomainError>>;
+  deleteLibraryItem(id: Id): Promise<Result<void, DomainError>>;
 }
 
 export function createCadernoService(deps: CadernoDeps): CadernoService {
@@ -100,6 +115,32 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
       return ok(subject);
     },
 
+    async updateSubject(subject) {
+      const existing = await store.subjects.get(subject.id);
+      if (!existing) {
+        return fail(
+          DomainErrorCode.NOT_FOUND,
+          { id: subject.id },
+          EntityName.SUBJECT,
+        );
+      }
+      if (!(await store.contexts.get(subject.contextId))) {
+        return fail(
+          DomainErrorCode.INVARIANT_FK_MISSING,
+          { contextId: subject.contextId },
+          EntityName.SUBJECT,
+        );
+      }
+      const merged: Subject = {
+        ...subject,
+        assessments: subject.assessments ?? existing.assessments,
+        records: subject.records ?? existing.records,
+      };
+      await commitPut((tx) => tx.subjects, EntityName.SUBJECT, merged);
+      await hooks?.callHook("subject:updated", merged);
+      return ok(merged);
+    },
+
     async markAttendance(input) {
       const subject = await store.subjects.get(input.subjectId);
       if (!subject) {
@@ -109,10 +150,40 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
           EntityName.RECORD,
         );
       }
-      const record: AttendanceRecord = { ...input, id: await ids.newId() };
+      const existing = (
+        await store.records.where(
+          (r) => r.subjectId === input.subjectId && r.day === input.day,
+        )
+      )[0];
+      const record: AttendanceRecord = existing
+        ? { ...existing, ...input }
+        : { ...input, id: await ids.newId() };
       await commitPut((tx) => tx.records, EntityName.RECORD, record);
       await hooks?.callHook("attendance:marked", record);
       return ok(record);
+    },
+
+    async addAssessment(subjectId, input) {
+      const subject = await store.subjects.get(subjectId);
+      if (!subject) {
+        return fail(
+          DomainErrorCode.NOT_FOUND,
+          { subjectId },
+          EntityName.SUBJECT,
+        );
+      }
+      const assessment: Assessment = {
+        ...input,
+        id: await ids.newId(),
+        subjectId,
+      };
+      const updated: Subject = {
+        ...subject,
+        assessments: [...(subject.assessments ?? []), assessment],
+      };
+      await commitPut((tx) => tx.subjects, EntityName.SUBJECT, updated);
+      await hooks?.callHook("grade:set", updated);
+      return ok(updated);
     },
 
     async setGrade(subjectId, assessmentId, grade) {
@@ -181,6 +252,21 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
       return ok(activity);
     },
 
+    async deleteActivity(id) {
+      const activity = await store.activities.get(id);
+      if (!activity) {
+        return fail(DomainErrorCode.NOT_FOUND, { id }, EntityName.ACTIVITY);
+      }
+      const ts = await clock.now();
+      await store.transaction(async (tx) => {
+        await tx.activities.delete(id);
+        await tx.oplog.append(
+          makeOp(EntityName.ACTIVITY, OpKind.DELETE, id, ts),
+        );
+      });
+      return ok(undefined);
+    },
+
     async deleteSubject(id) {
       const subject = await store.subjects.get(id);
       if (!subject) {
@@ -210,6 +296,41 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
         );
       });
       await hooks?.callHook("subject:deleted", id);
+      return ok(undefined);
+    },
+
+    async addLibraryItem(input) {
+      const item: LibraryItem = { ...input, id: await ids.newId() };
+      await commitPut((tx) => tx.library, EntityName.LIBRARY, item);
+      await hooks?.callHook("library:changed", item);
+      return ok(item);
+    },
+
+    async updateLibraryItem(item) {
+      if (!(await store.library.get(item.id))) {
+        return fail(
+          DomainErrorCode.NOT_FOUND,
+          { id: item.id },
+          EntityName.LIBRARY,
+        );
+      }
+      await commitPut((tx) => tx.library, EntityName.LIBRARY, item);
+      await hooks?.callHook("library:changed", item);
+      return ok(item);
+    },
+
+    async deleteLibraryItem(id) {
+      const item = await store.library.get(id);
+      if (!item) {
+        return fail(DomainErrorCode.NOT_FOUND, { id }, EntityName.LIBRARY);
+      }
+      const ts = await clock.now();
+      await store.transaction(async (tx) => {
+        await tx.library.delete(id);
+        await tx.oplog.append(
+          makeOp(EntityName.LIBRARY, OpKind.DELETE, id, ts),
+        );
+      });
       return ok(undefined);
     },
   };
