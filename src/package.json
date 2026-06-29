@@ -5,7 +5,11 @@
   "workspaces": [
     ".",
     "pkgs/apps/pwa",
-    "pkgs/core"
+    "pkgs/core",
+    "pkgs/validation",
+    "pkgs/adapters/platform-browser",
+    "pkgs/adapters/persistence-dexie",
+    "pkgs/adapters/crypto"
   ],
   "devDependencies": {
     "@biomejs/biome": "2.5.0",
@@ -115,48 +119,40 @@
       "all:build": {
         "executor": "nx:run-commands",
         "options": {
-          "parallel": true,
           "commands": [
-            "nx run @meu-caderno/apps.pwa:build"
+            "nx run-many -t build"
           ]
         }
       },
       "all:typecheck": {
         "executor": "nx:run-commands",
         "options": {
-          "parallel": true,
           "commands": [
-            "nx run @meu-caderno/apps.pwa:typecheck",
-            "nx run @meu-caderno/core:typecheck"
+            "nx run-many -t typecheck"
           ]
         }
       },
       "all:test": {
         "executor": "nx:run-commands",
         "options": {
-          "parallel": true,
           "commands": [
-            "nx run @meu-caderno/apps.pwa:test",
-            "nx run @meu-caderno/core:test"
+            "nx run-many -t test"
           ]
         }
       },
       "all:coverage": {
         "executor": "nx:run-commands",
         "options": {
-          "parallel": true,
           "commands": [
-            "nx run @meu-caderno/apps.pwa:coverage",
-            "nx run @meu-caderno/core:coverage"
+            "nx run-many -t coverage"
           ]
         }
       },
       "all:e2e": {
         "executor": "nx:run-commands",
         "options": {
-          "parallel": false,
           "commands": [
-            "nx run @meu-caderno/apps.pwa:e2e"
+            "nx run-many -t e2e"
           ]
         }
       }

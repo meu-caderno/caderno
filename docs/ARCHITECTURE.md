@@ -6,7 +6,8 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 # Arquitetura
 
 Este documento dá uma visão geral de como o Caderno é organizado. Para rodar e
-desenvolver, veja o [DEVELOPMENT.md](./DEVELOPMENT.md).
+desenvolver, veja o [DEVELOPMENT.md](./DEVELOPMENT.md). O detalhamento de design e o
+log de decisões estão em [CORE-ROADMAP.md](./CORE-ROADMAP.md) e [BACKLOG.md](./BACKLOG.md).
 
 ## Visão geral
 
@@ -29,30 +30,64 @@ Estrutura dos workspaces (definida em [`src/package.json`](../src/package.json))
 src/
 ├── package.json          # raiz do workspace; scripts de qualidade/build
 ├── nx.json               # config do Nx (packageManager: bun)
-├── biome.json            # regras de lint/format
+├── biome.json            # regras de lint/format + boundary enforcement
 ├── bunfig.toml           # config do Bun
 └── pkgs/
-    ├── core/             # @meu-caderno/core  — domínio, sem UI
+    ├── core/             # @meu-caderno/core — domínio puro (sem UI, Zod, Dexie ou cripto)
+    ├── validation/       # @meu-caderno/validation — schemas Zod conformes ao domínio
+    ├── adapters/
+    │   ├── platform-browser/   # @meu-caderno/adapter-browser — Clock, IdGenerator, KeyStore
+    │   ├── persistence-dexie/  # @meu-caderno/adapter-dexie — ContextStore/ConfigStore/BlobStore (IndexedDB)
+    │   └── crypto/             # @meu-caderno/adapter-crypto — Cipher (libsodium / XSalsa20-Poly1305)
     └── apps/
-        └── pwa/          # @meu-caderno/apps.pwa — aplicação Nuxt (PWA)
+        └── pwa/          # @meu-caderno/apps.pwa — aplicação Nuxt (PWA) + composition root
 ```
 
 ## Pacotes
 
+A organização segue **DDD + Ports & Adapters + Clean Architecture**: o domínio é
+puro e declara *ports* (interfaces); as implementações de serviços externos vivem em
+pacotes separados que dependem do core, nunca o contrário. **Todos os ports são
+assíncronos** (`Promise`), para uma fronteira uniforme que acomoda IndexedDB,
+WebCrypto/wasm e — no futuro — rede, sem mudar a assinatura.
+
 ### `@meu-caderno/core` ([`src/pkgs/core`](../src/pkgs/core))
 
-O **núcleo de domínio**, independente de interface. Define os tipos e esquemas do
-Caderno usando [Zod](https://zod.dev) para validação. Organizado por área do
-domínio em `src/types/`, por exemplo:
+O **núcleo de domínio**, em TypeScript puro — **sem dependência de Zod, Dexie, Vue
+ou libs de criptografia** (garantido por boundary enforcement no lint; ver abaixo).
+Camadas internas:
 
-- `subject/` — disciplinas: horários, turnos, presença, avaliações, registros.
-- `activity/` — atividades: status, recorrência, subtarefas.
-- `context/` — contexto de estudo: metas, módulos, termos, vocabulário, buckets.
-- `library/` — itens de biblioteca/material de estudo.
+- `domain/` — entidades e value objects (interfaces + enums + brands) e os *ports*
+  de saída, todos assíncronos: `Clock`, `IdGenerator`, `Cipher`/`KeyStore`,
+  `ConfigStore`/`ContextStore`/`StorageProvider` (+ `ReadonlyContextStore`),
+  `BlobStore`, e a porta reservada `SyncTransport` (sync futuro).
+- `engine/` — *domain services* puros: faltas (com simulador), notas, agenda
+  (`schedule`/`rollcall`), atividades, progresso, presets, grafo do caderno,
+  `merge` (import), `undo`, `oplog` e `invariants` (Σpesos, sobreposição de termos,
+  detecção de ciclo). Precisão numérica via `decimal.js`.
+- `application/` — casos de uso (`CadernoService`) com `Result`/`DomainError`; o
+  composition root (`createCaderno`, injeção de dependência); o **observable store**
+  (write-through) e o **encrypted store**; sistema de **plugins** (capability
+  registry + consentimento por impacto) e **hooks** (event bus tipado).
+- `testing/` (subpath `@meu-caderno/core/testing`) — stores in-memory, fakes de
+  clock/id/cipher e o `runStoreContract` que todo adapter de store deve passar.
 
-Manter o domínio separado da UI permite reaproveitá-lo no futuro (por exemplo, em
-uma eventual camada de sincronização) sem acoplar regras de negócio à camada de
-apresentação.
+### `@meu-caderno/validation` ([`src/pkgs/validation`](../src/pkgs/validation))
+
+Os **schemas [Zod](https://zod.dev)** que *conformam* às interfaces do domínio (com
+testes de conformância em tempo de compilação) e validam dados nas fronteiras
+(`parseBackup`/`migrateBackup`). Zod é detalhe de implementação — fica aqui, fora do core.
+
+### Adapters ([`src/pkgs/adapters`](../src/pkgs/adapters))
+
+Implementações concretas dos ports do domínio, trocáveis sem tocar o núcleo:
+
+- **`adapter-dexie`** — `ContextStore`, `ConfigStore` e `BlobStore` sobre
+  IndexedDB/Dexie, e os `StorageProvider` (incl. o cifrado, montado sobre o `BlobStore`).
+- **`adapter-browser`** — `Clock` (via `Intl`), `IdGenerator` (UUID v7) e `KeyStore`
+  (chave local).
+- **`adapter-crypto`** — a porta `Cipher` via **libsodium** (`crypto_secretbox`,
+  XSalsa20-Poly1305) com nonce aleatório por mensagem.
 
 ### `@meu-caderno/apps.pwa` ([`src/pkgs/apps/pwa`](../src/pkgs/apps/pwa))
 
@@ -67,18 +102,37 @@ A **aplicação** que o usuário usa, construída com
   (`app/i18n/locales/`).
 - Outros módulos: `@nuxt/image`, `@nuxt/icon`, `@nuxt/a11y`, `@nuxt/hints`,
   `@nuxtjs/color-mode`, `@vueuse/nuxt`.
-- Dados/assíncrono: `@tanstack/vue-query`.
 - UI: componentes próprios (`app/components/`) sobre `reka-ui`.
 
-Estrutura do app em `app/`:
+O **composition root** vive em `app/plugins/caderno.client.ts`: monta o `Caderno`
+via `createCaderno(...)`, injetando o `ConfigStore` (Dexie) + o `StorageProvider`
+cifrado (Dexie `BlobStore` + `Cipher` libsodium) + `Clock`/`IdGenerator`/`KeyStore`
+do browser. A reatividade da UI usa o *observable seam* do store (`subscribe`) — a
+integração dos componentes (ViewModels via composables) está em andamento.
 
-```
-app/
-├── app.vue               # raiz da aplicação
-├── pages/                # rotas (vue-router)
-├── components/           # componentes de UI
-└── plugins/              # plugins Nuxt (ex.: vue-query)
-```
+## Camada de dados: storage, criptografia e reatividade
+
+O dado de estudo é gravado atrás de uma única porta (`ContextStore`), composta como
+uma **pilha de decorators**:
+
+1. **Persistência local** (`adapter-dexie`) — `BlobStore` sobre IndexedDB, durável.
+2. **Criptografia em repouso** (`encrypted store` + `Cipher`) — cada entidade é
+   serializada e cifrada; a chave de dados (DEK) é simétrica e local (modo "sem
+   senha"), com evolução prevista para DEK protegida por senha (KEK via **Argon2id**,
+   modelo envelope).
+3. **Observable write-through** — a escrita só confirma **após** o commit durável
+   (zero perda local); o store emite as coleções alteradas (`subscribe`), que
+   alimentam a reatividade da UI e, no futuro, o motor de sincronização.
+
+Configuração/perfil ficam em um storage **separado** (`ConfigStore`). Um storage
+**remoto** futuro entra como outro `StorageProvider` (cache local + sync) atrás da
+mesma porta — o boundary de rede é a porta reservada `SyncTransport`, e o `oplog`
+append-only é o substrato de push.
+
+Invariantes de escrita (FK, ciclo em `prepares`, cascata) são impostos no funil único
+dos casos de uso (`CadernoService`); plugins recebem o store **read-only** e mutam só
+via serviço. Regras "soft" (Σpesos, termos) são diagnósticos puros que a UI exibe como
+aviso, sem bloquear.
 
 ## Build e deploy
 
@@ -90,7 +144,12 @@ app/
 ## Qualidade e segurança
 
 - **CI de qualidade** ([`quality.yml`](../.github/workflows/quality.yml)):
-  lint + format + typecheck (`biome ci`), build de tudo e `reuse lint`.
+  `biome ci` (lint + format), **typecheck e testes de todos os pacotes**
+  (`nx run-many`), build e `reuse lint`.
+- **Boundary enforcement**: o [`biome.json`](../src/biome.json) barra no lint imports
+  proibidos por camada (`domain` puro, `engine` sem `application`, `core` sem
+  adapters/validation/UI); `domain/purity.spec.ts` garante ausência de
+  `Date.now`/`Math.random` no domínio.
 - **Segurança automatizada**: CodeQL, Dependabot, zizmor e actionlint — detalhes
   no [SECURITY.md](../SECURITY.md).
 
@@ -101,4 +160,5 @@ As escolhas acima não são acidentais — elas seguem a
 
 - **Local-first / offline** → app estático, dados no dispositivo, sync opcional.
 - **Sem lock-in** → exportação/importação como recurso de primeira classe.
-- **Dados do usuário** → o domínio (core) é desacoplado e portável.
+- **Dados do usuário** → o domínio (core) é desacoplado e portável; criptografia em
+  repouso por padrão.

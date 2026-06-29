@@ -1,0 +1,55 @@
+import { describe, expect, it } from "vitest";
+import type { Color, Id, Subject, Timestamp } from "../domain";
+import { EntityName } from "../domain";
+import { MergeStrategy, mergeCollection } from "./merge";
+
+const id = (s: string) => s as Id;
+const ts = 1 as Timestamp;
+const subject = (i: string, name: string): Subject => ({
+  id: id(i),
+  contextId: id("ctx"),
+  name,
+  color: "#c0392b" as Color,
+  hoursPerClass: 1,
+  classesPerSession: 1,
+});
+
+describe("mergeCollection", () => {
+  it("upserts new and changed items, emitting one op each", () => {
+    const current = [subject("a", "A")];
+    const incoming = [subject("a", "A2"), subject("b", "B")];
+    const { merged, ops } = mergeCollection(
+      EntityName.SUBJECT,
+      current,
+      incoming,
+      ts,
+    );
+    expect(merged).toHaveLength(2);
+    expect(ops).toHaveLength(2);
+  });
+
+  it("is idempotent for identical items", () => {
+    const current = [subject("a", "A")];
+    const { ops } = mergeCollection(
+      EntityName.SUBJECT,
+      current,
+      [subject("a", "A")],
+      ts,
+    );
+    expect(ops).toHaveLength(0);
+  });
+
+  it("REPLACE deletes items missing from the import", () => {
+    const current = [subject("a", "A"), subject("b", "B")];
+    const incoming = [subject("a", "A")];
+    const { merged, ops } = mergeCollection(
+      EntityName.SUBJECT,
+      current,
+      incoming,
+      ts,
+      MergeStrategy.REPLACE,
+    );
+    expect(merged).toHaveLength(1);
+    expect(ops.some((o) => o.op === "DELETE")).toBe(true);
+  });
+});

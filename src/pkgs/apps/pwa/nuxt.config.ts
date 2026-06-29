@@ -17,6 +17,8 @@ export default defineNuxtConfig({
 
   srcDir: "./app",
 
+  css: ["~/assets/css/papel-tinta.css"],
+
   modules: [
     "@vite-pwa/nuxt",
     "@nuxtjs/i18n",
@@ -181,6 +183,27 @@ export default defineNuxtConfig({
     features: {
       hydration: true,
     },
+  },
+
+  fonts: {
+    families: [
+      {
+        name: "Familjen Grotesk",
+        provider: "google",
+        weights: [400, 500, 600, 700],
+      },
+      {
+        name: "Shantell Sans",
+        provider: "google",
+        weights: [400, 500, 600, 700],
+      },
+      {
+        name: "Literata",
+        provider: "google",
+        weights: [400, 500, 600],
+        styles: ["normal", "italic"],
+      },
+    ],
   },
 
   image: {

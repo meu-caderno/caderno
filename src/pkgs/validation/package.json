@@ -1,0 +1,93 @@
+{
+  "name": "@meu-caderno/validation",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@meu-caderno/core": "workspace:*",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^3.2.4",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "nx": {
+    "includedScripts": [],
+    "namedInputs": {
+      "default": [
+        "{projectRoot}/src",
+        "{projectRoot}/vitest.config.ts",
+        "{projectRoot}/tsconfig.json"
+      ]
+    },
+    "targets": {
+      "typecheck": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "tsc --noEmit"
+          ],
+          "parallel": false
+        },
+        "inputs": [
+          "default"
+        ],
+        "cache": true,
+        "continuous": false
+      },
+      "test": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "vitest run"
+          ],
+          "parallel": false
+        },
+        "inputs": [
+          "default"
+        ],
+        "cache": true,
+        "continuous": false
+      },
+      "test:watch": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "vitest"
+          ],
+          "parallel": false
+        },
+        "continuous": true
+      },
+      "coverage": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "{projectRoot}",
+          "commands": [
+            "vitest run --coverage"
+          ],
+          "parallel": false
+        },
+        "inputs": [
+          "default"
+        ],
+        "outputs": [
+          "{projectRoot}/coverage"
+        ],
+        "cache": true,
+        "continuous": false
+      }
+    }
+  }
+}

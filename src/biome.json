@@ -51,7 +51,7 @@
   },
   "overrides": [
     {
-      "includes": ["**/pages/**/*.vue"],
+      "includes": ["**/pages/**/*.vue", "**/components/UI/**/*.vue"],
       "linter": {
         "rules": {
           "style": {
@@ -71,6 +71,99 @@
           "correctness": {
             "noUnusedVariables": "off",
             "noUnusedImports": "off"
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/core/src/domain/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "zod",
+                      "dexie",
+                      "vue",
+                      "hookable",
+                      "decimal.js",
+                      "rrule",
+                      "date-fns",
+                      "uuid",
+                      "fake-indexeddb",
+                      "@meu-caderno/*",
+                      "../engine",
+                      "../engine/*",
+                      "../application",
+                      "../application/*"
+                    ],
+                    "message": "domain deve ser puro: sem libs de impl, sem depender de engine/application"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": ["**/core/src/engine/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "zod",
+                      "dexie",
+                      "vue",
+                      "hookable",
+                      "@meu-caderno/adapter-*",
+                      "@meu-caderno/validation",
+                      "../application",
+                      "../application/*"
+                    ],
+                    "message": "engine não depende de application nem de persistência/UI"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "includes": [
+        "**/core/src/**",
+        "!**/core/src/domain/**",
+        "!**/core/src/engine/**"
+      ],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "patterns": [
+                  {
+                    "group": [
+                      "@meu-caderno/adapter-*",
+                      "@meu-caderno/validation",
+                      "vue",
+                      "dexie"
+                    ],
+                    "message": "core não depende de adapters/validation/UI"
+                  }
+                ]
+              }
+            }
           }
         }
       }

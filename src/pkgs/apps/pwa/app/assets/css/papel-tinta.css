@@ -1,0 +1,95 @@
+:root {
+  --pt-paper: #f4f1ea;
+  --pt-paper-2: #f1ece1;
+  --pt-linen: #efe9dc;
+  --pt-card: #fcfcfa;
+
+  --pt-ink: #2c2a27;
+  --pt-ink-soft: #5a574f;
+  --pt-ink-muted: #6b6862;
+  --pt-ink-faint: #8a8780;
+  --pt-on-ink: #f4f1ea;
+
+  --pt-border: #2c2a27;
+  --pt-border-muted: #c4beb0;
+  --pt-border-faint: #d8d2c4;
+
+  --pt-ok: #2f7d4f;
+  --pt-ok-text: #2f7d4f;
+  --pt-ok-soft: #e3efe4;
+  --pt-danger: #c0392b;
+  --pt-danger-text: #c0392b;
+  --pt-danger-soft: #f8e3df;
+  --pt-warn: #b8862b;
+  --pt-warn-text: #9a6f1f;
+  --pt-warn-soft: #fbf1d8;
+  --pt-info: #3f6fb0;
+  --pt-info-text: #3f6fb0;
+  --pt-info-soft: #e4edf6;
+
+  --pt-radius-sm: 9px;
+  --pt-radius: 13px;
+  --pt-radius-lg: 16px;
+  --pt-radius-xl: 18px;
+  --pt-radius-pill: 20px;
+  --pt-shadow: 2px 3px 0 rgba(44, 42, 39, 0.07);
+  --pt-shadow-strong: 2px 3px 0 rgba(44, 42, 39, 0.18);
+  --pt-stroke: 2px;
+
+  --pt-font-hand: "Shantell Sans", "Comic Sans MS", cursive;
+  --pt-font-read: "Literata", Georgia, serif;
+  --pt-font-ui: "Familjen Grotesk", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--pt-paper);
+  color: var(--pt-ink);
+  font-family: var(--pt-font-ui);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.pt-hand {
+  font-family: var(--pt-font-hand);
+}
+
+.pt-read {
+  font-family: var(--pt-font-read);
+}
+
+.pt-eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--pt-ink-muted);
+}
+
+:focus-visible {
+  outline: 2px solid var(--pt-ink);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: WCAG 2.3.3 reduced-motion reset must override component animations. */
+    animation-duration: 0.01ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: WCAG 2.3.3 reduced-motion reset must override component transitions. */
+    transition-duration: 0.01ms !important;
+  }
+}

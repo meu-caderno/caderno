@@ -1,7 +1,0 @@
-export enum Goal {
-  NONE = "NONE",
-  FREE_STUDY = "FREE_STUDY",
-  COURSE = "COURSE",
-  PUBLIC_EXAM = "PUBLIC_EXAM",
-  UNIVERISTY = "UNIVERSITY",
-}

@@ -1,6 +1,10 @@
 {
   "name": "@meu-caderno/core",
   "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./testing": "./src/testing/index.ts"
+  },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
@@ -8,10 +12,13 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "zod": "^4.4.3"
+    "decimal.js": "^10.4.3",
+    "hookable": "^5.5.3",
+    "rrule": "^2.8.1"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^3.2.4",
+    "fast-check": "^3.23.1",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   },
