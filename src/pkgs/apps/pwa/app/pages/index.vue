@@ -39,6 +39,7 @@ const editingSubject = ref<Subject | null>(null);
 const deletingSubject = ref<Subject | null>(null);
 const creatingActivity = ref(false);
 const editingActivity = ref<Activity | null>(null);
+const managingGoals = ref(false);
 const capturing = ref(false);
 const showInbox = ref(false);
 const notasSubjectId = ref<Id | null>(null);
@@ -166,6 +167,12 @@ const period = computed(() => {
       :stats="stats"
       @detail="detailSubjectId = $event"
     />
+    <SectionHomeGoalsSection
+      v-if="showWidget('goals') && context"
+      :context="context"
+      :today="today"
+      @manage="managingGoals = true"
+    />
     <SectionHomeSubjectsSection
       v-if="showWidget('subjects')"
       :stats="stats"
@@ -217,6 +224,12 @@ const period = computed(() => {
       v-if="editingContext && context"
       :context="context"
       @close="editingContext = false"
+    />
+    <SectionHomeGoalsManager
+      v-if="managingGoals && context"
+      :context="context"
+      @done="managingGoals = false"
+      @cancel="managingGoals = false"
     />
     <SectionHomeSubjectDetail
       v-if="detailStat"

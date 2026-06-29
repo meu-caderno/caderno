@@ -10,6 +10,7 @@ export interface HomeWidget {
 export const HOME_WIDGETS: HomeWidget[] = [
   { key: "roll", label: "Aulas de hoje" },
   { key: "risk", label: "Alerta de risco" },
+  { key: "goals", label: "Metas" },
   { key: "subjects", label: "Disciplinas" },
   { key: "activities", label: "Atividades" },
 ];
