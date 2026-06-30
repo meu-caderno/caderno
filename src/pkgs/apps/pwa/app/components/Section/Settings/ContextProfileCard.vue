@@ -19,15 +19,10 @@ function isOn(id: Context["id"]) {
 </script>
 
 <template>
-  <UICard pad="18px" class="ctx-profile">
-    <div class="ctx-profile__head">
-      <h2 class="pt-hand ctx-profile__title">Perfil de contexto</h2>
-      <p class="ctx-profile__sub">
-        Escolha quais contextos aparecem na troca rápida. Nenhum marcado mostra
-        todos.
-      </p>
-    </div>
-
+  <SectionSettingsCard
+    title="Perfil de contexto"
+    subtitle="Escolha quais contextos aparecem na troca rápida. Nenhum marcado mostra todos."
+  >
     <div v-if="visible.length" class="ctx-profile__list">
       <button
         v-for="context in visible"
@@ -46,25 +41,10 @@ function isOn(id: Context["id"]) {
       </button>
     </div>
     <p v-else class="ctx-profile__empty">Nenhum contexto ainda.</p>
-  </UICard>
+  </SectionSettingsCard>
 </template>
 
 <style scoped>
-.ctx-profile {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.ctx-profile__title {
-  font-size: calc(19px * var(--pt-text-scale));
-  font-weight: 700;
-  margin: 0;
-}
-.ctx-profile__sub {
-  font-size: calc(13px * var(--pt-text-scale));
-  color: var(--pt-ink-muted);
-  margin: 4px 0 0;
-}
 .ctx-profile__list {
   display: flex;
   flex-direction: column;

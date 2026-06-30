@@ -5,13 +5,10 @@ const { hasConsent, toggleConsent } = useConsent();
 </script>
 
 <template>
-  <UICard pad="18px" class="consent-card">
-    <div class="consent-card__head">
-      <h2 class="pt-hand consent-card__title">Gatilhos & avisos</h2>
-      <p class="consent-card__sub">
-        O app avisa, nunca obriga. Revogue quando quiser.
-      </p>
-    </div>
+  <SectionSettingsCard
+    title="Gatilhos & avisos"
+    subtitle="O app avisa, nunca obriga. Revogue quando quiser."
+  >
     <div
       v-for="item in CONSENTS"
       :key="item.key"
@@ -26,25 +23,10 @@ const { hasConsent, toggleConsent } = useConsent();
         @update:model-value="toggleConsent(item.key)"
       />
     </div>
-  </UICard>
+  </SectionSettingsCard>
 </template>
 
 <style scoped>
-.consent-card {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.consent-card__title {
-  font-size: calc(19px * var(--pt-text-scale));
-  font-weight: 700;
-  margin: 0;
-}
-.consent-card__sub {
-  font-size: calc(13px * var(--pt-text-scale));
-  color: var(--pt-ink-muted);
-  margin: 4px 0 0;
-}
 .consent-card__row {
   display: flex;
   align-items: center;

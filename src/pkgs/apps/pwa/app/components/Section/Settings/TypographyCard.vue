@@ -5,12 +5,10 @@ const { textScale, headingFont, setTextScale, setHeadingFont } = useTheme();
 </script>
 
 <template>
-  <UICard pad="18px" class="typography-card">
-    <div class="typography-card__head">
-      <h2 class="pt-hand typography-card__title">Tipografia</h2>
-      <p class="typography-card__sub">Tamanho do texto e fonte dos títulos.</p>
-    </div>
-
+  <SectionSettingsCard
+    title="Tipografia"
+    subtitle="Tamanho do texto e fonte dos títulos."
+  >
     <div class="typography-card__group">
       <span class="pt-eyebrow">Tamanho do texto</span>
       <div class="typography-card__options">
@@ -44,25 +42,10 @@ const { textScale, headingFont, setTextScale, setHeadingFont } = useTheme();
         </button>
       </div>
     </div>
-  </UICard>
+  </SectionSettingsCard>
 </template>
 
 <style scoped>
-.typography-card {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.typography-card__title {
-  font-size: calc(19px * var(--pt-text-scale));
-  font-weight: 700;
-  margin: 0;
-}
-.typography-card__sub {
-  font-size: calc(13px * var(--pt-text-scale));
-  color: var(--pt-ink-muted);
-  margin: 4px 0 0;
-}
 .typography-card__group {
   display: flex;
   flex-direction: column;

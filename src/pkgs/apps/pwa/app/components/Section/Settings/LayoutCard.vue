@@ -59,14 +59,10 @@ function onReorderRail({ fromId, toId, edge }: SortablePayload) {
 </script>
 
 <template>
-  <UICard pad="18px" class="layout-card">
-    <div class="layout-card__head">
-      <h2 class="pt-hand layout-card__title">Layout</h2>
-      <p class="layout-card__sub">
-        Arraste pela alça (ou use ↑/↓) para reordenar; ligue/desligue à direita.
-      </p>
-    </div>
-
+  <SectionSettingsCard
+    title="Layout"
+    subtitle="Arraste pela alça (ou use ↑/↓) para reordenar; ligue/desligue à direita."
+  >
     <div class="layout-card__group">
       <span class="pt-eyebrow">Widgets da Home</span>
       <UISortable @reorder="onReorderWidgets">
@@ -218,25 +214,10 @@ function onReorderRail({ fromId, toId, edge }: SortablePayload) {
         />
       </div>
     </div>
-  </UICard>
+  </SectionSettingsCard>
 </template>
 
 <style scoped>
-.layout-card {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.layout-card__title {
-  font-size: calc(19px * var(--pt-text-scale));
-  font-weight: 700;
-  margin: 0;
-}
-.layout-card__sub {
-  font-size: calc(13px * var(--pt-text-scale));
-  color: var(--pt-ink-muted);
-  margin: 4px 0 0;
-}
 .layout-card__group {
   display: flex;
   flex-direction: column;

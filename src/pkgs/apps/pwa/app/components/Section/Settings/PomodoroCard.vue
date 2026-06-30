@@ -19,11 +19,10 @@ function commit() {
 </script>
 
 <template>
-  <UICard pad="18px" class="pomodoro-card">
-    <div class="pomodoro-card__head">
-      <h2 class="pt-hand pomodoro-card__title">Foco · Pomodoro</h2>
-      <p class="pomodoro-card__sub">Durações dos ciclos, em minutos.</p>
-    </div>
+  <SectionSettingsCard
+    title="Foco · Pomodoro"
+    subtitle="Durações dos ciclos, em minutos."
+  >
     <div class="pomodoro-card__rows">
       <label class="pomodoro-card__row">
         <span>Foco</span>
@@ -59,25 +58,10 @@ function commit() {
         />
       </label>
     </div>
-  </UICard>
+  </SectionSettingsCard>
 </template>
 
 <style scoped>
-.pomodoro-card {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.pomodoro-card__title {
-  font-size: calc(19px * var(--pt-text-scale));
-  font-weight: 700;
-  margin: 0;
-}
-.pomodoro-card__sub {
-  font-size: calc(13px * var(--pt-text-scale));
-  color: var(--pt-ink-muted);
-  margin: 4px 0 0;
-}
 .pomodoro-card__rows {
   display: flex;
   flex-direction: column;

@@ -5,11 +5,10 @@ const { screenDensity, setScreenDensity, zen, setZen } = useTheme();
 </script>
 
 <template>
-  <UICard pad="18px" class="display-card">
-    <div class="display-card__head">
-      <h2 class="pt-hand display-card__title">Densidade da tela</h2>
-      <p class="display-card__sub">Quanta informação aparece de uma vez.</p>
-    </div>
+  <SectionSettingsCard
+    title="Densidade da tela"
+    subtitle="Quanta informação aparece de uma vez."
+  >
     <div class="display-card__options">
       <button
         v-for="option in SCREEN_DENSITIES"
@@ -34,25 +33,10 @@ const { screenDensity, setScreenDensity, zen, setZen } = useTheme();
         @update:model-value="setZen($event)"
       />
     </div>
-  </UICard>
+  </SectionSettingsCard>
 </template>
 
 <style scoped>
-.display-card {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.display-card__title {
-  font-size: calc(19px * var(--pt-text-scale));
-  font-weight: 700;
-  margin: 0;
-}
-.display-card__sub {
-  font-size: calc(13px * var(--pt-text-scale));
-  color: var(--pt-ink-muted);
-  margin: 4px 0 0;
-}
 .display-card__options {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));

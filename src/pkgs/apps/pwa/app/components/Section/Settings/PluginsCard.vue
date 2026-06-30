@@ -15,14 +15,10 @@ onMounted(refresh);
 </script>
 
 <template>
-  <UICard pad="18px" class="plugins-card">
-    <div class="plugins-card__head">
-      <h2 class="pt-hand plugins-card__title">Plugins</h2>
-      <p class="plugins-card__sub">
-        Capacidades carregadas neste aparelho.
-      </p>
-    </div>
-
+  <SectionSettingsCard
+    title="Plugins"
+    subtitle="Capacidades carregadas neste aparelho."
+  >
     <div class="plugins-card__list">
       <div
         v-for="manifest in plugins"
@@ -58,25 +54,10 @@ onMounted(refresh);
         <b>{{ stat.value }}</b>
       </div>
     </div>
-  </UICard>
+  </SectionSettingsCard>
 </template>
 
 <style scoped>
-.plugins-card {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.plugins-card__title {
-  font-size: calc(19px * var(--pt-text-scale));
-  font-weight: 700;
-  margin: 0;
-}
-.plugins-card__sub {
-  font-size: calc(13px * var(--pt-text-scale));
-  color: var(--pt-ink-muted);
-  margin: 4px 0 0;
-}
 .plugins-card__list {
   display: flex;
   flex-direction: column;

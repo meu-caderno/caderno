@@ -21,13 +21,10 @@ async function confirmRemove() {
 </script>
 
 <template>
-  <UICard pad="18px" class="moods-card">
-    <div class="moods-card__head">
-      <h2 class="pt-hand moods-card__title">Perfil da Home</h2>
-      <p class="moods-card__sub">
-        Define o tom do papel, a cor de destaque e a densidade.
-      </p>
-    </div>
+  <SectionSettingsCard
+    title="Perfil da Home"
+    subtitle="Define o tom do papel, a cor de destaque e a densidade."
+  >
     <div class="moods-card__grid">
       <button
         v-for="mood in allMoods"
@@ -76,25 +73,10 @@ async function confirmRemove() {
       @confirm="confirmRemove"
       @cancel="removing = null"
     />
-  </UICard>
+  </SectionSettingsCard>
 </template>
 
 <style scoped>
-.moods-card {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.moods-card__title {
-  font-size: calc(19px * var(--pt-text-scale));
-  font-weight: 700;
-  margin: 0;
-}
-.moods-card__sub {
-  font-size: calc(13px * var(--pt-text-scale));
-  color: var(--pt-ink-muted);
-  margin: 4px 0 0;
-}
 .moods-card__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));

@@ -37,14 +37,11 @@ onUnmounted(store.subscribe(() => refresh()));
 </script>
 
 <template>
-  <UICard pad="18px" class="oplog-card">
-    <div class="oplog-card__head">
-      <div>
-        <h2 class="pt-hand oplog-card__title">Histórico de alterações</h2>
-        <p class="oplog-card__sub">
-          Registro append-only das operações neste aparelho.
-        </p>
-      </div>
+  <SectionSettingsCard
+    title="Histórico de alterações"
+    subtitle="Registro append-only das operações neste aparelho."
+  >
+    <template #actions>
       <button
         type="button"
         class="oplog-card__refresh"
@@ -53,7 +50,7 @@ onUnmounted(store.subscribe(() => refresh()));
       >
         <UIIcon icon="rotate-ccw" :size="15" />
       </button>
-    </div>
+    </template>
 
     <p v-if="!entries.length" class="oplog-card__empty">Nada registrado ainda.</p>
     <div v-else class="oplog-card__list">
@@ -76,31 +73,10 @@ onUnmounted(store.subscribe(() => refresh()));
         <span class="oplog-card__time">{{ when(entry.ts) }}</span>
       </div>
     </div>
-  </UICard>
+  </SectionSettingsCard>
 </template>
 
 <style scoped>
-.oplog-card {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.oplog-card__head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-.oplog-card__title {
-  font-size: calc(19px * var(--pt-text-scale));
-  font-weight: 700;
-  margin: 0;
-}
-.oplog-card__sub {
-  font-size: calc(13px * var(--pt-text-scale));
-  color: var(--pt-ink-muted);
-  margin: 4px 0 0;
-}
 .oplog-card__refresh {
   flex-shrink: 0;
   display: inline-flex;

@@ -21,14 +21,10 @@ function onInvoke(bench: Workbench) {
 </script>
 
 <template>
-  <UICard pad="18px" class="benches-card">
-    <div class="benches-card__head">
-      <h2 class="pt-hand benches-card__title">Bancadas</h2>
-      <p class="benches-card__sub">
-        Marque uma mesa de trabalho (tela + contexto) para voltar depois.
-      </p>
-    </div>
-
+  <SectionSettingsCard
+    title="Bancadas"
+    subtitle="Marque uma mesa de trabalho (tela + contexto) para voltar depois."
+  >
     <div v-if="benches.length" class="benches-card__list">
       <div v-for="bench in benches" :key="bench.id" class="benches-card__row">
         <button
@@ -65,25 +61,10 @@ function onInvoke(bench: Workbench) {
         @click="onSave"
       />
     </div>
-  </UICard>
+  </SectionSettingsCard>
 </template>
 
 <style scoped>
-.benches-card {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-.benches-card__title {
-  font-size: calc(19px * var(--pt-text-scale));
-  font-weight: 700;
-  margin: 0;
-}
-.benches-card__sub {
-  font-size: calc(13px * var(--pt-text-scale));
-  color: var(--pt-ink-muted);
-  margin: 4px 0 0;
-}
 .benches-card__list {
   display: flex;
   flex-direction: column;

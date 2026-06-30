@@ -13,11 +13,7 @@ async function reset() {
 </script>
 
 <template>
-  <UICard pad="18px" class="general-card">
-    <div class="general-card__head">
-      <h2 class="pt-hand general-card__title">Geral</h2>
-      <p class="general-card__sub">Atalhos e telas.</p>
-    </div>
+  <SectionSettingsCard title="Geral" subtitle="Atalhos e telas.">
     <div class="general-card__rows">
       <button type="button" class="general-card__row" @click="openOnboarding">
         <span class="general-card__icon">👋</span>
@@ -49,25 +45,10 @@ async function reset() {
       @confirm="reset"
       @cancel="confirmingReset = false"
     />
-  </UICard>
+  </SectionSettingsCard>
 </template>
 
 <style scoped>
-.general-card {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.general-card__title {
-  font-size: calc(19px * var(--pt-text-scale));
-  font-weight: 700;
-  margin: 0;
-}
-.general-card__sub {
-  font-size: calc(13px * var(--pt-text-scale));
-  color: var(--pt-ink-muted);
-  margin: 4px 0 0;
-}
 .general-card__rows {
   display: flex;
   flex-direction: column;
