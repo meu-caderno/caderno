@@ -1,9 +1,14 @@
 <script setup lang="ts">
 const emit = defineEmits<{ close: [] }>();
 
-const { search } = useSearch();
+const { search, commands, createSubject, createActivity } = useSearch();
+const { toast } = useToast();
 const query = ref("");
 const hits = computed(() => search(query.value));
+const trimmed = computed(() => query.value.trim());
+const noResults = computed(
+  () => trimmed.value.length > 0 && !hits.value.length,
+);
 const active = ref(0);
 const inputEl = ref<HTMLInputElement | null>(null);
 
@@ -25,6 +30,17 @@ function move(delta: number) {
   if (!count) return;
   active.value = (active.value + delta + count) % count;
 }
+
+async function makeSubject() {
+  const result = await createSubject(trimmed.value);
+  if (result?.ok) toast({ title: `Disciplina “${result.value.name}” criada` });
+  emit("close");
+}
+async function makeActivity() {
+  const result = await createActivity(trimmed.value);
+  if (result?.ok) toast({ title: `Atividade “${result.value.title}” criada` });
+  emit("close");
+}
 </script>
 
 <template>
@@ -45,8 +61,30 @@ function move(delta: number) {
         />
         <kbd class="palette__kbd">esc</kbd>
       </div>
-      <div v-if="query && !hits.length" class="palette__empty">
-        Nada encontrado para “{{ query }}”.
+      <ul class="palette__list palette__list--commands">
+        <li class="palette__group">Comandos</li>
+        <li
+          v-for="command in commands"
+          :key="command.id"
+          class="palette__row"
+          @click="go(command.to)"
+        >
+          <UIIcon icon="plus" :size="15" />
+          <span class="palette__label">{{ command.label }}</span>
+        </li>
+      </ul>
+      <div v-if="noResults" class="palette__create">
+        <p class="palette__create-title">
+          Nada encontrado — criar agora?
+        </p>
+        <button type="button" class="palette__row" @click="makeActivity">
+          <UIIcon icon="plus" :size="15" />
+          <span class="palette__label">Criar atividade “{{ trimmed }}”</span>
+        </button>
+        <button type="button" class="palette__row" @click="makeSubject">
+          <UIIcon icon="plus" :size="15" />
+          <span class="palette__label">Criar disciplina “{{ trimmed }}”</span>
+        </button>
       </div>
       <ul v-else-if="hits.length" class="palette__list">
         <li
@@ -121,13 +159,46 @@ function move(delta: number) {
   max-height: 50vh;
   overflow-y: auto;
 }
+.palette__list--commands {
+  border-bottom: 1.5px solid var(--pt-border-faint);
+  max-height: none;
+  padding-bottom: 6px;
+}
+.palette__group {
+  padding: 6px 10px 2px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--pt-ink-faint);
+}
+.palette__create {
+  padding: 8px 6px;
+  border-bottom: 1.5px solid var(--pt-border-faint);
+}
+.palette__create-title {
+  margin: 0 0 4px;
+  padding: 0 10px;
+  font-size: calc(13px * var(--pt-text-scale));
+  font-weight: 600;
+  color: var(--pt-ink-muted);
+}
 .palette__row {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
   padding: 9px 10px;
+  border: none;
   border-radius: var(--pt-radius-sm);
+  background: transparent;
+  font-family: inherit;
+  text-align: left;
+  color: var(--pt-ink);
   cursor: pointer;
+}
+.palette__row:hover {
+  background: var(--pt-linen);
 }
 .palette__row--active {
   background: var(--pt-linen);

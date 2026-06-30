@@ -1,11 +1,55 @@
 import type { LibraryItem } from "@meu-caderno/core";
-import { LibraryState } from "@meu-caderno/core";
+import { LibraryKind, LibraryState } from "@meu-caderno/core";
 
 export const LIBRARY_STATE_LABEL: Record<LibraryState, string> = {
   [LibraryState.WANT]: "Quero",
   [LibraryState.CONSUMING]: "Consumindo",
   [LibraryState.DONE]: "Concluído",
 };
+
+export const LIBRARY_KIND_ICON: Record<LibraryKind, string> = {
+  [LibraryKind.BOOK]: "📕",
+  [LibraryKind.ARTICLE]: "📰",
+  [LibraryKind.VIDEO]: "🎬",
+  [LibraryKind.SERIES]: "📺",
+  [LibraryKind.COURSE]: "🎓",
+  [LibraryKind.OTHER]: "📦",
+};
+
+export const LIBRARY_KIND_LABEL: Record<LibraryKind, string> = {
+  [LibraryKind.BOOK]: "Livro",
+  [LibraryKind.ARTICLE]: "Artigo",
+  [LibraryKind.VIDEO]: "Vídeo",
+  [LibraryKind.SERIES]: "Série",
+  [LibraryKind.COURSE]: "Curso",
+  [LibraryKind.OTHER]: "Outro",
+};
+
+export const LIBRARY_KIND_ORDER: LibraryKind[] = [
+  LibraryKind.BOOK,
+  LibraryKind.ARTICLE,
+  LibraryKind.VIDEO,
+  LibraryKind.SERIES,
+  LibraryKind.COURSE,
+  LibraryKind.OTHER,
+];
+
+export const LIBRARY_KIND_OPTIONS = LIBRARY_KIND_ORDER.map((kind) => ({
+  value: kind,
+  label: `${LIBRARY_KIND_ICON[kind]} ${LIBRARY_KIND_LABEL[kind]}`,
+}));
+
+export function kindIconOf(item: LibraryItem): string | null {
+  return item.kind ? LIBRARY_KIND_ICON[item.kind] : null;
+}
+
+export function filterByKind(
+  items: LibraryItem[],
+  kind: LibraryKind | null,
+): LibraryItem[] {
+  if (!kind) return items;
+  return items.filter((item) => item.kind === kind);
+}
 
 export const LIBRARY_STATE_ORDER: LibraryState[] = [
   LibraryState.WANT,

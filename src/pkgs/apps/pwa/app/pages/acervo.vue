@@ -1,13 +1,28 @@
 <script setup lang="ts">
 import type { LibraryItem } from "@meu-caderno/core";
+import { LibraryKind } from "@meu-caderno/core";
 
-const { items, groups } = useLibrary();
+const { items } = useLibrary();
 const { service } = useCadernoService();
 const { toast } = useToast();
 
 const creating = ref(false);
 const editingItem = ref<LibraryItem | null>(null);
 const deletingItem = ref<LibraryItem | null>(null);
+const kindFilter = ref<LibraryKind | null>(null);
+
+const kindFilters = computed(() =>
+  LIBRARY_KIND_OPTIONS.filter((option) =>
+    items.value.some((item) => item.kind === option.value),
+  ),
+);
+const groups = computed(() =>
+  groupByState(filterByKind(items.value, kindFilter.value)),
+);
+
+function setKindFilter(value: LibraryKind | null) {
+  kindFilter.value = kindFilter.value === value ? null : value;
+}
 
 async function confirmDelete() {
   const item = deletingItem.value;
@@ -40,7 +55,22 @@ async function confirmDelete() {
       action-label="Adicionar item"
       @action="creating = true"
     />
-    <div v-else class="acervo__board">
+    <div v-if="items.length && kindFilters.length > 1" class="acervo__filters">
+      <UIChip
+        label="Todos"
+        :selected="kindFilter === null"
+        @click="setKindFilter(null)"
+      />
+      <UIChip
+        v-for="option in kindFilters"
+        :key="option.value"
+        :label="option.label"
+        :selected="kindFilter === option.value"
+        @click="setKindFilter(option.value)"
+      />
+    </div>
+
+    <div v-if="items.length" class="acervo__board">
       <section
         v-for="group in groups"
         v-show="group.items.length"
@@ -95,6 +125,11 @@ async function confirmDelete() {
   flex-direction: column;
   gap: calc(16px * var(--pt-density));
   container-type: inline-size;
+}
+.acervo__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 .acervo__board {
   display: flex;

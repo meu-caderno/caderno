@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AttendanceStatus } from "@meu-caderno/core";
+import { AttendanceStatus, type Subject } from "@meu-caderno/core";
 import { formatDay, type SubjectStats } from "~/utils/caderno-stats";
 
 const props = defineProps<{ stat: SubjectStats }>();
@@ -7,6 +7,18 @@ const emit = defineEmits<{ close: []; notas: []; edit: []; delete: [] }>();
 
 const subject = computed(() => props.stat.subject);
 const marking = ref(false);
+
+function buildRuleLines(item: Subject, floorPct: number): string[] {
+  return [
+    `Cada aula vale ${item.hoursPerClass} hora-aula`,
+    `Piso de frequência ${floorPct}%`,
+    "Aula cancelada ou feriado não conta falta",
+    item.medicalExcuses
+      ? "Atestado abona a falta"
+      : "Atestado conta como falta",
+    item.lateIsHalf ? "Atraso conta como ½ falta" : "Atraso conta falta cheia",
+  ];
+}
 
 const STATUS_LABEL: Record<AttendanceStatus, string> = {
   [AttendanceStatus.PRESENT]: "Presente",
@@ -19,12 +31,12 @@ const STATUS_LABEL: Record<AttendanceStatus, string> = {
 };
 
 const history = computed(() => [...(subject.value.records ?? [])].reverse());
-const ruleLabel = computed(
-  () =>
-    `Cada aula vale ${subject.value.hoursPerClass} hora-aula · piso ${Math.round(
-      props.stat.floor * 100,
-    )}%`,
-);
+const floorPct = computed(() => Math.round(props.stat.floor * 100));
+const ruleLines = computed(() => buildRuleLines(subject.value, floorPct.value));
+const budget = computed(() => ({
+  used: Math.max(props.stat.faltasUsadas, 0),
+  max: Math.max(props.stat.maxFaltas, 0),
+}));
 </script>
 
 <template>
@@ -40,6 +52,7 @@ const ruleLabel = computed(
         <UIProgressRing
           :value="stat.freqPct"
           :color="stat.status.color"
+          :caption="`piso ${floorPct}%`"
           :size="72"
           :stroke="8"
         />
@@ -60,7 +73,31 @@ const ruleLabel = computed(
         </div>
       </div>
 
-      <div class="subject-detail__rule">📐 {{ ruleLabel }}</div>
+      <div class="subject-detail__budget">
+        <div class="subject-detail__budget-head">
+          <span>Orçamento de faltas</span>
+          <span class="subject-detail__budget-n">
+            {{ budget.used }} / {{ budget.max }}
+          </span>
+        </div>
+        <UIProgress
+          :value="budget.used"
+          :max="budget.max || 1"
+          :color="stat.status.color"
+        />
+      </div>
+
+      <div v-if="stat.heat.length" class="subject-detail__heat">
+        <div class="pt-eyebrow">Ritmo de presença</div>
+        <UIHeatmap :cells="stat.heat" :cell-size="14" />
+      </div>
+
+      <div class="subject-detail__rule">
+        <div class="subject-detail__rule-title">📐 Regra de faltas</div>
+        <ul class="subject-detail__rule-list">
+          <li v-for="line in ruleLines" :key="line">{{ line }}</li>
+        </ul>
+      </div>
 
       <SectionHomeAttendanceSimulator :stat="stat" />
 
@@ -165,12 +202,57 @@ const ruleLabel = computed(
   font-size: calc(11px * var(--pt-text-scale));
   color: var(--pt-ink-muted);
 }
+.subject-detail__budget {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.subject-detail__budget-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: calc(13px * var(--pt-text-scale));
+  font-weight: 600;
+  color: var(--pt-ink-soft);
+}
+.subject-detail__budget-n {
+  font-variant-numeric: tabular-nums;
+}
+.subject-detail__heat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 .subject-detail__rule {
   font-size: calc(13px * var(--pt-text-scale));
   color: var(--pt-ink-soft);
   padding: 10px 12px;
   border-radius: var(--pt-radius-sm);
   background: var(--pt-card);
+}
+.subject-detail__rule-title {
+  font-weight: 700;
+  color: var(--pt-ink);
+  margin-bottom: 6px;
+}
+.subject-detail__rule-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.subject-detail__rule-list li {
+  position: relative;
+  padding-left: 14px;
+  line-height: 1.4;
+}
+.subject-detail__rule-list li::before {
+  content: "·";
+  position: absolute;
+  left: 4px;
+  font-weight: 800;
 }
 .subject-detail__notas {
   display: flex;

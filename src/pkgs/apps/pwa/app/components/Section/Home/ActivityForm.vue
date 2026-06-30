@@ -44,6 +44,12 @@ const recurrenceOptions = [
   { value: Recurrence.WEEKLY, label: "Semanal" },
   { value: Recurrence.BIWEEKLY, label: "Quinzenal" },
 ];
+const gapPresets = [
+  { value: 1, label: "1 dia" },
+  { value: 3, label: "3 dias" },
+  { value: 7, label: "1 semana" },
+  { value: 14, label: "2 semanas" },
+];
 
 const title = ref(props.activity?.title ?? "");
 const subjectId = ref<string>(props.activity?.subjectId ?? "");
@@ -70,6 +76,10 @@ const preparationTargets = computed(() => [
       label: candidate.title,
     })),
 ]);
+
+function setGap(value: number) {
+  gapDays.value = value;
+}
 
 async function addSubtask() {
   const text = newSubtask.value.trim();
@@ -168,7 +178,15 @@ async function save() {
         <input v-model="due" class="af__input" type="date" />
       </UIField>
       <UIField v-if="due" label="Recorrência">
-        <UISelect v-model="recurrence" :options="recurrenceOptions" />
+        <div class="af__chips">
+          <UIChip
+            v-for="option in recurrenceOptions"
+            :key="option.value"
+            :label="option.label"
+            :selected="recurrence === option.value"
+            @click="recurrence = option.value"
+          />
+        </div>
       </UIField>
 
       <UIField label="Subtarefas">
@@ -224,7 +242,18 @@ async function save() {
           <UISelect v-model="preparesId" :options="preparationTargets" />
         </UIField>
         <UIField label="Dias antes do prazo">
-          <UINumberField v-model="gapDays" :min="0" :max="60" :step="1" />
+          <div class="af__gap">
+            <div class="af__chips">
+              <UIChip
+                v-for="preset in gapPresets"
+                :key="preset.value"
+                :label="preset.label"
+                :selected="gapDays === preset.value"
+                @click="setGap(preset.value)"
+              />
+            </div>
+            <UINumberField v-model="gapDays" :min="0" :max="60" :step="1" />
+          </div>
         </UIField>
       </template>
 
@@ -271,6 +300,17 @@ async function save() {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+.af__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.af__gap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
 }
 .af__subtask {
   display: flex;

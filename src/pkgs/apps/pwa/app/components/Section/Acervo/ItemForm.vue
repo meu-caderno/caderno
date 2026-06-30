@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import type { Id, LibraryItem, LibraryReview } from "@meu-caderno/core";
-import { LibraryState } from "@meu-caderno/core";
+import { LibraryKind, LibraryState } from "@meu-caderno/core";
 
 const props = defineProps<{ item?: LibraryItem }>();
 const emit = defineEmits<{ done: []; cancel: []; delete: [] }>();
 
 const { service } = useCadernoService();
-const { effectiveId } = useActiveContext();
+const { effectiveId, contexts } = useActiveContext();
 
 const editing = computed(() => props.item != null);
 
@@ -14,7 +14,10 @@ const title = ref(props.item?.title ?? "");
 const synopsis = ref(props.item?.synopsis ?? "");
 const stars = ref(props.item?.stars ?? 0);
 const progress = ref(Math.round((props.item?.progress ?? 0) * 100));
-const state = ref<string>(props.item?.state ?? LibraryState.WANT);
+const state = ref<LibraryState>(props.item?.state ?? LibraryState.WANT);
+const kind = ref<LibraryKind | null>(props.item?.kind ?? null);
+const personalNote = ref(props.item?.personalNote ?? "");
+const linkedContexts = ref<Id[]>([...(props.item?.contextIds ?? [])]);
 const saving = ref(false);
 
 const currentReview = computed(() =>
@@ -24,6 +27,16 @@ const review = ref(currentReview.value?.text ?? "");
 
 function setStars(value: number) {
   stars.value = stars.value === value ? 0 : value;
+}
+
+function setKind(value: LibraryKind) {
+  kind.value = kind.value === value ? null : value;
+}
+
+function toggleContext(id: Id) {
+  linkedContexts.value = linkedContexts.value.includes(id)
+    ? linkedContexts.value.filter((current) => current !== id)
+    : [...linkedContexts.value, id];
 }
 
 function buildReviews(
@@ -37,21 +50,28 @@ function buildReviews(
   return next.length ? next : undefined;
 }
 
-async function save() {
-  const trimmed = title.value.trim();
-  if (!trimmed || saving.value) return;
-  saving.value = true;
+function buildFields(title: string) {
   const contextId = effectiveId.value;
-  const fields = {
-    title: trimmed,
+  return {
+    title,
     synopsis: synopsis.value.trim() || undefined,
     stars: stars.value > 0 ? stars.value : undefined,
     progress: progress.value > 0 ? progress.value / 100 : undefined,
-    state: state.value as LibraryState,
+    state: state.value,
+    kind: kind.value ?? undefined,
+    personalNote: personalNote.value.trim() || undefined,
+    contextIds: linkedContexts.value.length ? linkedContexts.value : undefined,
     reviews: contextId
       ? buildReviews(contextId, review.value.trim())
       : props.item?.reviews,
   };
+}
+
+async function save() {
+  const trimmed = title.value.trim();
+  if (!trimmed || saving.value) return;
+  saving.value = true;
+  const fields = buildFields(trimmed);
   const res = props.item
     ? await service.updateLibraryItem({ ...props.item, ...fields })
     : await service.addLibraryItem(fields);
@@ -76,6 +96,17 @@ async function save() {
           @keyup.enter="save"
         />
       </UIField>
+      <UIField label="Tipo">
+        <div class="item-form__chips">
+          <UIChip
+            v-for="option in LIBRARY_KIND_OPTIONS"
+            :key="option.value"
+            :label="option.label"
+            :selected="kind === option.value"
+            @click="setKind(option.value)"
+          />
+        </div>
+      </UIField>
       <UIField label="Sinopse">
         <textarea
           v-model="synopsis"
@@ -85,11 +116,41 @@ async function save() {
         />
       </UIField>
       <UIField label="Estado">
-        <UISelect
-          v-model="state"
-          :options="LIBRARY_STATE_OPTIONS"
-          placeholder="Estado…"
+        <div class="item-form__chips">
+          <UIChip
+            v-for="option in LIBRARY_STATE_OPTIONS"
+            :key="option.value"
+            :label="option.label"
+            :selected="state === option.value"
+            @click="state = option.value"
+          />
+        </div>
+      </UIField>
+      <UIField
+        label="Nota pessoal"
+        hint="privada · só você vê, não aparece nos contextos"
+      >
+        <textarea
+          v-model="personalNote"
+          class="item-form__input item-form__textarea"
+          rows="2"
+          placeholder="Lembrete pessoal, por que adicionou…"
         />
+      </UIField>
+      <UIField
+        v-if="contexts.length"
+        label="Vincular contextos"
+        hint="onde este item é relevante"
+      >
+        <div class="item-form__chips">
+          <UIChip
+            v-for="ctx in contexts"
+            :key="ctx.id"
+            :label="ctx.name"
+            :selected="linkedContexts.includes(ctx.id)"
+            @click="toggleContext(ctx.id)"
+          />
+        </div>
       </UIField>
       <UIField label="Resenha do contexto">
         <textarea
@@ -169,6 +230,11 @@ async function save() {
 }
 .item-form__textarea {
   resize: vertical;
+}
+.item-form__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 .item-form__stars {
   display: flex;

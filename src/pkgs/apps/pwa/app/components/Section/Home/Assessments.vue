@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import type { Grade, Id, Subject } from "@meu-caderno/core";
-import { weightedAverage, weightsBalanced } from "@meu-caderno/core";
+import {
+  neededGrade,
+  weightedAverage,
+  weightsBalanced,
+} from "@meu-caderno/core";
+
+const DEFAULT_TARGET = 6;
 
 const props = defineProps<{ subject: Subject }>();
 const emit = defineEmits<{ close: [] }>();
 
 const { service } = useCadernoService();
+const { contexts } = useActiveContext();
 
 const assessments = computed(() => props.subject.assessments ?? []);
 const balanced = computed(() => weightsBalanced(assessments.value));
@@ -16,6 +23,38 @@ const totalPct = computed(() =>
   ),
 );
 const average = computed(() => weightedAverage(assessments.value));
+
+const trend = computed(() =>
+  assessments.value
+    .filter((assessment) => assessment.grade != null)
+    .map((assessment) => assessment.grade as number),
+);
+
+const target = computed(() => {
+  const ctx = contexts.value.find(
+    (entry) => entry.id === props.subject.contextId,
+  );
+  return ctx?.minAverage ?? DEFAULT_TARGET;
+});
+const need = computed(() => neededGrade(assessments.value, target.value));
+const needLabel = computed(() => {
+  const value = need.value;
+  if (!value) return null;
+  if (value.secured) return "✓ já passou";
+  if (value.impossible) return "inalcançável";
+  return `precisa de ${value.needed.toFixed(1)} no que falta`;
+});
+const needTone = computed(() => {
+  const value = need.value;
+  if (!value) return "neutro";
+  if (value.secured) return "ok";
+  return value.impossible ? "perigo" : "atencao";
+});
+
+async function remove(id: Id) {
+  const next = assessments.value.filter((assessment) => assessment.id !== id);
+  await service.updateSubject({ ...props.subject, assessments: next });
+}
 
 const name = ref("");
 const weight = ref<number | null>(null);
@@ -52,10 +91,25 @@ function onGrade(id: Id, event: Event) {
   >
     <div class="as">
       <div class="as__summary">
-        <div>
+        <div class="as__avg">
           <span class="as__avg-l">média parcial</span>
           <span class="as__avg-v">{{ average != null ? average.toFixed(1) : "—" }}</span>
+          <span class="as__avg-meta">nota mínima {{ target.toFixed(1) }}</span>
         </div>
+        <UISparkline
+          v-if="trend.length >= 2"
+          :values="trend"
+          :width="96"
+          :height="38"
+          fill
+        />
+      </div>
+
+      <div
+        v-if="needLabel || (assessments.length && !balanced)"
+        class="as__badges"
+      >
+        <UIBadge v-if="needLabel" :tone="needTone" size="md" :label="needLabel" />
         <UIBadge
           v-if="assessments.length && !balanced"
           tone="atencao"
@@ -80,6 +134,14 @@ function onGrade(id: Id, event: Event) {
             placeholder="nota"
             @change="onGrade(assessment.id, $event)"
           />
+          <button
+            class="as__del"
+            type="button"
+            aria-label="Excluir avaliação"
+            @click="remove(assessment.id)"
+          >
+            <UIIcon icon="trash" :size="15" />
+          </button>
         </div>
       </div>
       <UIEmptyState
@@ -140,6 +202,12 @@ function onGrade(id: Id, event: Event) {
   justify-content: space-between;
   gap: 10px;
 }
+.as__avg {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+}
 .as__avg-l {
   font-size: calc(12px * var(--pt-text-scale));
   font-weight: 600;
@@ -149,7 +217,35 @@ function onGrade(id: Id, event: Event) {
   font-size: calc(24px * var(--pt-text-scale));
   font-weight: 800;
   font-variant-numeric: tabular-nums;
-  margin-left: 8px;
+}
+.as__avg-meta {
+  width: 100%;
+  font-size: calc(12px * var(--pt-text-scale));
+  font-weight: 600;
+  color: var(--pt-ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+.as__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.as__del {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border: 1.5px solid var(--pt-border-muted);
+  border-radius: var(--pt-radius-sm);
+  background: var(--pt-card);
+  color: var(--pt-ink-muted);
+  cursor: pointer;
+}
+.as__del:hover {
+  border-color: var(--pt-perigo, #c0392b);
+  color: var(--pt-perigo, #c0392b);
 }
 .as__list {
   display: flex;

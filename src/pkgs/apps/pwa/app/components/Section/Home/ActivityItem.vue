@@ -34,6 +34,7 @@ const repeats = computed(
     props.activity.recurrence != null &&
     props.activity.recurrence !== Recurrence.NONE,
 );
+const prepares = computed(() => props.activity.preparesId != null);
 
 function dueBadge(date: string | undefined): DueBadgeView {
   if (!date) return { label: "inbox", tone: "neutro" };
@@ -72,6 +73,7 @@ const due = computed(() => dueBadge(props.activity.dueDate));
         <span v-if="activity.subtasks?.length" class="activity-item__subtasks">
           {{ doneSubtasks }}/{{ activity.subtasks.length }} subtarefas
         </span>
+        <span v-if="prepares" class="activity-item__prepares">📚 preparação</span>
         <span v-if="repeats" class="activity-item__repeat">🔁</span>
       </div>
     </button>
@@ -140,5 +142,9 @@ const due = computed(() => dueBadge(props.activity.dueDate));
 .activity-item__subtasks::before {
   content: "·";
   margin-right: 7px;
+}
+.activity-item__prepares {
+  font-weight: 600;
+  color: var(--pt-ink-soft);
 }
 </style>

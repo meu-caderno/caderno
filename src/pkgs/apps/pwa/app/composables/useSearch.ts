@@ -1,9 +1,17 @@
 import type {
   Activity,
+  Color,
   Context,
   LibraryItem,
   NotebookNode,
+  Result,
   Subject,
+} from "@meu-caderno/core";
+import {
+  ActivityKind,
+  ActivityStatus,
+  type DomainError,
+  Root,
 } from "@meu-caderno/core";
 import { NAV_ITEMS } from "~/composables/useNav";
 
@@ -14,15 +22,29 @@ export interface SearchHit {
   to: string;
 }
 
+export interface SearchCommand {
+  id: string;
+  label: string;
+  to: string;
+}
+
+export const SEARCH_COMMANDS: SearchCommand[] = [
+  { id: "capture", label: "Capturar", to: "/atividades" },
+  { id: "new-activity", label: "Nova atividade", to: "/atividades" },
+  { id: "new-subject", label: "Nova disciplina", to: "/disciplinas" },
+];
+
 const MAX_PER_KIND = 4;
 const MAX_TOTAL = 16;
+const DEFAULT_SUBJECT_COLOR = "#3f6fb0" as Color;
 
 function matches(text: string, query: string): boolean {
   return text.toLowerCase().includes(query);
 }
 
 export function useSearch() {
-  const { store } = useCadernoService();
+  const { store, service, ids } = useCadernoService();
+  const { effectiveId } = useActiveContext();
   const contexts = useLiveQuery(
     ["contexts"],
     () => store.contexts.list(),
@@ -108,5 +130,35 @@ export function useSearch() {
     return hits.slice(0, MAX_TOTAL);
   }
 
-  return { search };
+  function createSubject(
+    name: string,
+  ): Promise<Result<Subject, DomainError>> | null {
+    const contextId = effectiveId.value;
+    const trimmed = name.trim();
+    if (!contextId || !trimmed) return null;
+    return service.createSubject({
+      contextId,
+      name: trimmed,
+      color: DEFAULT_SUBJECT_COLOR,
+      hoursPerClass: 1,
+      classesPerSession: 2,
+    });
+  }
+
+  async function createActivity(
+    title: string,
+  ): Promise<Result<Activity, DomainError> | null> {
+    const trimmed = title.trim();
+    if (!trimmed) return null;
+    return service.upsertActivity({
+      id: await ids.newId(),
+      title: trimmed,
+      contextId: effectiveId.value ?? undefined,
+      kind: ActivityKind.TASK,
+      status: ActivityStatus.OPEN,
+      root: Root.CONTEXT,
+    });
+  }
+
+  return { search, commands: SEARCH_COMMANDS, createSubject, createActivity };
 }

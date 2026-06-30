@@ -10,11 +10,14 @@ const progressPct = computed(() =>
 const stars = computed(() => props.item.stars ?? 0);
 const stateLabel = computed(() => LIBRARY_STATE_LABEL[stateOf(props.item)]);
 const reviewCount = computed(() => props.item.reviews?.length ?? 0);
+const kindIcon = computed(() => kindIconOf(props.item));
+const cover = computed(() => props.item.cover ?? kindIcon.value ?? "📚");
+const hasNote = computed(() => Boolean(props.item.personalNote));
 </script>
 
 <template>
   <button type="button" class="item-card" @click="emit('edit')">
-    <div class="item-card__cover">{{ item.cover ?? "📚" }}</div>
+    <div class="item-card__cover">{{ cover }}</div>
     <div class="item-card__body">
       <div class="item-card__title">{{ item.title }}</div>
       <div v-if="item.synopsis" class="item-card__synopsis">
@@ -22,6 +25,13 @@ const reviewCount = computed(() => props.item.reviews?.length ?? 0);
       </div>
       <div class="item-card__meta">
         <span class="item-card__badge">{{ stateLabel }}</span>
+        <span
+          v-if="hasNote"
+          class="item-card__note"
+          title="Tem nota pessoal"
+        >
+          🔒 nota
+        </span>
         <span v-if="stars" class="item-card__stars">
           {{ "★".repeat(stars) }}
         </span>
@@ -95,6 +105,10 @@ const reviewCount = computed(() => props.item.reviews?.length ?? 0);
   background: var(--pt-paper-2);
   padding: 2px 8px;
   border-radius: var(--pt-radius-pill);
+}
+.item-card__note {
+  color: var(--pt-ink-soft);
+  font-weight: 600;
 }
 .item-card__stars {
   color: var(--pt-warn);

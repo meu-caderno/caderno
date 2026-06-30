@@ -6,22 +6,26 @@ import type {
   Id,
   Subject,
 } from "@meu-caderno/core";
-import { ActivityStatus, Goal, Root, recordsOf } from "@meu-caderno/core";
+import {
+  ActivityStatus,
+  Goal,
+  Root,
+  recordsOf,
+  sortByDue,
+} from "@meu-caderno/core";
 import type { ContextStat } from "~/components/Section/Contexto/StatsRow.vue";
-import { deriveStats, UNSET_DAY } from "~/utils/caderno-stats";
+import {
+  deriveStats,
+  type SubjectStats,
+  UNSET_DAY,
+} from "~/utils/caderno-stats";
 
 const { store, clock } = useCadernoService();
 const routeId = useRoute().params.id as Id;
 
-const GOAL_ICON: Record<Goal, string> = {
-  [Goal.UNIVERSITY]: "🎓",
-  [Goal.PUBLIC_EXAM]: "📚",
-  [Goal.OPEN_COURSE]: "🧩",
-  [Goal.FREE_STUDY]: "🌱",
-  [Goal.NONE]: "📔",
-};
-
 const today = ref<string>(UNSET_DAY);
+const { completeActivity } = useAttendanceActions({ today });
+
 onMounted(async () => {
   today.value = await clock.today();
 });
@@ -74,14 +78,15 @@ const averageFrequency = computed(() => {
   );
 });
 
-const pendingCount = computed(
-  () =>
+const upcoming = computed(() =>
+  sortByDue(
     allActivities.value.filter(
       (activity) =>
         activity.contextId === routeId &&
         activity.status === ActivityStatus.OPEN &&
         activity.root !== Root.INBOX,
-    ).length,
+    ),
+  ),
 );
 
 const statCards = computed<ContextStat[]>(() => [
@@ -92,21 +97,26 @@ const statCards = computed<ContextStat[]>(() => [
     hint: subjects.value.length ? undefined : "sem disciplinas",
   },
   { key: "subjects", label: "Disciplinas", value: `${subjects.value.length}` },
-  { key: "pending", label: "Pendências", value: `${pendingCount.value}` },
+  { key: "pending", label: "Pendências", value: `${upcoming.value.length}` },
 ]);
 
-const headerTitle = computed(() =>
-  context.value ? `${GOAL_ICON[context.value.goal]} ${context.value.name}` : "",
-);
+const isExam = computed(() => context.value?.goal === Goal.PUBLIC_EXAM);
 
 const configuring = ref(false);
 const managingGoals = ref(false);
+const detailId = ref<Id | null>(null);
+const notasId = ref<Id | null>(null);
+const editingActivity = ref<Activity | null>(null);
 
-const shortcuts = [
-  { to: "/disciplinas", icon: "📚", label: "Disciplinas" },
-  { to: "/atividades", icon: "✓", label: "Atividades" },
-  { to: "/agenda", icon: "🗓", label: "Agenda" },
-];
+function statById(id: Id | null): SubjectStats | null {
+  if (!id) return null;
+  return stats.value.find((stat) => stat.subject.id === id) ?? null;
+}
+const detailStat = computed(() => statById(detailId.value));
+const notasSubject = computed(() => statById(notasId.value)?.subject ?? null);
+function openNotas() {
+  notasId.value = detailStat.value?.subject.id ?? null;
+}
 </script>
 
 <template>
@@ -123,18 +133,25 @@ const shortcuts = [
     />
 
     <template v-else>
-      <SectionPageHeader :title="headerTitle" :subtitle="context.nature">
-        <template #actions>
-          <UIButton
-            variant="fantasma"
-            icon="settings"
-            label="Configurar"
-            @click="configuring = true"
-          />
-        </template>
-      </SectionPageHeader>
+      <SectionContextoHeader
+        :context="context"
+        :today="today"
+        @configure="configuring = true"
+      />
 
       <SectionContextoStatsRow :stats="statCards" />
+
+      <SectionContextoVisionBlock
+        v-if="context.vision"
+        :vision="context.vision"
+      />
+
+      <SectionContextoEdital
+        v-if="isExam"
+        :stats="stats"
+        :terms="context.terms ?? []"
+        :today="today"
+      />
 
       <SectionContextoModulesRow :modules="context.modules" />
 
@@ -144,17 +161,21 @@ const shortcuts = [
         @manage="managingGoals = true"
       />
 
-      <nav class="contexto__shortcuts" aria-label="Atalhos">
-        <NuxtLink
-          v-for="shortcut in shortcuts"
-          :key="shortcut.to"
-          :to="shortcut.to"
-          class="contexto__shortcut"
-        >
-          <span class="contexto__shortcut-icon">{{ shortcut.icon }}</span>
-          {{ shortcut.label }}
-        </NuxtLink>
-      </nav>
+      <SectionContextoSubjectsGrid
+        :stats="stats"
+        @notas="notasId = $event"
+        @detail="detailId = $event"
+      />
+
+      <SectionContextoUpcomingActivities
+        :activities="upcoming"
+        :subjects="subjects"
+        :today="today"
+        @complete="completeActivity"
+        @edit="editingActivity = $event"
+      />
+
+      <SectionContextoShortcuts :context-id="context.id" />
 
       <SectionHomeContextDetail
         v-if="configuring"
@@ -166,6 +187,27 @@ const shortcuts = [
         :context="context"
         @done="managingGoals = false"
         @cancel="managingGoals = false"
+      />
+      <SectionHomeSubjectDetail
+        v-if="detailStat"
+        :stat="detailStat"
+        @close="detailId = null"
+        @notas="openNotas"
+        @edit="detailId = null"
+        @delete="detailId = null"
+      />
+      <SectionHomeAssessments
+        v-if="notasSubject"
+        :subject="notasSubject"
+        @close="notasId = null"
+      />
+      <SectionHomeActivityForm
+        v-if="editingActivity"
+        :activity="editingActivity"
+        :subjects="subjects"
+        :activities="allActivities"
+        @done="editingActivity = null"
+        @cancel="editingActivity = null"
       />
     </template>
   </div>
@@ -185,29 +227,5 @@ const shortcuts = [
   text-align: center;
   color: var(--pt-ink-muted);
   padding: 48px 0;
-}
-.contexto__shortcuts {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-.contexto__shortcut {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 14px 10px;
-  border-radius: var(--pt-radius);
-  border: 1.5px solid var(--pt-border-muted);
-  background: var(--pt-card);
-  box-shadow: var(--pt-shadow);
-  color: var(--pt-ink);
-  text-decoration: none;
-  font-size: calc(13px * var(--pt-text-scale));
-  font-weight: 600;
-}
-.contexto__shortcut-icon {
-  font-size: calc(22px * var(--pt-text-scale));
-  line-height: 1;
 }
 </style>

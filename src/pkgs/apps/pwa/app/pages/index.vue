@@ -89,6 +89,7 @@ const period = computed(() => {
     @done="creatingContext = false"
   />
   <div v-else class="home">
+    <SectionHomeBanners @create-context="creatingContext = true" />
     <SectionHomeWelcomeBack
       v-if="showWelcome"
       :pending="pendingActivities.length"
