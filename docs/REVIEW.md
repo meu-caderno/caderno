@@ -29,17 +29,58 @@
 - **Complexidade cognitiva no CI** (`47de74d`): regra `noExcessiveCognitiveComplexity` (limite 15)
   habilitada no `biome.json`; `expandSchedule`/`writeBackup`/`linksOf` simplificados (extração de helpers);
   resíduo de `y`/`m`/`d` em `schedule.ts` corrigido.
-- **Limite de complexidade 15 → 10** (pendente de commit): 6 funções acima do novo teto refatoradas por
-  extração de helpers — `upsertActivity` (`activityFormsCycle`), `createsCycle`
+- **Limite de complexidade 15 → 10 + fonte única de coleção** (`daf2295`): 6 funções acima do novo teto
+  refatoradas por extração de helpers — `upsertActivity` (`activityFormsCycle`), `createsCycle`
   (`buildAdjacency`+`reachable`), `dexie-store.buffered` (`mergeBuffer`/`bufferedRepo`/`flushBuffer`),
-  `Badge.spec` (`customTone`/`presetTone`), `useTheme.hydrate` (`if` → `??`).
-- **Fonte única de nomes de coleção** (pendente de commit): `ENTITY_COLLECTIONS`/`EntityCollection` no
-  `domain/storage.ts` consumidos por `observable-store` e `dexie-store` (removidos `ENTITY_KEYS` e
-  `BLOB_COLLECTIONS` locais).
+  `Badge.spec` (`customTone`/`presetTone`), `useTheme.hydrate` (`if` → `??`); `ENTITY_COLLECTIONS`/
+  `EntityCollection` no `domain/storage.ts` consumidos por `observable-store` e `dexie-store`.
+- **Quebra do god-composable `useCaderno`** (`d663b92`): 330→140 l; helpers puros → `utils/caderno-stats.ts`;
+  `useGamification`/`useDailyRoll`/`useAttendanceActions`/`useHomeDialogs`; `index.vue` 304→251 l.
+- **Hooks de ciclo de vida + `merge` estável + nits** (`5ba085b`): `assessment:added`;
+  `activity:deleted`/`library:deleted`/`edge:deleted`; `sameValue` por `stableStringify`; magic numbers do
+  `usePomodoro`; sentinela `UNSET_DAY`; tokens de sombra via `--pt-ink-rgb`; guarda de nonce no `cipher`.
+- **`SectionPageHeader`** (`3ecfefd`): cabeçalho repetido das pages → componente (props `title`/`subtitle` +
+  slot `#actions`); `ajustes`/`caderno`/`acervo`/`agenda` convertidas.
+- **Engine de gamificação puro** (`1280223`): `Achievement` = `{ key: AchievementKey; unlocked }`; label/ícone
+  saem do engine para `app/utils/achievements.ts` (UI resolve).
+- **`Snapshotable` compartilhado** (`a4aeefa`): `testing/snapshot.ts` remove a duplicata nos fakes in-memory.
 
 > Pendente de decisão: o **campo público `OpLogEntry.ts`** (e `RemoteChange.ts`) segue como `ts` — renomear
 > para `timestamp` é mudança coordenada de tipo de domínio + zod schema + mapeamento Dexie + serialização.
 > Avise se quer expandir também.
+
+## Reconciliação de estado (autoritativa)
+
+Os checkboxes detalhados nas seções 🟠/🟡/🔵 abaixo são o **inventário original** da revisão; vários já
+foram resolvidos nos commits do bloco acima. Estado real:
+
+**Resolvidos** (além dos já listados): `usePreferences` (`2d81067`), `SectionSettingsCard` (`9cd7419`),
+`vue-query` removido, `Grade` brandado, `commitDelete`, comentários do `NavItem`, `ClockTime` morto,
+cores de domínio tokenizadas, aritmética da gamificação via `math.ts` (`92d0a80`), `MoodsCard` a11y +
+scrim token + `useLayout` parametrizado (`a1aa6a9`), DnD por teclado (`20c8573`), nomes descritivos +
+`cipher`→`sodium` (`f03a8a9`), tipos nomeados + genéricos `Identified` (`5f43a3e`); `usePomodoro.clock`
+já era `timeLabel`.
+
+**Adiado — decisões de produto/arquitetura (precisam de você):**
+- `Subject.records`/`assessments` derivado-como-fonte (🟠) — não persistir no `Subject`, derivar via
+  `recordsOf`. Mexe em `updateSubject`/`addAssessment` e na forma serializada.
+- Oplog sem payload nem leitor real × `engine/undo.ts` (🟠) — decidir se o oplog grava `before/after` e
+  vira fonte de undo/sync, ou se o service passa a registrar `Reversible`.
+- `OpLogEntry.ts`/`RemoteChange.ts`: `ts`→`timestamp` e `entity: string`→`EntityName` — migração
+  coordenada (domain + zod + Dexie + serialização); pode rejeitar backups antigos.
+
+**Adiado — refactor maior de risco médio (a combinar):**
+- Renomear `interface Record`/`Node` do domínio (🟡) → `AttendanceRecord`/`NotebookNode`: toca dezenas de
+  arquivos; melhor em PR isolado.
+- `useCaderno` `watchEffect` que muta `activeId` → modelar contexto efetivo como `computed` (🟡):
+  mudança comportamental, exige teste de regressão de seleção de contexto.
+- Invólucro de página (`max-width`/padding) das 5 pages → layout único (o **cabeçalho** já virou
+  `SectionPageHeader`).
+
+**Não corrigir (decisão consciente):** `as` na fronteira (round-trip enum↔string em forms, `Grade` na
+borda de input, type-guards de `capabilities`) é uso legítimo; `key-store.setItem` deve **propagar** (engolir
+perderia a chave silenciosamente); TOCTOU em app local mono-usuário é aceitável; writes top-level do
+`observable-store` são só bootstrap/seed.
 
 ## Estado por camada
 
