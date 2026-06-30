@@ -5,7 +5,8 @@ path = [
   "src/**/*.ts",
   "src/**/*.vue",
   "src/**/*.json",
-  "src/**/*.toml"
+  "src/**/*.toml",
+  "src/**/*.css"
 ]
 precedence = "override"
 SPDX-FileCopyrightText = "2026 Gabriel Rodrigues Antunes <gabrielrodantunes@gmail.com>"

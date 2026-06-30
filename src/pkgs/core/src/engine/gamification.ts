@@ -1,0 +1,109 @@
+import type { DayIso } from "../domain";
+import * as numeric from "./math";
+import { addDays } from "./schedule";
+
+export const XP_PER_PRESENCE = 5;
+export const XP_PER_ACTIVITY = 10;
+export const XP_PER_LEVEL = 100;
+
+const FIRST_ACTION_THRESHOLD = 1;
+const SHORT_STREAK_DAYS = 3;
+const WEEK_STREAK_DAYS = 7;
+const TASK_BADGE_THRESHOLD = 10;
+const LEVEL_BADGE_THRESHOLD = 5;
+
+export interface XpInput {
+  presences: number;
+  completedActivities: number;
+}
+
+export function totalXp(input: XpInput): number {
+  return numeric.add(
+    numeric.multiply(input.presences, XP_PER_PRESENCE),
+    numeric.multiply(input.completedActivities, XP_PER_ACTIVITY),
+  );
+}
+
+export interface Level {
+  level: number;
+  intoLevel: number;
+  toNextLevel: number;
+  ratio: number;
+}
+
+export function levelFromXp(xp: number): Level {
+  const safeXp = Math.max(0, xp);
+  const level = numeric.add(
+    numeric.floor(numeric.divide(safeXp, XP_PER_LEVEL)),
+    1,
+  );
+  const intoLevel = numeric.remainder(safeXp, XP_PER_LEVEL);
+  return {
+    level,
+    intoLevel,
+    toNextLevel: numeric.subtract(XP_PER_LEVEL, intoLevel),
+    ratio: numeric.divide(intoLevel, XP_PER_LEVEL),
+  };
+}
+
+export function currentStreak(
+  days: ReadonlyArray<DayIso>,
+  today: DayIso,
+): number {
+  const present = new Set<string>(days);
+  let cursor = present.has(today) ? today : addDays(today, -1);
+  if (!present.has(cursor)) return 0;
+  let streak = 0;
+  while (present.has(cursor)) {
+    streak += 1;
+    cursor = addDays(cursor, -1);
+  }
+  return streak;
+}
+
+export interface GamificationInput {
+  streak: number;
+  level: number;
+  presences: number;
+  completedActivities: number;
+}
+
+export enum AchievementKey {
+  FIRST_STEP = "first-step",
+  SHORT_STREAK = "streak-3",
+  WEEK_STREAK = "streak-7",
+  TEN_TASKS = "ten-tasks",
+  LEVEL_FIVE = "level-5",
+}
+
+export interface Achievement {
+  key: AchievementKey;
+  unlocked: boolean;
+}
+
+export function achievements(input: GamificationInput): Achievement[] {
+  return [
+    {
+      key: AchievementKey.FIRST_STEP,
+      unlocked:
+        numeric.add(input.presences, input.completedActivities) >=
+        FIRST_ACTION_THRESHOLD,
+    },
+    {
+      key: AchievementKey.SHORT_STREAK,
+      unlocked: input.streak >= SHORT_STREAK_DAYS,
+    },
+    {
+      key: AchievementKey.WEEK_STREAK,
+      unlocked: input.streak >= WEEK_STREAK_DAYS,
+    },
+    {
+      key: AchievementKey.TEN_TASKS,
+      unlocked: input.completedActivities >= TASK_BADGE_THRESHOLD,
+    },
+    {
+      key: AchievementKey.LEVEL_FIVE,
+      unlocked: input.level >= LEVEL_BADGE_THRESHOLD,
+    },
+  ];
+}

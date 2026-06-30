@@ -7,13 +7,27 @@ useHead({
   },
   link: head.value.link,
   meta: head.value.meta,
-  titleTemplate: (t) => (t ? `${t} · Meu Caderno` : "Meu Caderno"),
+  titleTemplate: (title) => (title ? `${title} · Meu Caderno` : "Meu Caderno"),
+});
+
+const { hydrate: hydrateTheme } = useTheme();
+const { hydrate: hydrateLayout } = useLayout();
+const { hydrate: hydrateConsent } = useConsent();
+const { hydrate: hydrateWorkbenches } = useWorkbenches();
+onMounted(() => {
+  hydrateTheme();
+  hydrateLayout();
+  hydrateConsent();
+  hydrateWorkbenches();
 });
 </script>
 
 <template>
   <div>
-    <NuxtPwaManifest />
-    <NuxtPage />
+    <!-- <NuxtPwaManifest /> -->
+    <NuxtLayout>
+      <NuxtPage :keepalive="{ max: 10 }" />
+    </NuxtLayout>
+    <UIToaster />
   </div>
 </template>

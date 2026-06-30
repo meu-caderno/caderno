@@ -1,0 +1,427 @@
+import type { EntityName } from "./storage";
+import type { Color, DayIso, Grade, Id, Timestamp } from "./values";
+
+export enum Goal {
+  UNIVERSITY = "UNIVERSITY",
+  PUBLIC_EXAM = "PUBLIC_EXAM",
+  OPEN_COURSE = "OPEN_COURSE",
+  FREE_STUDY = "FREE_STUDY",
+  NONE = "NONE",
+}
+
+export enum Link {
+  PERSONAL = "PERSONAL",
+  CLASS = "CLASS",
+  GROUP = "GROUP",
+}
+
+export enum AbsenceStance {
+  PLAN_ABSENCES = "PLAN_ABSENCES",
+  FOCUS_ON_NOT_MISSING = "FOCUS_ON_NOT_MISSING",
+}
+
+export interface Modules {
+  attendance: boolean;
+  grades: boolean;
+  term: boolean;
+  streak: boolean;
+  hours: boolean;
+  syllabus: boolean;
+  certificate: boolean;
+}
+
+export interface Vocabulary {
+  subject: string;
+  activity: string;
+  attendance: string;
+  term: string;
+}
+
+export interface BackendRef {
+  backend?: string;
+  hostId?: Id;
+}
+
+export interface Term {
+  id: Id;
+  label: string;
+  start?: DayIso;
+  end?: DayIso;
+}
+
+export interface Bucket {
+  id: Id;
+  name: string;
+  icon?: string;
+  done: number;
+  goal: number;
+  unit?: string;
+}
+
+export interface Context {
+  id: Id;
+  name: string;
+  goal: Goal;
+  modules: Modules;
+  link: Link;
+  social?: BackendRef;
+  absenceStance: AbsenceStance;
+  attendanceFloor?: number;
+  minAverage?: Grade;
+  vocabulary?: Vocabulary;
+  terms?: Term[];
+  buckets?: Bucket[];
+  nature?: string;
+  vision?: string;
+  pinned?: boolean;
+  archived?: boolean;
+}
+
+export enum ScheduleKind {
+  WEEKLY = "WEEKLY",
+  AB_WEEKS = "AB_WEEKS",
+  ROTATING_CYCLE = "ROTATING_CYCLE",
+  BLOCK_INTENSIVE = "BLOCK_INTENSIVE",
+  AD_HOC = "AD_HOC",
+}
+
+export enum Shift {
+  MORNING = "MORNING",
+  AFTERNOON = "AFTERNOON",
+  EVENING = "EVENING",
+}
+
+export interface TimeBlock {
+  start: string;
+  end: string;
+  shift?: Shift;
+}
+
+export interface Schedule {
+  kind: ScheduleKind;
+  weekdays?: number[];
+  blocks?: TimeBlock[];
+  anchor?: DayIso;
+  adHocDates?: DayIso[];
+}
+
+export enum AttendanceStatus {
+  PRESENT = "PRESENT",
+  ABSENT = "ABSENT",
+  LATE = "LATE",
+  MEDICAL = "MEDICAL",
+  WAIVED = "WAIVED",
+  HOLIDAY = "HOLIDAY",
+  CANCELED = "CANCELED",
+}
+
+export interface AttendanceRecord {
+  id: Id;
+  subjectId: Id;
+  day: DayIso;
+  status: AttendanceStatus;
+  block?: number;
+}
+
+export interface Assessment {
+  id: Id;
+  subjectId: Id;
+  name: string;
+  weight: number;
+  grade?: Grade;
+}
+
+export interface Subject {
+  id: Id;
+  contextId: Id;
+  name: string;
+  color: Color;
+  hoursPerClass: number;
+  classesPerSession: number;
+  totalClassHours?: number;
+  credits?: number;
+  floor?: number;
+  lateIsHalf?: boolean;
+  medicalExcuses?: boolean;
+  schedule?: Schedule;
+  assessments?: Assessment[];
+  records?: AttendanceRecord[];
+}
+
+export enum ActivityStatus {
+  OPEN = "OPEN",
+  DONE = "DONE",
+  ARCHIVED = "ARCHIVED",
+}
+
+export enum ActivityKind {
+  TASK = "TASK",
+  EXAM = "EXAM",
+  ASSIGNMENT = "ASSIGNMENT",
+  READING = "READING",
+  CAPTURE = "CAPTURE",
+}
+
+export enum Root {
+  CONTEXT = "CONTEXT",
+  INBOX = "INBOX",
+  LOOSE = "LOOSE",
+}
+
+export enum Recurrence {
+  NONE = "NONE",
+  WEEKLY = "WEEKLY",
+  BIWEEKLY = "BIWEEKLY",
+}
+
+export interface Subtask {
+  id: Id;
+  text: string;
+  done: boolean;
+}
+
+export interface Activity {
+  id: Id;
+  title: string;
+  dueDate?: DayIso;
+  contextId?: Id;
+  subjectId?: Id;
+  kind: ActivityKind;
+  status: ActivityStatus;
+  root: Root;
+  subtasks?: Subtask[];
+  preparesId?: Id;
+  gapDays?: number;
+  seriesId?: Id;
+  recurrence?: Recurrence;
+  recurrenceUntil?: DayIso;
+  origin?: Origin;
+}
+
+export enum Aspect {
+  TASK = "TASK",
+  CONCEPT = "CONCEPT",
+  NOTE = "NOTE",
+  WORK = "WORK",
+}
+
+export enum Mastery {
+  UNKNOWN = "UNKNOWN",
+  STUDYING = "STUDYING",
+  MASTERED = "MASTERED",
+}
+
+export interface NotebookNode {
+  id: Id;
+  aspects: Aspect[];
+  title: string;
+  body?: string;
+  parentId?: Id;
+  root?: Root;
+  day?: DayIso;
+  status?: ActivityStatus;
+  mastery?: Mastery;
+  subjectId?: Id;
+  contextId?: Id;
+  origin?: Origin;
+}
+
+export enum EdgeKind {
+  PART_OF = "PART_OF",
+  PREPARES = "PREPARES",
+  ASSESSES = "ASSESSES",
+  SOURCE_OF = "SOURCE_OF",
+}
+
+export interface Edge {
+  id: Id;
+  from: Id;
+  to: Id;
+  kind: EdgeKind;
+}
+
+export enum LibraryState {
+  WANT = "WANT",
+  CONSUMING = "CONSUMING",
+  DONE = "DONE",
+}
+
+export enum LibraryKind {
+  BOOK = "BOOK",
+  ARTICLE = "ARTICLE",
+  VIDEO = "VIDEO",
+  SERIES = "SERIES",
+  COURSE = "COURSE",
+  OTHER = "OTHER",
+}
+
+export interface LibraryReview {
+  contextId: Id;
+  text: string;
+}
+
+export interface LibraryItem {
+  id: Id;
+  title: string;
+  cover?: string;
+  synopsis?: string;
+  progress?: number;
+  stars?: number;
+  state?: LibraryState;
+  kind?: LibraryKind;
+  personalNote?: string;
+  contextIds?: Id[];
+  reviews?: LibraryReview[];
+}
+
+export enum MapItemKind {
+  SECTION = "SECTION",
+  REF = "REF",
+}
+
+export interface MapItem {
+  kind: MapItemKind;
+  label?: string;
+  nodeId?: Id;
+}
+
+export interface StudyMap {
+  id: Id;
+  name: string;
+  items: MapItem[];
+  contextId?: Id;
+}
+
+export enum Density {
+  MINIMAL = "MINIMAL",
+  NORMAL = "NORMAL",
+  DENSE = "DENSE",
+}
+
+export enum Immersion {
+  FULL = "FULL",
+  FOCUS = "FOCUS",
+}
+
+export enum Background {
+  PAPER = "PAPER",
+  CREAM = "CREAM",
+  LINEN = "LINEN",
+}
+
+export interface WidgetPref {
+  widget: string;
+  visible: boolean;
+}
+
+export interface Mood {
+  id: Id;
+  name: string;
+  density: Density;
+  dopamine: boolean;
+  immersion: Immersion;
+  accent?: Color;
+  background?: Background;
+  widgets?: WidgetPref[];
+  scope?: Id[];
+}
+
+export enum ContextMode {
+  FREE = "FREE",
+  RESTRICTED = "RESTRICTED",
+  PINNED = "PINNED",
+}
+
+export interface Profile {
+  id: Id;
+  name: string;
+  contextMode: ContextMode;
+  contexts?: Id[];
+  accent?: Color;
+  density?: Density;
+  background?: Background;
+  immersion?: Immersion;
+  widgets?: WidgetPref[];
+  headingFont?: string;
+}
+
+export interface Workbench {
+  id: Id;
+  name: string;
+  route: string;
+  contextId?: Id;
+  tabs?: string[];
+  dockScreen?: string;
+}
+
+export interface Preferences {
+  id: Id;
+  activeContextId?: Id;
+  homeProfile?: string;
+  textScale?: number;
+  headingFont?: string;
+  screenDensity?: string;
+  zen?: boolean;
+  profileContexts?: Id[];
+  activityView?: string;
+  homeWidgets?: string[];
+  tabItems?: string[];
+  railItems?: string[];
+  consents?: string[];
+  dismissedBanners?: string[];
+  lastSeenDay?: string;
+  workbenches?: Workbench[];
+  pomodoroFocus?: number;
+  pomodoroBreak?: number;
+  pomodoroLong?: number;
+}
+
+export enum OpKind {
+  PUT = "PUT",
+  DELETE = "DELETE",
+}
+
+export interface OpLogEntry {
+  timestamp: Timestamp;
+  entity: EntityName;
+  op: OpKind;
+  id: Id;
+}
+
+export interface Backup {
+  version: 2;
+  exportedAt: Timestamp;
+  contexts: Context[];
+  subjects: Subject[];
+  records: AttendanceRecord[];
+  activities: Activity[];
+  nodes: NotebookNode[];
+  edges: Edge[];
+  library: LibraryItem[];
+  profiles?: Profile[];
+  moods?: Mood[];
+}
+
+export interface BackupV1 {
+  version: 1;
+  exportedAt: Timestamp;
+  contexts: Context[];
+  subjects: Subject[];
+  records: AttendanceRecord[];
+  activities: Activity[];
+  nodes: NotebookNode[];
+  edges: Edge[];
+  library: LibraryItem[];
+}
+
+export enum OriginKind {
+  NATIVE = "NATIVE",
+  MEMBER = "MEMBER",
+  IMPORT = "IMPORT",
+  PLUGIN = "PLUGIN",
+}
+
+export interface Origin {
+  kind: OriginKind;
+  source?: string;
+}

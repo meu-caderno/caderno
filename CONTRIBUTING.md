@@ -74,6 +74,10 @@ O código-fonte vive no monorepo em [`src/`](./src), gerenciado com **Bun** +
 **Nx**. Para detalhes de arquitetura e comandos do dia a dia, veja
 [docs/DEVELOPMENT.md][development] e [docs/ARCHITECTURE.md][architecture].
 
+Ao escrever ou refatorar código, siga o
+**[Guia de boas práticas][guidelines]** — um catálogo de _code smells_,
+convenções por camada e o que o gate impõe.
+
 ### Comandos úteis
 
 Rodando de dentro de `src/`:
@@ -132,5 +136,6 @@ Obrigado por ajudar a manter o Caderno livre, independente e de todo mundo. 🌱
 [license]: ./LICENSE
 [development]: ./docs/DEVELOPMENT.md
 [architecture]: ./docs/ARCHITECTURE.md
+[guidelines]: ./docs/GUIA-BOAS-PRATICAS.md
 [discussions]: https://github.com/meu-caderno/caderno/discussions
 [conventional]: https://www.conventionalcommits.org/pt-br/v1.0.0/
