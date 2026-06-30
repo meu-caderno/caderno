@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import type { Id, Node } from "@meu-caderno/core";
+import type { Id, NotebookNode } from "@meu-caderno/core";
 import { reviewQueue } from "@meu-caderno/core";
 import { concepts } from "~/utils/concepts";
 
@@ -80,7 +80,7 @@ function openCreate() {
   createParentId.value = undefined;
   creating.value = true;
 }
-function select(node: Node) {
+function select(node: NotebookNode) {
   selectedId.value = node.id;
   editing.value = false;
   deleting.value = false;

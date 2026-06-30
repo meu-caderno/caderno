@@ -1,13 +1,19 @@
-import type { Edge, EdgeKind, Id, Node } from "../domain";
+import type { Edge, EdgeKind, Id, NotebookNode } from "../domain";
 import { Aspect, Mastery } from "../domain";
 
-export function children(nodes: ReadonlyArray<Node>, parentId: Id): Node[] {
+export function children(
+  nodes: ReadonlyArray<NotebookNode>,
+  parentId: Id,
+): NotebookNode[] {
   return nodes.filter((node) => node.parentId === parentId);
 }
 
-export function ancestors(nodes: ReadonlyArray<Node>, id: Id): Node[] {
+export function ancestors(
+  nodes: ReadonlyArray<NotebookNode>,
+  id: Id,
+): NotebookNode[] {
   const byId = new Map(nodes.map((node) => [node.id, node]));
-  const out: Node[] = [];
+  const out: NotebookNode[] = [];
   const seen = new Set<Id>();
   let parentId = byId.get(id)?.parentId;
   while (parentId !== undefined && !seen.has(parentId)) {
@@ -20,8 +26,11 @@ export function ancestors(nodes: ReadonlyArray<Node>, id: Id): Node[] {
   return out;
 }
 
-export function descendants(nodes: ReadonlyArray<Node>, id: Id): Node[] {
-  const out: Node[] = [];
+export function descendants(
+  nodes: ReadonlyArray<NotebookNode>,
+  id: Id,
+): NotebookNode[] {
+  const out: NotebookNode[] = [];
   const seen = new Set<Id>([id]);
   const stack: Id[] = [id];
   while (stack.length > 0) {
@@ -39,9 +48,9 @@ export function descendants(nodes: ReadonlyArray<Node>, id: Id): Node[] {
 }
 
 export function nodesByAspect(
-  nodes: ReadonlyArray<Node>,
+  nodes: ReadonlyArray<NotebookNode>,
   aspect: Aspect,
-): Node[] {
+): NotebookNode[] {
   return nodes.filter((node) => node.aspects.includes(aspect));
 }
 
@@ -61,7 +70,7 @@ export function edgesByKind(
 }
 
 export function canReparent(
-  nodes: ReadonlyArray<Node>,
+  nodes: ReadonlyArray<NotebookNode>,
   id: Id,
   newParentId: Id,
 ): boolean {
@@ -70,10 +79,10 @@ export function canReparent(
 }
 
 export function reparent(
-  nodes: ReadonlyArray<Node>,
+  nodes: ReadonlyArray<NotebookNode>,
   id: Id,
   newParentId?: Id,
-): Node[] {
+): NotebookNode[] {
   if (newParentId !== undefined && !canReparent(nodes, id, newParentId)) {
     return nodes.slice();
   }
@@ -82,14 +91,14 @@ export function reparent(
   );
 }
 
-export function orphans(nodes: ReadonlyArray<Node>): Node[] {
+export function orphans(nodes: ReadonlyArray<NotebookNode>): NotebookNode[] {
   const ids = new Set(nodes.map((node) => node.id));
   return nodes.filter(
     (node) => node.parentId !== undefined && !ids.has(node.parentId),
   );
 }
 
-export function deOrphan(nodes: ReadonlyArray<Node>): Node[] {
+export function deOrphan(nodes: ReadonlyArray<NotebookNode>): NotebookNode[] {
   const ids = new Set(nodes.map((node) => node.id));
   return nodes.map((node) =>
     node.parentId !== undefined && !ids.has(node.parentId)
@@ -100,7 +109,7 @@ export function deOrphan(nodes: ReadonlyArray<Node>): Node[] {
 
 export function orphanEdges(
   edges: ReadonlyArray<Edge>,
-  nodes: ReadonlyArray<Node>,
+  nodes: ReadonlyArray<NotebookNode>,
 ): Edge[] {
   const ids = new Set(nodes.map((node) => node.id));
   return edges.filter((edge) => !ids.has(edge.from) || !ids.has(edge.to));
@@ -111,7 +120,7 @@ const REVIEW_RANK: Partial<Record<Mastery, number>> = {
   [Mastery.STUDYING]: 1,
 };
 
-function reviewRank(node: Node): number | undefined {
+function reviewRank(node: NotebookNode): number | undefined {
   return REVIEW_RANK[node.mastery ?? Mastery.UNKNOWN];
 }
 
@@ -119,7 +128,9 @@ function reviewRank(node: Node): number | undefined {
  * Pure review queue: concepts not yet mastered (UNKNOWN or STUDYING),
  * ordered with UNKNOWN before STUDYING. No clock/random — engine purity.
  */
-export function reviewQueue(nodes: ReadonlyArray<Node>): Node[] {
+export function reviewQueue(
+  nodes: ReadonlyArray<NotebookNode>,
+): NotebookNode[] {
   return nodes
     .filter(
       (node) =>

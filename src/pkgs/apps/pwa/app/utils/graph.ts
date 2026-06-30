@@ -1,4 +1,4 @@
-import type { Edge, Node } from "@meu-caderno/core";
+import type { Edge, NotebookNode } from "@meu-caderno/core";
 import { Aspect, EdgeKind, Mastery } from "@meu-caderno/core";
 import type cytoscape from "cytoscape";
 
@@ -53,14 +53,14 @@ export function readPalette(root: HTMLElement): GraphPalette {
   };
 }
 
-function masteryColor(node: Node, palette: GraphPalette): string {
+function masteryColor(node: NotebookNode, palette: GraphPalette): string {
   const mastery = node.mastery ?? Mastery.UNKNOWN;
   if (mastery === Mastery.MASTERED) return palette.ok;
   if (mastery === Mastery.STUDYING) return palette.warn;
   return palette.inkMuted;
 }
 
-function nodeColor(node: Node, palette: GraphPalette): string {
+function nodeColor(node: NotebookNode, palette: GraphPalette): string {
   if (node.aspects.includes(Aspect.CONCEPT)) return masteryColor(node, palette);
   if (node.aspects.includes(Aspect.NOTE)) return palette.info;
   if (node.aspects.includes(Aspect.WORK)) return palette.purple;
@@ -68,7 +68,7 @@ function nodeColor(node: Node, palette: GraphPalette): string {
 }
 
 export function toElements(
-  nodes: Node[],
+  nodes: NotebookNode[],
   edges: Edge[],
   palette: GraphPalette,
 ): cytoscape.ElementDefinition[] {

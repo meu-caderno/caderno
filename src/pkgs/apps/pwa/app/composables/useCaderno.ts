@@ -1,8 +1,4 @@
-import type {
-  Activity,
-  Record as AttendanceRecord,
-  Subject,
-} from "@meu-caderno/core";
+import type { Activity, AttendanceRecord, Subject } from "@meu-caderno/core";
 import { ActivityStatus, Root, recordsOf, sortByDue } from "@meu-caderno/core";
 import { deriveStats, formatDay, UNSET_DAY } from "~/utils/caderno-stats";
 

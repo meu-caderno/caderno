@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Node } from "@meu-caderno/core";
+import type { NotebookNode } from "@meu-caderno/core";
 import {
   MASTERY_COLOR,
   MASTERY_LABEL,
@@ -7,17 +7,17 @@ import {
   nextMastery,
 } from "~/utils/concepts";
 
-const props = defineProps<{ concepts: Node[] }>();
-const emit = defineEmits<{ select: [node: Node] }>();
+const props = defineProps<{ concepts: NotebookNode[] }>();
+const emit = defineEmits<{ select: [node: NotebookNode] }>();
 
 const { linksOf } = useNotebook();
 const { service } = useCadernoService();
 
-function linkCount(node: Node): number {
+function linkCount(node: NotebookNode): number {
   return linksOf(node.id).length;
 }
 
-async function cycleMastery(node: Node) {
+async function cycleMastery(node: NotebookNode) {
   await service.updateNode({ ...node, mastery: nextMastery(node.mastery) });
 }
 </script>

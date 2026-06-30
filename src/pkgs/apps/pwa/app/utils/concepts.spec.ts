@@ -1,11 +1,13 @@
-import type { Id, Node } from "@meu-caderno/core";
+import type { Id, NotebookNode } from "@meu-caderno/core";
 import { Aspect, Mastery } from "@meu-caderno/core";
 import { describe, expect, it } from "vitest";
 import { concepts, groupByMastery, nextMastery } from "./concepts";
 
 const id = (value: string) => value as Id;
 
-function node(part: Omit<Partial<Node>, "id"> & { id: string }): Node {
+function node(
+  part: Omit<Partial<NotebookNode>, "id"> & { id: string },
+): NotebookNode {
   return {
     id: id(part.id),
     title: part.title ?? part.id,

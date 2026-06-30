@@ -1,16 +1,16 @@
-import type { Edge, Id, Node } from "@meu-caderno/core";
+import type { Edge, Id, NotebookNode } from "@meu-caderno/core";
 import { children } from "@meu-caderno/core";
 
 export interface NoteLink {
   edge: Edge;
-  target: Node;
+  target: NotebookNode;
   outgoing: boolean;
 }
 
 function linkFor(
   edge: Edge,
   id: Id,
-  nodesById: Map<Id, Node>,
+  nodesById: Map<Id, NotebookNode>,
 ): NoteLink | null {
   if (edge.from === id) {
     const target = nodesById.get(edge.to);
@@ -25,7 +25,7 @@ function linkFor(
 
 export function useNotebook() {
   const { store } = useCadernoService();
-  const nodes = useLiveQuery<Node[]>(
+  const nodes = useLiveQuery<NotebookNode[]>(
     ["nodes"],
     () => store.graph.nodes.list(),
     [],
@@ -40,7 +40,7 @@ export function useNotebook() {
     nodes.value.filter((node) => node.parentId === undefined),
   );
 
-  function childrenOf(id: Id): Node[] {
+  function childrenOf(id: Id): NotebookNode[] {
     return children(nodes.value, id);
   }
 

@@ -2,12 +2,12 @@ import { createHooks, type Hookable } from "hookable";
 import type {
   Activity,
   Assessment,
-  Record as AttendanceRecord,
+  AttendanceRecord,
   Context,
   Edge,
   Id,
   LibraryItem,
-  Node,
+  NotebookNode,
   StudyMap,
   Subject,
 } from "../domain";
@@ -27,7 +27,7 @@ export interface CadernoHooks {
   "library:deleted": (id: Id) => void;
   "map:changed": (map: StudyMap) => void;
   "map:deleted": (id: Id) => void;
-  "node:upserted": (node: Node) => void;
+  "node:upserted": (node: NotebookNode) => void;
   "node:deleted": (id: Id) => void;
   "edge:upserted": (edge: Edge) => void;
   "edge:deleted": (id: Id) => void;

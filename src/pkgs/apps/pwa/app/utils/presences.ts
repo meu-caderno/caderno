@@ -1,4 +1,4 @@
-import type { Record as AttendanceRecord, Subject } from "@meu-caderno/core";
+import type { AttendanceRecord, Subject } from "@meu-caderno/core";
 import { AttendanceStatus } from "@meu-caderno/core";
 import { formatDay } from "./caderno-stats";
 

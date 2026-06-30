@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import type { Id, Node, Subject } from "@meu-caderno/core";
+import type { Id, NotebookNode, Subject } from "@meu-caderno/core";
 import { Aspect, descendants } from "@meu-caderno/core";
 
-const props = defineProps<{ node?: Node; nodes: Node[]; parentId?: Id }>();
+const props = defineProps<{
+  node?: NotebookNode;
+  nodes: NotebookNode[];
+  parentId?: Id;
+}>();
 const emit = defineEmits<{ done: []; cancel: []; delete: [] }>();
 
 const { service, store } = useCadernoService();

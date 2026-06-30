@@ -1,8 +1,4 @@
-import type {
-  Record as AttendanceRecord,
-  Id,
-  Subject,
-} from "@meu-caderno/core";
+import type { AttendanceRecord, Id, Subject } from "@meu-caderno/core";
 import {
   filterRecords,
   groupRecords,

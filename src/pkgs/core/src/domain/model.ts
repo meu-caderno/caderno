@@ -115,7 +115,7 @@ export enum AttendanceStatus {
   CANCELED = "CANCELED",
 }
 
-export interface Record {
+export interface AttendanceRecord {
   id: Id;
   subjectId: Id;
   day: DayIso;
@@ -145,7 +145,7 @@ export interface Subject {
   medicalExcuses?: boolean;
   schedule?: Schedule;
   assessments?: Assessment[];
-  records?: Record[];
+  records?: AttendanceRecord[];
 }
 
 export enum ActivityStatus {
@@ -210,7 +210,7 @@ export enum Mastery {
   MASTERED = "MASTERED",
 }
 
-export interface Node {
+export interface NotebookNode {
   id: Id;
   aspects: Aspect[];
   title: string;
@@ -377,9 +377,9 @@ export interface Backup {
   exportedAt: Timestamp;
   contexts: Context[];
   subjects: Subject[];
-  records: Record[];
+  records: AttendanceRecord[];
   activities: Activity[];
-  nodes: Node[];
+  nodes: NotebookNode[];
   edges: Edge[];
   library: LibraryItem[];
   profiles?: Profile[];
@@ -391,9 +391,9 @@ export interface BackupV1 {
   exportedAt: Timestamp;
   contexts: Context[];
   subjects: Subject[];
-  records: Record[];
+  records: AttendanceRecord[];
   activities: Activity[];
-  nodes: Node[];
+  nodes: NotebookNode[];
   edges: Edge[];
   library: LibraryItem[];
 }

@@ -1,7 +1,7 @@
 import type {
   Activity,
   Assessment,
-  Record as AttendanceRecord,
+  AttendanceRecord,
   Clock,
   Context,
   ContextStore,
@@ -12,7 +12,7 @@ import type {
   Identified,
   IdGenerator,
   LibraryItem,
-  Node,
+  NotebookNode,
   Repository,
   StudyMap,
   Subject,
@@ -66,8 +66,10 @@ export interface CadernoService {
   ): Promise<Result<StudyMap, DomainError>>;
   updateMap(map: StudyMap): Promise<Result<StudyMap, DomainError>>;
   deleteMap(id: Id): Promise<Result<void, DomainError>>;
-  createNode(input: Omit<Node, "id">): Promise<Result<Node, DomainError>>;
-  updateNode(node: Node): Promise<Result<Node, DomainError>>;
+  createNode(
+    input: Omit<NotebookNode, "id">,
+  ): Promise<Result<NotebookNode, DomainError>>;
+  updateNode(node: NotebookNode): Promise<Result<NotebookNode, DomainError>>;
   deleteNode(id: Id): Promise<Result<void, DomainError>>;
   linkNodes(
     from: Id,
@@ -419,7 +421,7 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
           EntityName.NODE,
         );
       }
-      const node: Node = { ...input, id: await ids.newId() };
+      const node: NotebookNode = { ...input, id: await ids.newId() };
       await commitPut((tx) => tx.graph.nodes, EntityName.NODE, node);
       await hooks?.callHook("node:upserted", node);
       return ok(node);

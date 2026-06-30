@@ -1,8 +1,4 @@
-import type {
-  Record as AttendanceRecord,
-  Context,
-  Subject,
-} from "@meu-caderno/core";
+import type { AttendanceRecord, Context, Subject } from "@meu-caderno/core";
 import { recordsOf } from "@meu-caderno/core";
 import { deriveStats, type SubjectStats } from "~/utils/caderno-stats";
 

@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import type { Id, Node } from "@meu-caderno/core";
+import type { Id, NotebookNode } from "@meu-caderno/core";
 import { EdgeKind } from "@meu-caderno/core";
 import type { NoteLink } from "~/composables/useNotebook";
 
-const props = defineProps<{ node: Node; nodes: Node[]; links: NoteLink[] }>();
+const props = defineProps<{
+  node: NotebookNode;
+  nodes: NotebookNode[];
+  links: NoteLink[];
+}>();
 
 const { service } = useCadernoService();
 

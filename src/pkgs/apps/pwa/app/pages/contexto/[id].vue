@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type {
   Activity,
-  Record as AttendanceRecord,
+  AttendanceRecord,
   Context,
   Id,
   Subject,

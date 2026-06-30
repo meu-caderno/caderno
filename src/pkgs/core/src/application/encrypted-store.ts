@@ -10,7 +10,7 @@ import type {
   Edge,
   GraphRepository,
   Identified,
-  Node,
+  NotebookNode,
   OpLogEntry,
   OpLogStore,
   Repository,
@@ -65,7 +65,7 @@ function encryptedOpLog(blob: BlobLog, cipher: Cipher): OpLogStore {
 }
 
 function encryptedTx(blob: BlobTx, cipher: Cipher): ContextTx {
-  const nodes = encryptedRepo<Node>(blob.nodes, cipher);
+  const nodes = encryptedRepo<NotebookNode>(blob.nodes, cipher);
   const edges = encryptedRepo<Edge>(blob.edges, cipher);
   const graph: GraphRepository = {
     nodes,

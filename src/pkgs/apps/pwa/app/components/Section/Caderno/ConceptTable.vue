@@ -1,20 +1,20 @@
 <script setup lang="ts">
-import type { Node } from "@meu-caderno/core";
+import type { NotebookNode } from "@meu-caderno/core";
 import { ancestors } from "@meu-caderno/core";
 import { MASTERY_COLOR, MASTERY_LABEL, masteryOf } from "~/utils/concepts";
 
-const props = defineProps<{ concepts: Node[] }>();
-const emit = defineEmits<{ select: [node: Node] }>();
+const props = defineProps<{ concepts: NotebookNode[] }>();
+const emit = defineEmits<{ select: [node: NotebookNode] }>();
 
 const { nodes, linksOf } = useNotebook();
 
 interface ConceptRow {
-  node: Node;
+  node: NotebookNode;
   domain: string;
   links: number;
 }
 
-function domainOf(node: Node): string {
+function domainOf(node: NotebookNode): string {
   const chain = ancestors(nodes.value, node.id);
   return chain[chain.length - 1]?.title ?? "—";
 }

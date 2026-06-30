@@ -1,6 +1,6 @@
 import fc from "fast-check";
 import { describe, it } from "vitest";
-import type { DayIso, Grade, Id, Record } from "../domain";
+import type { AttendanceRecord, DayIso, Grade, Id } from "../domain";
 import { AttendanceStatus } from "../domain";
 import { computeAttendance } from "./attendance";
 import { weightedAverage } from "./grades";
@@ -14,7 +14,7 @@ describe("engine properties", () => {
   it("frequencyPct stays within [0, 100]", () => {
     fc.assert(
       fc.property(fc.array(statusArb), (statuses) => {
-        const recs: Record[] = statuses.map((status, i) => ({
+        const recs: AttendanceRecord[] = statuses.map((status, i) => ({
           id: `r${i}` as Id,
           subjectId: "s" as Id,
           day: "2026-01-01" as DayIso,

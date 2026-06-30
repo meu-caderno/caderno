@@ -1,4 +1,4 @@
-import type { Id, MapItem, Node } from "@meu-caderno/core";
+import type { Id, MapItem, NotebookNode } from "@meu-caderno/core";
 import { Aspect, MapItemKind } from "@meu-caderno/core";
 import { describe, expect, it } from "vitest";
 import {
@@ -11,7 +11,7 @@ import {
 
 const id = (value: string) => value as Id;
 
-function node(part: { id: string; title: string }): Node {
+function node(part: { id: string; title: string }): NotebookNode {
   return { id: id(part.id), title: part.title, aspects: [Aspect.CONCEPT] };
 }
 

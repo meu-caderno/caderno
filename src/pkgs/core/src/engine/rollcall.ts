@@ -1,5 +1,5 @@
 import type {
-  Record as AttendanceRecord,
+  AttendanceRecord,
   DayIso,
   Id,
   Schedule,

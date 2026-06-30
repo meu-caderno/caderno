@@ -47,7 +47,7 @@ Esforço: **P** (horas) · **M** (1–2 dias) · **G** (vários dias). Valor: **
 20. [x] **B5 · Grafo visual (Cytoscape lazy)** — feito: `ConceptGraph.vue` + `utils/graph.ts`, import dinâmico.
 21. [x] **B7 · Mapas (StudyMap)** — feito: entidade `StudyMap` no core (coleção `maps`) + `MapEditor.vue`; fora do backup por ora.
 22. [ ] **C · Moldura desktop / workbench** — `G`/`M` (decisão: **fazer o completo** com reka-ui Splitter/Tabs). _(shell)_ — **em aberto** (maior peça).
-+ [ ] **Rename `Record`/`Node`** → `AttendanceRecord`/`NotebookNode` — inline (em andamento).
++ [x] **Rename `Record`/`Node`** → `AttendanceRecord`/`NotebookNode` — feito (43 arquivos; gate verde).
 
 ### 🚫 Fora de escopo (local-first mono-usuário)
 - **G4 · Membros / convidar / backend remoto** — placeholder visual apenas, até existir a camada de sync.

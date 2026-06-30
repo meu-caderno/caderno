@@ -1,11 +1,11 @@
-import type { Node } from "@meu-caderno/core";
+import type { NotebookNode } from "@meu-caderno/core";
 import { Aspect, Mastery } from "@meu-caderno/core";
 
-export function concepts(nodes: Node[]): Node[] {
+export function concepts(nodes: NotebookNode[]): NotebookNode[] {
   return nodes.filter((node) => node.aspects.includes(Aspect.CONCEPT));
 }
 
-export function masteryOf(node: Node): Mastery {
+export function masteryOf(node: NotebookNode): Mastery {
   return node.mastery ?? Mastery.UNKNOWN;
 }
 
@@ -41,10 +41,10 @@ export interface MasteryGroup {
   mastery: Mastery;
   label: string;
   color: string;
-  items: Node[];
+  items: NotebookNode[];
 }
 
-export function groupByMastery(items: Node[]): MasteryGroup[] {
+export function groupByMastery(items: NotebookNode[]): MasteryGroup[] {
   return MASTERY_ORDER.map((mastery) => ({
     mastery,
     label: MASTERY_LABEL[mastery],

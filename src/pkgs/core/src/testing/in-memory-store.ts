@@ -1,6 +1,6 @@
 import type {
   Activity,
-  Record as AttendanceRecord,
+  AttendanceRecord,
   ConfigStore,
   Context,
   ContextStore,
@@ -11,7 +11,7 @@ import type {
   Identified,
   LibraryItem,
   Mood,
-  Node,
+  NotebookNode,
   OpLogEntry,
   OpLogStore,
   Preferences,
@@ -61,7 +61,7 @@ export function createInMemoryContextStore(): ContextStore {
   const activities = createRepo<Activity>();
   const library = createRepo<LibraryItem>();
   const maps = createRepo<StudyMap>();
-  const nodes = createRepo<Node>();
+  const nodes = createRepo<NotebookNode>();
   const edges = createRepo<Edge>();
 
   const graph: GraphRepository = {

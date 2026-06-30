@@ -1,6 +1,6 @@
 import type {
   Activity,
-  Record as AttendanceRecord,
+  AttendanceRecord,
   DayIso,
   Id,
   Subject,

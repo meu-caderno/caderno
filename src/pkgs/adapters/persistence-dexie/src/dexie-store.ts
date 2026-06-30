@@ -1,6 +1,6 @@
 import type {
   Activity,
-  Record as AttendanceRecord,
+  AttendanceRecord,
   BlobLog,
   BlobRepository,
   BlobRow,
@@ -18,7 +18,7 @@ import type {
   Identified,
   LibraryItem,
   Mood,
-  Node,
+  NotebookNode,
   OpKind,
   OpLogEntry,
   OpLogStore,
@@ -91,7 +91,7 @@ export function createDexieContextStore(name = "caderno"): ContextStore {
     oplog: "++seq, id, ts",
   });
 
-  const nodesTable = db.table<Node, string>("nodes");
+  const nodesTable = db.table<NotebookNode, string>("nodes");
   const edgesTable = db.table<Edge, string>("edges");
   const oplogTable = db.table<OpLogRow, number>("oplog");
 

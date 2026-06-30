@@ -1,4 +1,4 @@
-import type { Id, MapItem, Node, StudyMap } from "@meu-caderno/core";
+import type { Id, MapItem, NotebookNode, StudyMap } from "@meu-caderno/core";
 import { MapItemKind } from "@meu-caderno/core";
 
 export const MAP_ITEM_KIND_LABEL: Record<MapItemKind, string> = {
@@ -32,7 +32,10 @@ export function removeItemAt(items: MapItem[], index: number): MapItem[] {
   return items.filter((_, position) => position !== index);
 }
 
-export function itemLabel(item: MapItem, nodesById: Map<Id, Node>): string {
+export function itemLabel(
+  item: MapItem,
+  nodesById: Map<Id, NotebookNode>,
+): string {
   if (item.kind === MapItemKind.REF && item.nodeId) {
     return (
       nodesById.get(item.nodeId)?.title ?? item.label ?? "Conceito removido"

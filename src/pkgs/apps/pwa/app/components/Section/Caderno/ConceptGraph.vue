@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Edge, Node } from "@meu-caderno/core";
+import type { Edge, NotebookNode } from "@meu-caderno/core";
 import type { Core } from "cytoscape";
 import {
   layoutOptions,
@@ -8,7 +8,7 @@ import {
   toElements,
 } from "~/utils/graph";
 
-const props = defineProps<{ nodes: Node[]; edges: Edge[] }>();
+const props = defineProps<{ nodes: NotebookNode[]; edges: Edge[] }>();
 
 const container = ref<HTMLDivElement | null>(null);
 let cy: Core | null = null;

@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import type { Node } from "@meu-caderno/core";
+import type { NotebookNode } from "@meu-caderno/core";
 import { groupByMastery, MASTERY_LABEL } from "~/utils/concepts";
 
-const props = defineProps<{ concepts: Node[] }>();
-const emit = defineEmits<{ select: [node: Node] }>();
+const props = defineProps<{ concepts: NotebookNode[] }>();
+const emit = defineEmits<{ select: [node: NotebookNode] }>();
 
 const { linksOf } = useNotebook();
 
 const columns = computed(() => groupByMastery(props.concepts));
 
-function linkCount(node: Node): number {
+function linkCount(node: NotebookNode): number {
   return linksOf(node.id).length;
 }
 </script>

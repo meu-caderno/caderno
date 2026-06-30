@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Id, MapItem, Node, StudyMap } from "@meu-caderno/core";
+import type { Id, MapItem, NotebookNode, StudyMap } from "@meu-caderno/core";
 import { MapItemKind } from "@meu-caderno/core";
 
 const props = defineProps<{ contextId?: Id }>();
@@ -10,7 +10,7 @@ const { sorted } = useStudyMaps();
 const nodes = useLiveQuery(
   ["nodes"],
   () => store.graph.nodes.list(),
-  [] as Node[],
+  [] as NotebookNode[],
 );
 const nodesById = computed(
   () => new Map(nodes.value.map((node) => [node.id, node])),

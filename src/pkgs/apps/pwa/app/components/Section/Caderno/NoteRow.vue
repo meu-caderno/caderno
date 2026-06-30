@@ -4,11 +4,15 @@ import {
   draggable,
   dropTargetForElements,
 } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
-import type { Id, Node } from "@meu-caderno/core";
+import type { Id, NotebookNode } from "@meu-caderno/core";
 import { Aspect, children } from "@meu-caderno/core";
 
-const props = defineProps<{ node: Node; nodes: Node[]; depth?: number }>();
-const emit = defineEmits<{ select: [node: Node] }>();
+const props = defineProps<{
+  node: NotebookNode;
+  nodes: NotebookNode[];
+  depth?: number;
+}>();
+const emit = defineEmits<{ select: [node: NotebookNode] }>();
 
 const { service } = useCadernoService();
 

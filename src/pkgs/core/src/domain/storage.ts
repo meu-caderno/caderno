@@ -1,12 +1,12 @@
 import type { CapabilityManifest } from "./capabilities";
 import type {
   Activity,
-  Record as AttendanceRecord,
+  AttendanceRecord,
   Context,
   Edge,
   LibraryItem,
   Mood,
-  Node,
+  NotebookNode,
   OpLogEntry,
   Preferences,
   Profile,
@@ -54,9 +54,9 @@ export interface Repository<T extends Identified> {
 }
 
 export interface GraphRepository {
-  nodes: Repository<Node>;
+  nodes: Repository<NotebookNode>;
   edges: Repository<Edge>;
-  childrenOf(parentId: Id): Promise<Node[]>;
+  childrenOf(parentId: Id): Promise<NotebookNode[]>;
   edgesFrom(from: Id): Promise<Edge[]>;
   edgesTo(to: Id): Promise<Edge[]>;
 }
@@ -90,9 +90,9 @@ export interface ReadonlyRepository<T extends Identified> {
 }
 
 export interface ReadonlyGraphRepository {
-  nodes: ReadonlyRepository<Node>;
+  nodes: ReadonlyRepository<NotebookNode>;
   edges: ReadonlyRepository<Edge>;
-  childrenOf(parentId: Id): Promise<Node[]>;
+  childrenOf(parentId: Id): Promise<NotebookNode[]>;
   edgesFrom(from: Id): Promise<Edge[]>;
   edgesTo(to: Id): Promise<Edge[]>;
 }

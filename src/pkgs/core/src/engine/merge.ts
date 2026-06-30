@@ -1,6 +1,6 @@
 import type {
   Activity,
-  Record as AttendanceRecord,
+  AttendanceRecord,
   Backup,
   Context,
   Edge,
@@ -8,7 +8,7 @@ import type {
   Identified,
   LibraryItem,
   Mood,
-  Node,
+  NotebookNode,
   OpLogEntry,
   Profile,
   Subject,
@@ -27,7 +27,7 @@ export interface Collections {
   subjects: Subject[];
   records: AttendanceRecord[];
   activities: Activity[];
-  nodes: Node[];
+  nodes: NotebookNode[];
   edges: Edge[];
   library: LibraryItem[];
   profiles: Profile[];

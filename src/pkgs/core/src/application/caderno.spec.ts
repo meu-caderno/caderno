@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type {
-  Record as AttendanceRecord,
+  AttendanceRecord,
   Color,
   Context,
   DayIso,

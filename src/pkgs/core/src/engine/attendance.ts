@@ -1,4 +1,4 @@
-import type { Record as AttendanceRecord, Id, Subject } from "../domain";
+import type { AttendanceRecord, Id, Subject } from "../domain";
 import { AttendanceStatus } from "../domain";
 import * as numeric from "./math";
 

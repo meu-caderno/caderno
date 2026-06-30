@@ -2,7 +2,7 @@ import type {
   Activity,
   Context,
   LibraryItem,
-  Node,
+  NotebookNode,
   Subject,
 } from "@meu-caderno/core";
 
@@ -40,7 +40,7 @@ export function useSearch() {
   const nodes = useLiveQuery(
     ["nodes"],
     () => store.graph.nodes.list(),
-    [] as Node[],
+    [] as NotebookNode[],
   );
   const library = useLiveQuery(
     ["library"],

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { DayIso, Id, Record, Subject } from "../domain";
+import type { AttendanceRecord, DayIso, Id, Subject } from "../domain";
 import { AttendanceStatus } from "../domain";
 import {
   AttendanceRiskLevel,
@@ -12,7 +12,7 @@ import {
   simulateAbsences,
 } from "./attendance";
 
-function records(statuses: AttendanceStatus[]): Record[] {
+function records(statuses: AttendanceStatus[]): AttendanceRecord[] {
   return statuses.map((status, i) => ({
     id: `r${i}` as Id,
     subjectId: "subj" as Id,

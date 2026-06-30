@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Node } from "@meu-caderno/core";
+import type { NotebookNode } from "@meu-caderno/core";
 import {
   ActivityKind,
   ActivityStatus,
@@ -9,12 +9,16 @@ import {
 } from "@meu-caderno/core";
 import type { NoteLink } from "~/composables/useNotebook";
 
-const props = defineProps<{ node: Node; nodes: Node[]; links: NoteLink[] }>();
+const props = defineProps<{
+  node: NotebookNode;
+  nodes: NotebookNode[];
+  links: NoteLink[];
+}>();
 const emit = defineEmits<{
   close: [];
   edit: [];
   delete: [];
-  select: [node: Node];
+  select: [node: NotebookNode];
 }>();
 
 const { service, ids } = useCadernoService();

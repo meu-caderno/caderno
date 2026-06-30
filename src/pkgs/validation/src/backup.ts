@@ -1,12 +1,12 @@
 import type {
   Activity,
-  Record as AttendanceRecord,
+  AttendanceRecord,
   Backup,
   Context,
   Edge,
   LibraryItem,
   Mood,
-  Node,
+  NotebookNode,
   Profile,
   Subject,
   Timestamp,
@@ -18,7 +18,7 @@ export interface BackupCollections {
   subjects: Subject[];
   records: AttendanceRecord[];
   activities: Activity[];
-  nodes: Node[];
+  nodes: NotebookNode[];
   edges: Edge[];
   library: LibraryItem[];
   profiles?: Profile[];

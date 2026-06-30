@@ -1,7 +1,7 @@
 import type {
   Activity,
   Assessment,
-  Record as AttendanceRecord,
+  AttendanceRecord,
   Backup,
   BackupV1,
   Color,
@@ -14,7 +14,7 @@ import type {
   MapItem,
   Modules,
   Mood,
-  Node,
+  NotebookNode,
   OpLogEntry,
   Profile,
   Schedule,
@@ -355,7 +355,7 @@ export type _Assessment = Expect<
 >;
 export type _Schedule = Expect<Equal<z.infer<typeof ScheduleSchema>, Schedule>>;
 export type _Activity = Expect<Equal<z.infer<typeof ActivitySchema>, Activity>>;
-export type _Node = Expect<Equal<z.infer<typeof NodeSchema>, Node>>;
+export type _Node = Expect<Equal<z.infer<typeof NodeSchema>, NotebookNode>>;
 export type _Edge = Expect<Equal<z.infer<typeof EdgeSchema>, Edge>>;
 export type _LibraryItem = Expect<
   Equal<z.infer<typeof LibraryItemSchema>, LibraryItem>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { Edge, Id, Node } from "../domain";
+import type { Edge, Id, NotebookNode } from "../domain";
 import { Aspect, EdgeKind, Mastery } from "../domain";
 import {
   ancestors,
@@ -20,7 +20,7 @@ const node = (
   i: string,
   parent?: string,
   aspects: Aspect[] = [Aspect.NOTE],
-): Node => ({
+): NotebookNode => ({
   id: id(i),
   aspects,
   title: i,
@@ -85,7 +85,7 @@ describe("orphans / aspects / edges", () => {
 });
 
 describe("reviewQueue", () => {
-  const concept = (i: string, mastery?: Mastery): Node => ({
+  const concept = (i: string, mastery?: Mastery): NotebookNode => ({
     ...node(i, undefined, [Aspect.CONCEPT]),
     mastery,
   });

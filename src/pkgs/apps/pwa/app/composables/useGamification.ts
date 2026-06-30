@@ -1,8 +1,4 @@
-import type {
-  Activity,
-  Record as AttendanceRecord,
-  DayIso,
-} from "@meu-caderno/core";
+import type { Activity, AttendanceRecord, DayIso } from "@meu-caderno/core";
 import {
   ActivityStatus,
   AttendanceStatus,
