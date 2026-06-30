@@ -1,6 +1,14 @@
 <script setup lang="ts">
-import type { Id, MapItem, NotebookNode, StudyMap } from "@meu-caderno/core";
+import type {
+  Edge,
+  Id,
+  MapItem,
+  NotebookNode,
+  StudyMap,
+} from "@meu-caderno/core";
 import { MapItemKind } from "@meu-caderno/core";
+import { concepts } from "~/utils/concepts";
+import { coverage, prereqsOf, topologicalOrder } from "~/utils/study-plan";
 
 const props = defineProps<{ contextId?: Id }>();
 
@@ -12,9 +20,40 @@ const nodes = useLiveQuery(
   () => store.graph.nodes.list(),
   [] as NotebookNode[],
 );
+const edges = useLiveQuery(
+  ["edges"],
+  () => store.graph.edges.list(),
+  [] as Edge[],
+);
 const nodesById = computed(
   () => new Map(nodes.value.map((node) => [node.id, node])),
 );
+const conceptNodes = computed(() => concepts(nodes.value));
+const conceptIds = computed(() => conceptNodes.value.map((node) => node.id));
+
+function refIdsOf(map: StudyMap): Id[] {
+  return map.items
+    .filter((item) => item.kind === MapItemKind.REF && item.nodeId)
+    .map((item) => item.nodeId as Id);
+}
+const mapCoverage = computed(() =>
+  selected.value ? coverage(refIdsOf(selected.value), conceptIds.value) : null,
+);
+function availableConcepts(map: StudyMap): NotebookNode[] {
+  const used = new Set(refIdsOf(map));
+  return conceptNodes.value.filter((node) => !used.has(node.id));
+}
+function prereqGap(map: StudyMap, index: number): string[] {
+  const item = map.items[index];
+  if (!item || item.kind !== MapItemKind.REF || !item.nodeId) return [];
+  const before = new Set(
+    refIdsOf({ ...map, items: map.items.slice(0, index) }),
+  );
+  const conceptSet = new Set(conceptIds.value);
+  return prereqsOf(item.nodeId, edges.value)
+    .filter((prereqId) => conceptSet.has(prereqId) && !before.has(prereqId))
+    .map((prereqId) => nodesById.value.get(prereqId)?.title ?? "conceito");
+}
 const nodeOptions = computed(() => [
   { value: "", label: "— escolha um conceito —" },
   ...nodes.value.map((node) => ({
@@ -80,6 +119,27 @@ function move(map: StudyMap, index: number, direction: -1 | 1) {
 function removeItem(map: StudyMap, index: number) {
   commitItems(map, removeItemAt(map.items, index));
 }
+
+function addConcept(map: StudyMap, node: NotebookNode) {
+  commitItems(map, [...map.items, refItem(node.id, node.title)]);
+}
+
+function generatePlan(map: StudyMap) {
+  const ordered = topologicalOrder(conceptNodes.value, edges.value);
+  commitItems(
+    map,
+    ordered.map((node) => refItem(node.id, node.title)),
+  );
+}
+
+async function duplicate(map: StudyMap) {
+  const result = await service.createMap({
+    name: `${map.name} (cópia)`,
+    items: [...map.items],
+    contextId: map.contextId,
+  });
+  if (result.ok) selectedId.value = result.value.id;
+}
 </script>
 
 <template>
@@ -116,6 +176,14 @@ function removeItem(map: StudyMap, index: number) {
         <button
           type="button"
           class="map-editor__del"
+          aria-label="Duplicar mapa"
+          @click="duplicate(map)"
+        >
+          <UIIcon icon="plus" :size="14" />
+        </button>
+        <button
+          type="button"
+          class="map-editor__del"
           aria-label="Excluir mapa"
           @click="removeMap(map)"
         >
@@ -134,6 +202,25 @@ function removeItem(map: StudyMap, index: number) {
           @change="rename(selected, $event)"
         />
       </UIField>
+
+      <div v-if="mapCoverage" class="map-editor__coverage">
+        <div class="map-editor__coverage-head">
+          <span class="pt-eyebrow">Cobertura</span>
+          <span class="map-editor__coverage-num">
+            {{ mapCoverage.refed }} de {{ mapCoverage.total }} conceitos ·
+            {{ mapCoverage.pct }}%
+          </span>
+        </div>
+        <UIProgress :value="mapCoverage.pct" />
+      </div>
+
+      <UIButton
+        variant="leve"
+        icon="list"
+        label="✨ Gerar plano a partir do grafo"
+        full
+        @click="generatePlan(selected)"
+      />
 
       <ol v-if="selected.items.length" class="map-editor__items">
         <li
@@ -171,8 +258,32 @@ function removeItem(map: StudyMap, index: number) {
               ✕
             </button>
           </span>
+          <span
+            v-if="prereqGap(selected, index).length"
+            class="map-editor__warn"
+          >
+            ⚠️ adicionar antes: {{ prereqGap(selected, index).join(", ") }}
+          </span>
         </li>
       </ol>
+
+      <div
+        v-if="availableConcepts(selected).length"
+        class="map-editor__compose"
+      >
+        <span class="pt-eyebrow">Compor a partir do grafo</span>
+        <div class="map-editor__chips">
+          <button
+            v-for="node in availableConcepts(selected)"
+            :key="node.id"
+            type="button"
+            class="map-editor__chip"
+            @click="addConcept(selected, node)"
+          >
+            ＋ {{ node.title }}
+          </button>
+        </div>
+      </div>
 
       <div class="map-editor__add">
         <form class="map-editor__add-row" @submit.prevent="addSection(selected)">
@@ -304,11 +415,57 @@ function removeItem(map: StudyMap, index: number) {
 .map-editor__item {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 10px;
   padding: 6px 10px;
   border-radius: var(--pt-radius-sm);
   border: 1.5px solid var(--pt-border-faint);
   background: var(--pt-card);
+}
+.map-editor__warn {
+  flex-basis: 100%;
+  font-size: calc(11px * var(--pt-text-scale));
+  color: var(--pt-warn-text);
+}
+.map-editor__coverage {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.map-editor__coverage-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.map-editor__coverage-num {
+  font-size: calc(12px * var(--pt-text-scale));
+  color: var(--pt-ink-muted);
+  font-weight: 600;
+}
+.map-editor__compose {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.map-editor__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.map-editor__chip {
+  font-family: inherit;
+  font-size: calc(12px * var(--pt-text-scale));
+  padding: 5px 10px;
+  border-radius: var(--pt-radius-pill);
+  border: 1.5px solid var(--pt-border-muted);
+  background: var(--pt-card);
+  color: var(--pt-ink-soft);
+  cursor: pointer;
+}
+.map-editor__chip:hover {
+  border-color: var(--pt-ink);
+  color: var(--pt-ink);
 }
 .map-editor__item--section {
   background: var(--pt-paper);
