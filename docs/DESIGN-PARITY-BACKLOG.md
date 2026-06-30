@@ -12,6 +12,17 @@
 
 ---
 
+## Estado: ✅ essencialmente completo
+
+Tiers 1–4 implementados; a **leva de profundidade** (disciplina/contexto/home/acervo/grafo/atividades) e o
+**editor de Notas Página/Índice** (a maior surface que faltava) também entraram. Pendências residuais, todas
+de baixo valor: 3 campos nichados do `SubjectForm` (item #5), e nuances **[BAIXA]** do relatório de
+profundidade (subpáginas inline-editáveis no editor, "ligar conceito a partir de trecho", feed de atividade
+recente). Fora de escopo permanente: **membros/federação remota** (decisão local-first).
+
+> Os checkboxes detalhados das seções 🟠/🟡/🔵 abaixo são o **inventário original** — vários itens já
+> resolvidos; a **lista ranqueada** abaixo e a **Reconciliação de estado** são autoritativas.
+
 ## ✅ Ordem por quick win (ROI: valor alto × esforço/risco baixo primeiro)
 
 Esforço: **P** (horas) · **M** (1–2 dias) · **G** (vários dias). Valor: **A**lto · **M**édio · **B**aixo.
@@ -23,7 +34,9 @@ Esforço: **P** (horas) · **M** (1–2 dias) · **G** (vários dias). Valor: **
 2. [x] **H1 · ActivityForm "é preparação 📚"** — feito: switch + alvo (atividades com prazo) + `gapDays` (`NumberField`), grava `preparesId`/`gapDays`.
 3. [x] **H5 · Widget de Pomodoro na Home** — feito: `Section/Home/PomodoroWidget.vue` + widget `pomodoro` em `HOME_WIDGETS`.
 4. [x] **H6 · Grid de stats + acesso rápido na Home** — feito: `Section/Home/QuickStats.vue` (frequência/risco/pendentes/aulas + atalhos) + widget `stats`.
-5. [ ] **H2 · SubjectForm campos avançados** (modelo de grade, forma de presença, eixo) — **adiado**: exige campos novos no `Subject` (core); não é quick win. Move p/ a camada de core.
+5. [~] **H2 · SubjectForm campos avançados** — **parcial**: o form ganhou seletor de contexto, horas/aula
+   (1/2/4), aulas/sessão e "mais opções". Restam só 3 campos nichados (modelo de grade, forma de presença,
+   eixo médio-integrado) que exigiriam campos especulativos no `Subject` — **adiados** (baixo valor).
 
 ### 🟡 Tier 2 — Wins médios (1–2 dias, pouco/zero core)
 6. [x] **E1 · Página Disciplinas** — feito (`useSubjects` + `pages/disciplinas.vue`, agrupada por contexto).
