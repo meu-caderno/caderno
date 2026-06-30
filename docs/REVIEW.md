@@ -19,6 +19,8 @@
   comentários do `NavItem` removidos; dead code `ClockTime` removido.
 - **Sem abreviação** (`12e2573`): `ts`→`timestamp`, `num`→`numeric`, `ctx`→`context`, `seq`→`sequence`,
   `el`→`elementRef`, `init`→`initialize`, `dir`→`directory`, `src`→`source` (locais/params).
+- **`usePreferences()`** (`2d81067`): `persist`/`PREF_ID` duplicado removido de 7 composables.
+- **`SectionSettingsCard`** (`9cd7419`): boilerplate de cabeçalho eliminado dos 12 cards de Ajustes.
 
 > Pendente de decisão: o **campo público `OpLogEntry.ts`** (e `RemoteChange.ts`) segue como `ts` — renomear
 > para `timestamp` é mudança coordenada de tipo de domínio + zod schema + mapeamento Dexie + serialização.
