@@ -5,12 +5,12 @@ const MS_PER_DAY = 86_400_000;
 const MS_PER_WEEK = MS_PER_DAY * 7;
 
 function toUtc(day: DayIso): number {
-  const [y, m, d] = day.split("-").map(Number);
-  return Date.UTC(y ?? 1970, (m ?? 1) - 1, d ?? 1);
+  const [year, month, dayOfMonth] = day.split("-").map(Number);
+  return Date.UTC(year ?? 1970, (month ?? 1) - 1, dayOfMonth ?? 1);
 }
 
-function fromUtc(ms: number): DayIso {
-  const date = new Date(ms);
+function fromUtc(milliseconds: number): DayIso {
+  const date = new Date(milliseconds);
   const year = date.getUTCFullYear();
   const month = String(date.getUTCMonth() + 1).padStart(2, "0");
   const day = String(date.getUTCDate()).padStart(2, "0");
@@ -34,34 +34,73 @@ export interface DateRange {
   to: DayIso;
 }
 
-export function expandSchedule(schedule: Schedule, range: DateRange): DayIso[] {
-  const startMs = toUtc(range.from);
-  const endMs = toUtc(range.to);
-  if (endMs < startMs) return [];
+function isRecurringDay(
+  schedule: Schedule,
+  weekdays: ReadonlySet<number>,
+  anchorMilliseconds: number,
+  milliseconds: number,
+): boolean {
+  if (!weekdays.has(new Date(milliseconds).getUTCDay())) return false;
+  if (schedule.kind === ScheduleKind.AB_WEEKS) {
+    const weeksFromAnchor = Math.floor(
+      (milliseconds - anchorMilliseconds) / MS_PER_WEEK,
+    );
+    return weeksFromAnchor % 2 === 0;
+  }
+  return true;
+}
 
-  const out = new Set<string>();
+function recurringDays(
+  schedule: Schedule,
+  startMilliseconds: number,
+  endMilliseconds: number,
+): string[] {
   const weekdays = new Set(schedule.weekdays ?? []);
-  const anchorMs = schedule.anchor ? toUtc(schedule.anchor) : startMs;
-
-  if (
+  const recurs =
     (schedule.kind === ScheduleKind.WEEKLY ||
       schedule.kind === ScheduleKind.AB_WEEKS) &&
-    weekdays.size > 0
+    weekdays.size > 0;
+  if (!recurs) return [];
+
+  const anchorMilliseconds = schedule.anchor
+    ? toUtc(schedule.anchor)
+    : startMilliseconds;
+  const days: string[] = [];
+  for (
+    let milliseconds = startMilliseconds;
+    milliseconds <= endMilliseconds;
+    milliseconds += MS_PER_DAY
   ) {
-    for (let ms = startMs; ms <= endMs; ms += MS_PER_DAY) {
-      if (!weekdays.has(new Date(ms).getUTCDay())) continue;
-      if (schedule.kind === ScheduleKind.AB_WEEKS) {
-        const weeksFromAnchor = Math.floor((ms - anchorMs) / MS_PER_WEEK);
-        if (weeksFromAnchor % 2 !== 0) continue;
-      }
-      out.add(fromUtc(ms));
+    if (isRecurringDay(schedule, weekdays, anchorMilliseconds, milliseconds)) {
+      days.push(fromUtc(milliseconds));
     }
   }
+  return days;
+}
 
+function adHocDays(
+  schedule: Schedule,
+  startMilliseconds: number,
+  endMilliseconds: number,
+): string[] {
+  const days: string[] = [];
   for (const adHocDate of schedule.adHocDates ?? []) {
-    const ms = toUtc(adHocDate);
-    if (ms >= startMs && ms <= endMs) out.add(adHocDate);
+    const milliseconds = toUtc(adHocDate);
+    if (milliseconds >= startMilliseconds && milliseconds <= endMilliseconds) {
+      days.push(adHocDate);
+    }
   }
+  return days;
+}
 
-  return [...out].sort() as DayIso[];
+export function expandSchedule(schedule: Schedule, range: DateRange): DayIso[] {
+  const startMilliseconds = toUtc(range.from);
+  const endMilliseconds = toUtc(range.to);
+  if (endMilliseconds < startMilliseconds) return [];
+
+  const days = new Set<string>([
+    ...recurringDays(schedule, startMilliseconds, endMilliseconds),
+    ...adHocDays(schedule, startMilliseconds, endMilliseconds),
+  ]);
+  return [...days].sort() as DayIso[];
 }

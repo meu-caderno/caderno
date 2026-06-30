@@ -1,9 +1,16 @@
-import type { Backup } from "@meu-caderno/core";
+import type { Backup, Identified, Repository } from "@meu-caderno/core";
 import {
   type BackupCollections,
   exportBackup,
   migrateBackup,
 } from "@meu-caderno/validation";
+
+async function putAll<T extends Identified>(
+  repository: Pick<Repository<T>, "put">,
+  items: readonly T[],
+): Promise<void> {
+  for (const item of items) await repository.put(item);
+}
 
 const ENCRYPTED_FORMAT = "caderno-encrypted";
 
@@ -90,18 +97,16 @@ export function useBackup() {
 
   async function writeBackup(backup: Backup): Promise<void> {
     await store.transaction(async (tx) => {
-      for (const context of backup.contexts) await tx.contexts.put(context);
-      for (const subject of backup.subjects) await tx.subjects.put(subject);
-      for (const record of backup.records) await tx.records.put(record);
-      for (const activity of backup.activities)
-        await tx.activities.put(activity);
-      for (const item of backup.library) await tx.library.put(item);
-      for (const node of backup.nodes) await tx.graph.nodes.put(node);
-      for (const edge of backup.edges) await tx.graph.edges.put(edge);
+      await putAll(tx.contexts, backup.contexts);
+      await putAll(tx.subjects, backup.subjects);
+      await putAll(tx.records, backup.records);
+      await putAll(tx.activities, backup.activities);
+      await putAll(tx.library, backup.library);
+      await putAll(tx.graph.nodes, backup.nodes);
+      await putAll(tx.graph.edges, backup.edges);
     });
-    for (const profile of backup.profiles ?? [])
-      await config.profiles.put(profile);
-    for (const mood of backup.moods ?? []) await config.moods.put(mood);
+    await putAll(config.profiles, backup.profiles ?? []);
+    await putAll(config.moods, backup.moods ?? []);
   }
 
   function isEncrypted(data: unknown): data is EncryptedEnvelope {

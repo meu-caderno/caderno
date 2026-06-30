@@ -7,6 +7,22 @@ export interface NoteLink {
   outgoing: boolean;
 }
 
+function linkFor(
+  edge: Edge,
+  id: Id,
+  nodesById: Map<Id, Node>,
+): NoteLink | null {
+  if (edge.from === id) {
+    const target = nodesById.get(edge.to);
+    return target ? { edge, target, outgoing: true } : null;
+  }
+  if (edge.to === id) {
+    const target = nodesById.get(edge.from);
+    return target ? { edge, target, outgoing: false } : null;
+  }
+  return null;
+}
+
 export function useNotebook() {
   const { store } = useCadernoService();
   const nodes = useLiveQuery<Node[]>(
@@ -29,18 +45,10 @@ export function useNotebook() {
   }
 
   function linksOf(id: Id): NoteLink[] {
-    const byId = new Map(nodes.value.map((node) => [node.id, node]));
-    const result: NoteLink[] = [];
-    for (const edge of edges.value) {
-      if (edge.from === id) {
-        const target = byId.get(edge.to);
-        if (target) result.push({ edge, target, outgoing: true });
-      } else if (edge.to === id) {
-        const target = byId.get(edge.from);
-        if (target) result.push({ edge, target, outgoing: false });
-      }
-    }
-    return result;
+    const nodesById = new Map(nodes.value.map((node) => [node.id, node]));
+    return edges.value
+      .map((edge) => linkFor(edge, id, nodesById))
+      .filter((link): link is NoteLink => link !== null);
   }
 
   return { nodes, edges, roots, childrenOf, linksOf };
