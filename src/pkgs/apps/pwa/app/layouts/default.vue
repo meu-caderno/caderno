@@ -24,33 +24,36 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
   <div class="shell" :class="{ 'shell--zen': zen, 'shell--split': showSplit }">
     <SectionShellRail v-if="!zen" class="shell__rail" />
     <div class="shell__area">
-      <SplitterGroup
-        v-if="showSplit"
-        direction="horizontal"
-        class="shell__split"
-      >
-        <SplitterPanel
-          :default-size="66"
-          :min-size="42"
-          class="shell__pane shell__pane--scroll"
+      <SectionShellTabStrip v-if="!zen" class="shell__tabstrip" />
+      <div class="shell__below">
+        <SplitterGroup
+          v-if="showSplit"
+          direction="horizontal"
+          class="shell__split"
         >
-          <main class="shell__content">
-            <slot />
-          </main>
-        </SplitterPanel>
-        <SplitterResizeHandle class="shell__handle" />
-        <SplitterPanel
-          :default-size="34"
-          :min-size="22"
-          :max-size="48"
-          class="shell__pane"
-        >
-          <SectionShellNotesPanel @close="dockOpen = false" />
-        </SplitterPanel>
-      </SplitterGroup>
-      <main v-else class="shell__content">
-        <slot />
-      </main>
+          <SplitterPanel
+            :default-size="66"
+            :min-size="42"
+            class="shell__pane shell__pane--scroll"
+          >
+            <main class="shell__content">
+              <slot />
+            </main>
+          </SplitterPanel>
+          <SplitterResizeHandle class="shell__handle" />
+          <SplitterPanel
+            :default-size="34"
+            :min-size="22"
+            :max-size="48"
+            class="shell__pane"
+          >
+            <SectionShellNotesPanel @close="dockOpen = false" />
+          </SplitterPanel>
+        </SplitterGroup>
+        <main v-else class="shell__content">
+          <slot />
+        </main>
+      </div>
     </div>
     <SectionShellTabBar v-if="!zen" class="shell__tabbar" />
     <button
@@ -76,12 +79,15 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
 .shell__area {
   min-width: 0;
 }
+.shell__tabstrip {
+  display: none;
+}
 .shell__content {
   min-width: 0;
   padding-bottom: 72px;
 }
 .shell__split {
-  height: 100vh;
+  height: 100%;
   width: 100%;
 }
 .shell__pane {
@@ -115,9 +121,21 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
   .shell:not(.shell--zen) .shell__content {
     padding-bottom: 0;
   }
+  .shell:not(.shell--zen) .shell__tabstrip {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+  }
   .shell--split .shell__area {
+    display: flex;
+    flex-direction: column;
     height: 100vh;
     overflow: hidden;
+  }
+  .shell--split .shell__below {
+    flex: 1;
+    min-height: 0;
   }
   .shell__tabbar {
     display: none;

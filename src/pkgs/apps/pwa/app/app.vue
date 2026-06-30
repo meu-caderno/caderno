@@ -26,7 +26,7 @@ onMounted(() => {
   <div>
     <!-- <NuxtPwaManifest /> -->
     <NuxtLayout>
-      <NuxtPage />
+      <NuxtPage keepalive />
     </NuxtLayout>
     <UIToaster />
   </div>

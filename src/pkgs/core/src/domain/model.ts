@@ -337,6 +337,8 @@ export interface Workbench {
   name: string;
   route: string;
   contextId?: Id;
+  tabs?: string[];
+  dockScreen?: string;
 }
 
 export interface Preferences {
