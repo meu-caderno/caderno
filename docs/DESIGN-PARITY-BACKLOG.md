@@ -2,8 +2,8 @@
 
 > Checklist técnico e acionável das **lacunas do PWA** (`src/pkgs/apps/pwa`) frente ao MVP de referência
 > (`Caderno/MVP - Presença, Faltas & Atividades.dc.html`), derivado da comparação 1:1.
-> Produto/fonte de verdade: [BACKLOG.md](./BACKLOG.md) · Decisões: [DECISIONS.md](./DECISIONS.md) ·
-> Arquitetura: [ARCHITECTURE.md](./ARCHITECTURE.md) · Boas práticas: [GUIA-BOAS-PRATICAS.md](./GUIA-BOAS-PRATICAS.md).
+> Decisões: [DECISIONS.md](./DECISIONS.md) · Arquitetura: [ARCHITECTURE.md](./ARCHITECTURE.md) ·
+> Boas práticas: [GUIA-BOAS-PRATICAS.md](./GUIA-BOAS-PRATICAS.md).
 >
 > Status: ⬜ a fazer · 🟡 parcial · ✅ feito · 🔒 decisão necessária · 🚫 fora de escopo (local-first mono-usuário).
 > Cada tarefa lista o **alvo** (arquivos a criar/editar) e mudanças de **core** (`@meu-caderno/core`) quando houver.
