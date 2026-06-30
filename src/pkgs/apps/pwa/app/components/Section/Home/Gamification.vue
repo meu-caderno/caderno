@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Achievement } from "@meu-caderno/core";
+import { ACHIEVEMENT_PRESENTATION } from "~/utils/achievements";
 
 defineProps<{
   level: number;
@@ -37,10 +38,14 @@ defineProps<{
         :key="badge.key"
         class="gamification__badge"
         :class="{ 'gamification__badge--off': !badge.unlocked }"
-        :title="badge.label"
+        :title="ACHIEVEMENT_PRESENTATION[badge.key].label"
       >
-        <span class="gamification__badge-icon">{{ badge.icon }}</span>
-        <span class="gamification__badge-label">{{ badge.label }}</span>
+        <span class="gamification__badge-icon">
+          {{ ACHIEVEMENT_PRESENTATION[badge.key].icon }}
+        </span>
+        <span class="gamification__badge-label">
+          {{ ACHIEVEMENT_PRESENTATION[badge.key].label }}
+        </span>
       </div>
     </div>
   </section>

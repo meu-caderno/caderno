@@ -68,45 +68,41 @@ export interface GamificationInput {
   completedActivities: number;
 }
 
+export enum AchievementKey {
+  FIRST_STEP = "first-step",
+  SHORT_STREAK = "streak-3",
+  WEEK_STREAK = "streak-7",
+  TEN_TASKS = "ten-tasks",
+  LEVEL_FIVE = "level-5",
+}
+
 export interface Achievement {
-  key: string;
-  label: string;
-  icon: string;
+  key: AchievementKey;
   unlocked: boolean;
 }
 
 export function achievements(input: GamificationInput): Achievement[] {
   return [
     {
-      key: "first-step",
-      label: "Primeiro passo",
-      icon: "👣",
+      key: AchievementKey.FIRST_STEP,
       unlocked:
         numeric.add(input.presences, input.completedActivities) >=
         FIRST_ACTION_THRESHOLD,
     },
     {
-      key: "streak-3",
-      label: "3 dias seguidos",
-      icon: "🔥",
+      key: AchievementKey.SHORT_STREAK,
       unlocked: input.streak >= SHORT_STREAK_DAYS,
     },
     {
-      key: "streak-7",
-      label: "Uma semana",
-      icon: "⚡",
+      key: AchievementKey.WEEK_STREAK,
       unlocked: input.streak >= WEEK_STREAK_DAYS,
     },
     {
-      key: "ten-tasks",
-      label: "10 tarefas",
-      icon: "✅",
+      key: AchievementKey.TEN_TASKS,
       unlocked: input.completedActivities >= TASK_BADGE_THRESHOLD,
     },
     {
-      key: "level-5",
-      label: "Nível 5",
-      icon: "🏅",
+      key: AchievementKey.LEVEL_FIVE,
       unlocked: input.level >= LEVEL_BADGE_THRESHOLD,
     },
   ];
