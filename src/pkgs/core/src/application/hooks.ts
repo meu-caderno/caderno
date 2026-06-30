@@ -1,6 +1,7 @@
 import { createHooks, type Hookable } from "hookable";
 import type {
   Activity,
+  Assessment,
   Record as AttendanceRecord,
   Context,
   Edge,
@@ -17,12 +18,16 @@ export interface CadernoHooks {
   "subject:updated": (subject: Subject) => void;
   "subject:deleted": (id: Id) => void;
   "attendance:marked": (record: AttendanceRecord) => void;
+  "assessment:added": (subject: Subject, assessment: Assessment) => void;
   "grade:set": (subject: Subject) => void;
   "activity:upserted": (activity: Activity) => void;
+  "activity:deleted": (id: Id) => void;
   "library:changed": (item: LibraryItem) => void;
+  "library:deleted": (id: Id) => void;
   "node:upserted": (node: Node) => void;
   "node:deleted": (id: Id) => void;
   "edge:upserted": (edge: Edge) => void;
+  "edge:deleted": (id: Id) => void;
 }
 
 export type CadernoHookBus = Hookable<CadernoHooks>;

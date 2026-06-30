@@ -47,6 +47,11 @@ export function createCipher(keyBase64: string): Cipher {
     decrypt: async (envelope) => {
       const { sodiumApi, key } = await initialize();
       const separator = envelope.indexOf(NONCE_SEPARATOR);
+      if (separator === -1) {
+        throw new Error(
+          "envelope cifrado inválido: separador de nonce ausente",
+        );
+      }
       const nonce = sodiumApi.from_base64(envelope.slice(0, separator));
       const ciphertext = sodiumApi.from_base64(envelope.slice(separator + 1));
       return sodiumApi.to_string(

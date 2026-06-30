@@ -1,4 +1,9 @@
 const CYCLES_PER_LONG = 4;
+const SECONDS_PER_MINUTE = 60;
+const TICK_INTERVAL_MS = 1000;
+const DEFAULT_FOCUS_MINUTES = 25;
+const DEFAULT_BREAK_MINUTES = 5;
+const DEFAULT_LONG_MINUTES = 15;
 
 export type PomodoroPhase = "focus" | "break" | "long";
 
@@ -11,13 +16,25 @@ const PHASE_LABEL: Record<PomodoroPhase, string> = {
 export function usePomodoro() {
   const { read, patch: persist } = usePreferences();
 
-  const focusMin = useState<number>("caderno:pomo:focus", () => 25);
-  const breakMin = useState<number>("caderno:pomo:break", () => 5);
-  const longMin = useState<number>("caderno:pomo:long", () => 15);
+  const focusMin = useState<number>(
+    "caderno:pomo:focus",
+    () => DEFAULT_FOCUS_MINUTES,
+  );
+  const breakMin = useState<number>(
+    "caderno:pomo:break",
+    () => DEFAULT_BREAK_MINUTES,
+  );
+  const longMin = useState<number>(
+    "caderno:pomo:long",
+    () => DEFAULT_LONG_MINUTES,
+  );
   const hydrated = useState<boolean>("caderno:pomo:hydrated", () => false);
 
   const phase = useState<PomodoroPhase>("caderno:pomo:phase", () => "focus");
-  const remaining = useState<number>("caderno:pomo:remaining", () => 25 * 60);
+  const remaining = useState<number>(
+    "caderno:pomo:remaining",
+    () => DEFAULT_FOCUS_MINUTES * SECONDS_PER_MINUTE,
+  );
   const running = useState<boolean>("caderno:pomo:running", () => false);
   const completedFocus = useState<number>("caderno:pomo:done", () => 0);
 
@@ -32,12 +49,12 @@ export function usePomodoro() {
   const phaseLabel = computed(() => PHASE_LABEL[phase.value]);
   const timeLabel = computed(() => {
     const total = Math.max(0, remaining.value);
-    const minutes = Math.floor(total / 60);
-    const seconds = total % 60;
+    const minutes = Math.floor(total / SECONDS_PER_MINUTE);
+    const seconds = total % SECONDS_PER_MINUTE;
     return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   });
   const ratio = computed(() => {
-    const full = minutesFor(phase.value) * 60;
+    const full = minutesFor(phase.value) * SECONDS_PER_MINUTE;
     return full === 0 ? 0 : 1 - remaining.value / full;
   });
 
@@ -48,7 +65,7 @@ export function usePomodoro() {
 
   function setPhase(next: PomodoroPhase) {
     phase.value = next;
-    remaining.value = minutesFor(next) * 60;
+    remaining.value = minutesFor(next) * SECONDS_PER_MINUTE;
   }
 
   function advance() {
@@ -73,7 +90,7 @@ export function usePomodoro() {
   function start() {
     if (running.value) return;
     running.value = true;
-    handle = setInterval(tick, 1000);
+    handle = setInterval(tick, TICK_INTERVAL_MS);
   }
   function pause() {
     running.value = false;
@@ -93,7 +110,8 @@ export function usePomodoro() {
     if (prefs?.pomodoroFocus) focusMin.value = prefs.pomodoroFocus;
     if (prefs?.pomodoroBreak) breakMin.value = prefs.pomodoroBreak;
     if (prefs?.pomodoroLong) longMin.value = prefs.pomodoroLong;
-    if (!running.value) remaining.value = minutesFor(phase.value) * 60;
+    if (!running.value)
+      remaining.value = minutesFor(phase.value) * SECONDS_PER_MINUTE;
     hydrated.value = true;
   }
 
@@ -101,7 +119,8 @@ export function usePomodoro() {
     focusMin.value = Math.max(1, focus);
     breakMin.value = Math.max(1, brk);
     longMin.value = Math.max(1, long);
-    if (!running.value) remaining.value = minutesFor(phase.value) * 60;
+    if (!running.value)
+      remaining.value = minutesFor(phase.value) * SECONDS_PER_MINUTE;
     await persist({
       pomodoroFocus: focusMin.value,
       pomodoroBreak: breakMin.value,

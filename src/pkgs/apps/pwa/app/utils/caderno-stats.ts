@@ -9,6 +9,8 @@ import {
 import { differenceInCalendarDays, format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
+export const UNSET_DAY = "1970-01-01";
+
 export function formatDay(isoStr: string): string {
   return format(parseISO(isoStr), "EEE, d MMM", { locale: ptBR });
 }

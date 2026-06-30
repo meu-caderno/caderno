@@ -217,7 +217,7 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
         assessments: [...(subject.assessments ?? []), assessment],
       };
       await commitPut((tx) => tx.subjects, EntityName.SUBJECT, updated);
-      await hooks?.callHook("grade:set", updated);
+      await hooks?.callHook("assessment:added", updated, assessment);
       return ok(updated);
     },
 
@@ -290,6 +290,7 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
         return fail(DomainErrorCode.NOT_FOUND, { id }, EntityName.ACTIVITY);
       }
       await commitDelete((tx) => tx.activities, EntityName.ACTIVITY, id);
+      await hooks?.callHook("activity:deleted", id);
       return ok(undefined);
     },
 
@@ -353,6 +354,7 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
         return fail(DomainErrorCode.NOT_FOUND, { id }, EntityName.LIBRARY);
       }
       await commitDelete((tx) => tx.library, EntityName.LIBRARY, id);
+      await hooks?.callHook("library:deleted", id);
       return ok(undefined);
     },
 
@@ -470,6 +472,7 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
         return fail(DomainErrorCode.NOT_FOUND, { id }, EntityName.EDGE);
       }
       await commitDelete((tx) => tx.graph.edges, EntityName.EDGE, id);
+      await hooks?.callHook("edge:deleted", id);
       return ok(undefined);
     },
   };

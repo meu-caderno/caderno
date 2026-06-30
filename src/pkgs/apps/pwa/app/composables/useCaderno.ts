@@ -5,13 +5,13 @@ import type {
   Subject,
 } from "@meu-caderno/core";
 import { ActivityStatus, Root, recordsOf, sortByDue } from "@meu-caderno/core";
-import { deriveStats, formatDay } from "~/utils/caderno-stats";
+import { deriveStats, formatDay, UNSET_DAY } from "~/utils/caderno-stats";
 
 export function useCaderno() {
   const { store, clock } = useCadernoService();
   const { activeId, focusIds, hydrate, setActive } = useActiveContext();
 
-  const today = useState<string>("caderno:today", () => "1970-01-01");
+  const today = useState<string>("caderno:today", () => UNSET_DAY);
   const booting = useState<boolean>("caderno:booting", () => true);
 
   const allContexts = useLiveQuery(

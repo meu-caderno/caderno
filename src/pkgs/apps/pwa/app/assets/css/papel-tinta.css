@@ -43,8 +43,8 @@
   --pt-radius-lg: 16px;
   --pt-radius-xl: 18px;
   --pt-radius-pill: 20px;
-  --pt-shadow: 2px 3px 0 rgba(44, 42, 39, 0.07);
-  --pt-shadow-strong: 2px 3px 0 rgba(44, 42, 39, 0.18);
+  --pt-shadow: 2px 3px 0 rgba(var(--pt-ink-rgb), 0.07);
+  --pt-shadow-strong: 2px 3px 0 rgba(var(--pt-ink-rgb), 0.18);
   --pt-stroke: 2px;
 
   --pt-font-hand: "Shantell Sans", "Comic Sans MS", cursive;

@@ -5,7 +5,7 @@ export function useWelcomeBack() {
   const checked = useState<boolean>("caderno:welcomeBack:checked", () => false);
 
   async function check(today: string) {
-    if (checked.value || !today || today === "1970-01-01") return;
+    if (checked.value || !today || today === UNSET_DAY) return;
     checked.value = true;
     const prefs = await read();
     const lastSeen = prefs?.lastSeenDay;
