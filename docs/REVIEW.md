@@ -74,11 +74,15 @@ já era `timeLabel`.
 - `RemoteChange.ts` (seam de sync, `domain/sync.ts`): `entity: string` + `ts` seguem como estão até a
   decisão #4 (oplog/undo/sync) ser fechada — fazem parte daquele desenho.
 
+**Resolvido — contexto efetivo (`a8fdd53`):**
+- `useCaderno` `watchEffect` que mutava `activeId` — **FEITO**: `useActiveContext` vira dono único (query
+  de contextos + filtro + `effectiveId` puro via `pickEffectiveContextId` + `context` efetivo); `useCaderno`
+  e os 4 consumidores (`SubjectForm`/`ActivityForm`/`Inbox`/`useWorkbenches`) leem `effectiveId`; `activeId`
+  só muda por `setActive`. Refetch manual redundante removido. Teste de regressão (1º spec do pacote pwa).
+
 **Adiado — refactor maior de risco médio (a combinar):**
 - Renomear `interface Record`/`Node` do domínio (🟡) → `AttendanceRecord`/`NotebookNode`: toca dezenas de
   arquivos; melhor em PR isolado.
-- `useCaderno` `watchEffect` que muta `activeId` → modelar contexto efetivo como `computed` (🟡):
-  mudança comportamental, exige teste de regressão de seleção de contexto.
 - Invólucro de página (`max-width`/padding) das 5 pages → layout único (o **cabeçalho** já virou
   `SectionPageHeader`).
 
@@ -224,8 +228,8 @@ perderia a chave silenciosamente); TOCTOU em app local mono-usuário é aceitáv
   (`scheduled - canceled`) → `num.subtract` ou isolar helper de datas e documentar a exceção.
 - [ ] **`usePomodoro.ts:36`** — `const clock = computed(...)` (rótulo `mm:ss`) colide com a porta `Clock` →
   `timeLabel`/`display`.
-- [ ] **`useCaderno.ts:153`** refetch manual (`allContexts.value = await store.contexts.list()`) redundante
-  ao `useLiveQuery`; `:173-179` `watchEffect` muta `activeId` (estado derivado escondido em efeito) →
+- [x] **`useCaderno` reatividade de contexto** — **FEITO** (`a8fdd53`): refetch manual removido; `watchEffect`
+  que mutava `activeId` substituído por `effectiveId` computed puro em `useActiveContext` (dono único). ~~`:173-179`~~
   modelar contexto efetivo como `computed`.
 - [ ] **Snapshot/restore duplicado** — `testing/in-memory-store.ts:26-58,121-133` e
   `in-memory-blob-store.ts:10-39,78-89` (`Snapshotable` quase idêntico) → helper compartilhado.
