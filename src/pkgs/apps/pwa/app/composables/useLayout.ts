@@ -26,7 +26,9 @@ export function useLayout() {
     "caderno:layout:widgets",
     () => null,
   );
-  const tabItems = useState<VisibilityList>("caderno:layout:tabs", () => null);
+  const tabItems = useState<VisibilityList>("caderno:layout:tabs", () => [
+    ...DEFAULT_TAB_KEYS,
+  ]);
   const railItems = useState<VisibilityList>("caderno:layout:rail", () => null);
   const hydrated = useState<boolean>("caderno:layout:hydrated", () => false);
 
@@ -34,7 +36,7 @@ export function useLayout() {
     if (hydrated.value) return;
     const prefs = await read();
     homeWidgets.value = prefs?.homeWidgets ?? null;
-    tabItems.value = prefs?.tabItems ?? null;
+    tabItems.value = prefs?.tabItems ?? [...DEFAULT_TAB_KEYS];
     railItems.value = prefs?.railItems ?? null;
     hydrated.value = true;
   }
