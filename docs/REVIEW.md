@@ -242,8 +242,8 @@ perderia a chave silenciosamente); TOCTOU em app local mono-usuário é aceitáv
   lançar (quota/modo privado) sem try/catch.
 - [ ] `adapters/crypto/src/cipher.ts:39` — `decrypt` sem checar `indexOf(-1)` do separador (entrada
   corrompida → erro opaco).
-- [ ] `OpLogEntry.entity: string` (`model.ts:329`/`oplog.ts:3`) perde o brand de `EntityName` →
-  tipar como `EntityName`.
+- [x] `OpLogEntry.entity` → `EntityName` (e `ts`→`timestamp`) — **FEITO** (`fa3f03f`); coluna Dexie mantém
+  `ts`/string, mapeada na fronteira.
 - [ ] TOCTOU check-then-act em `updateContext`/`updateLibraryItem` (`caderno-service.ts:103,321`) —
   aceitável em app local mono-usuário; não é atômico.
 - [ ] `observable-store.ts:81-88` — `put`/`delete` top-level escrevem fora do funil (sem oplog); só
