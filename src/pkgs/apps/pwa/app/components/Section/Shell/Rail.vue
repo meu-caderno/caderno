@@ -49,6 +49,8 @@ function onBench(bench: Workbench) {
       <span class="rail__focus-icon">🗂️</span> Notas ao lado
     </button>
 
+    <SectionShellContextTree />
+
     <div v-if="benches.length" class="rail__benches">
       <span class="pt-eyebrow rail__benches-title">Bancadas</span>
       <button

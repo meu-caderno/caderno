@@ -46,10 +46,11 @@ Esforço: **P** (horas) · **M** (1–2 dias) · **G** (vários dias). Valor: **
 ### 🔴 Tier 4 — Pesado e/ou bloqueado por decisão (🔒)
 20. [x] **B5 · Grafo visual (Cytoscape lazy)** — feito: `ConceptGraph.vue` + `utils/graph.ts`, import dinâmico.
 21. [x] **B7 · Mapas (StudyMap)** — feito: entidade `StudyMap` no core (coleção `maps`) + `MapEditor.vue`; fora do backup por ora.
-22. [~] **C · Moldura desktop / workbench** — **Stage 1 feito**: split desktop (reka-ui `Splitter`) + painel
-    contextual de Notas (ctxpanel) dockável (`Section/Shell/NotesPanel`), toggle no Rail, só ≥1100px.
-    **Restante** (continuação): abas de **rota** lado a lado (route-in-pane — exige gerência de abas/keep-alive),
-    bancadas com **layout salvo** (estender `Workbench` no core), e sidebar-**árvore** (contextos→disciplinas).
+22. [~] **C · Moldura desktop / workbench** — **Stages 1–2 feitos**: split desktop (reka-ui `Splitter`) +
+    painel contextual de Notas dockável (`Section/Shell/NotesPanel`, toggle no Rail, ≥1100px); **sidebar em
+    árvore** contextos→disciplinas (`Section/Shell/ContextTree`). **Restante** (continuação): abas de **rota**
+    lado a lado (route-in-pane — exige gerência de abas/keep-alive) e **bancadas com layout salvo** (estender
+    `Workbench` no core) — peças arquiteturais maiores, para sessão dedicada.
 + [x] **Rename `Record`/`Node`** → `AttendanceRecord`/`NotebookNode` — feito (43 arquivos; gate verde).
 
 ### 🚫 Fora de escopo (local-first mono-usuário)
