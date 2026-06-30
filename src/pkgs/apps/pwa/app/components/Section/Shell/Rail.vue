@@ -5,8 +5,11 @@ import { NAV_ITEMS } from "~/composables/useNav";
 const { railItems, ordered } = useLayout();
 const { open: openFocus } = useFocus();
 const { benches, invoke } = useWorkbenches();
-const dockOpen = useState("shell:dock", () => false);
+const dockScreen = useState<string | null>("shell:dock", () => null);
 const isWide = useMediaQuery("(min-width: 1100px)");
+function toggleDock() {
+  dockScreen.value = dockScreen.value === null ? "/caderno" : null;
+}
 const navKeys = NAV_ITEMS.map((item) => item.key);
 const items = computed(() =>
   ordered(railItems.value, navKeys)
@@ -43,10 +46,10 @@ function onBench(bench: Workbench) {
       v-if="isWide"
       type="button"
       class="rail__focus"
-      :class="{ 'rail__focus--on': dockOpen }"
-      @click="dockOpen = !dockOpen"
+      :class="{ 'rail__focus--on': dockScreen !== null }"
+      @click="toggleDock"
     >
-      <span class="rail__focus-icon">🗂️</span> Notas ao lado
+      <span class="rail__focus-icon">🗂️</span> Tela ao lado
     </button>
 
     <SectionShellContextTree />

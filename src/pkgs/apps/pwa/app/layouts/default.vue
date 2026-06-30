@@ -6,9 +6,11 @@ const { zen, setZen } = useTheme();
 const { focusing, close: closeFocus } = useFocus();
 
 const searching = ref(false);
-const dockOpen = useState("shell:dock", () => false);
+const dockScreen = useState<string | null>("shell:dock", () => null);
 const isWide = useMediaQuery("(min-width: 1100px)");
-const showSplit = computed(() => isWide.value && dockOpen.value && !zen.value);
+const showSplit = computed(
+  () => isWide.value && dockScreen.value !== null && !zen.value,
+);
 
 function onKeydown(event: KeyboardEvent) {
   if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
@@ -47,7 +49,11 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
             :max-size="48"
             class="shell__pane"
           >
-            <SectionShellNotesPanel @close="dockOpen = false" />
+            <SectionShellScreenDock
+              :path="dockScreen ?? '/caderno'"
+              @close="dockScreen = null"
+              @pick="dockScreen = $event"
+            />
           </SplitterPanel>
         </SplitterGroup>
         <main v-else class="shell__content">

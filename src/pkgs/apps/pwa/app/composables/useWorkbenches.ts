@@ -4,6 +4,8 @@ export function useWorkbenches() {
   const { ids } = useCadernoService();
   const { read, patch } = usePreferences();
   const { effectiveId, setActive } = useActiveContext();
+  const { tabs, setTabs } = useWorkbenchTabs();
+  const dockScreen = useState<string | null>("shell:dock", () => null);
   const route = useRoute();
   const benches = useState<Workbench[]>("caderno:workbenches", () => []);
   const hydrated = useState<boolean>(
@@ -31,6 +33,8 @@ export function useWorkbenches() {
       name: trimmed,
       route: route.path,
       contextId: effectiveId.value ?? undefined,
+      tabs: [...tabs.value],
+      dockScreen: dockScreen.value ?? undefined,
     };
     await persist([...benches.value, bench]);
   }
@@ -41,6 +45,8 @@ export function useWorkbenches() {
 
   async function invoke(bench: Workbench) {
     if (bench.contextId) await setActive(bench.contextId);
+    if (bench.tabs) setTabs(bench.tabs);
+    dockScreen.value = bench.dockScreen ?? null;
     await navigateTo(bench.route);
   }
 
