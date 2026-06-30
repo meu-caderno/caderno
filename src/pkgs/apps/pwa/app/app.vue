@@ -26,7 +26,7 @@ onMounted(() => {
   <div>
     <!-- <NuxtPwaManifest /> -->
     <NuxtLayout>
-      <NuxtPage keepalive />
+      <NuxtPage :keepalive="{ max: 10 }" />
     </NuxtLayout>
     <UIToaster />
   </div>

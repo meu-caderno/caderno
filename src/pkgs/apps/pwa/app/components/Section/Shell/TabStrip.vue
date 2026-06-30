@@ -1,17 +1,34 @@
 <script setup lang="ts">
 const route = useRoute();
 const { items, activate, close } = useWorkbenchTabs();
+const searching = useState("shell:search", () => false);
+
+const stripEl = ref<HTMLElement | null>(null);
+watch(
+  () => route.path,
+  async () => {
+    await nextTick();
+    stripEl.value
+      ?.querySelector(".tabstrip__tab--on")
+      ?.scrollIntoView({ inline: "nearest", block: "nearest" });
+  },
+);
 </script>
 
 <template>
-  <div v-if="items.length > 1" class="tabstrip">
+  <div v-if="items.length > 1" ref="stripEl" class="tabstrip">
     <div
       v-for="tab in items"
       :key="tab.path"
       class="tabstrip__tab"
       :class="{ 'tabstrip__tab--on': tab.path === route.path }"
     >
-      <button type="button" class="tabstrip__main" @click="activate(tab.path)">
+      <button
+        type="button"
+        class="tabstrip__main"
+        :title="tab.label"
+        @click="activate(tab.path)"
+      >
         <span class="tabstrip__icon">{{ tab.icon }}</span>
         <span class="tabstrip__label">{{ tab.label }}</span>
       </button>
@@ -24,6 +41,15 @@ const { items, activate, close } = useWorkbenchTabs();
         ×
       </button>
     </div>
+    <button
+      type="button"
+      class="tabstrip__new"
+      aria-label="Nova aba (buscar)"
+      title="Abrir tela (⌘K)"
+      @click="searching = true"
+    >
+      ＋
+    </button>
   </div>
 </template>
 
@@ -90,6 +116,23 @@ const { items, activate, close } = useWorkbenchTabs();
 }
 .tabstrip__close:hover {
   background: var(--pt-linen);
+  color: var(--pt-ink);
+}
+.tabstrip__new {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  margin: 0 0 4px 2px;
+  border: none;
+  border-radius: var(--pt-radius-sm);
+  background: none;
+  color: var(--pt-ink-muted);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+.tabstrip__new:hover {
+  background: var(--pt-card);
   color: var(--pt-ink);
 }
 </style>

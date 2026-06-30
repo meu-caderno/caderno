@@ -5,6 +5,7 @@ import type {
   NotebookNode,
   Subject,
 } from "@meu-caderno/core";
+import { NAV_ITEMS } from "~/composables/useNav";
 
 export interface SearchHit {
   id: string;
@@ -50,8 +51,16 @@ export function useSearch() {
 
   function search(rawQuery: string): SearchHit[] {
     const query = rawQuery.trim().toLowerCase();
-    if (!query) return [];
-    const hits: SearchHit[] = [];
+    const screens: SearchHit[] = NAV_ITEMS.filter(
+      (item) => !query || matches(item.label, query),
+    ).map((item) => ({
+      id: item.key,
+      kind: "Tela",
+      label: item.label,
+      to: item.to,
+    }));
+    if (!query) return screens;
+    const hits: SearchHit[] = [...screens];
     const push = (
       source: { id: string; label: string }[],
       kind: string,

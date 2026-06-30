@@ -1,3 +1,4 @@
+import type { Context } from "@meu-caderno/core";
 import { NAV_ITEMS } from "~/composables/useNav";
 
 export interface WorkbenchTab {
@@ -6,23 +7,25 @@ export interface WorkbenchTab {
   icon: string;
 }
 
-const SEGMENT_LABEL: Record<string, string> = {
-  contexto: "Contexto",
-};
-
 export function useWorkbenchTabs() {
   const route = useRoute();
+  const { store } = useCadernoService();
   const tabs = useState<string[]>("wb:tabs", () => []);
+  const contexts = useLiveQuery(
+    ["contexts"],
+    () => store.contexts.list(),
+    [] as Context[],
+  );
 
   function describe(path: string): WorkbenchTab {
     const navItem = NAV_ITEMS.find((item) => item.to === path);
     if (navItem) return { path, label: navItem.label, icon: navItem.icon };
-    const segment = path.split("/").filter(Boolean)[0] ?? "";
-    return {
-      path,
-      label: SEGMENT_LABEL[segment] ?? segment ?? "Tela",
-      icon: "📄",
-    };
+    const segments = path.split("/").filter(Boolean);
+    if (segments[0] === "contexto" && segments[1]) {
+      const found = contexts.value.find((entry) => entry.id === segments[1]);
+      return { path, label: found?.name ?? "Contexto", icon: "🧭" };
+    }
+    return { path, label: segments[0] ?? "Tela", icon: "📄" };
   }
 
   const items = computed<WorkbenchTab[]>(() => tabs.value.map(describe));

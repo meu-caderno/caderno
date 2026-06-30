@@ -5,7 +5,7 @@ import { useTheme } from "~/composables/useTheme";
 const { zen, setZen } = useTheme();
 const { focusing, close: closeFocus } = useFocus();
 
-const searching = ref(false);
+const searching = useState("shell:search", () => false);
 const dockScreen = useState<string | null>("shell:dock", () => null);
 const isWide = useMediaQuery("(min-width: 1100px)");
 const showSplit = computed(
@@ -31,6 +31,7 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
         <SplitterGroup
           v-if="showSplit"
           direction="horizontal"
+          auto-save-id="caderno-workbench-split"
           class="shell__split"
         >
           <SplitterPanel
@@ -104,13 +105,28 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
   overflow-y: auto;
 }
 .shell__handle {
-  width: 6px;
+  position: relative;
+  width: 7px;
   flex-shrink: 0;
   background: var(--pt-border-faint);
   cursor: col-resize;
 }
+.shell__handle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 30px;
+  border-radius: 3px;
+  background: var(--pt-border-muted);
+}
 .shell__handle:hover {
   background: var(--pt-border-muted);
+}
+.shell__handle:hover::after {
+  background: var(--pt-ink-faint);
 }
 
 @media (min-width: 960px) {
