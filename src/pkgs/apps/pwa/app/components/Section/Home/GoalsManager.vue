@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import type { Bucket, Context, Id } from "@meu-caderno/core";
-import { reorderByEdge, type SortablePayload } from "~/utils/sortable";
+import {
+  moveByOffset,
+  reorderByEdge,
+  type SortableMovePayload,
+  type SortablePayload,
+} from "~/utils/sortable";
 
 const props = defineProps<{ context: Context }>();
 const emit = defineEmits<{ done: []; cancel: [] }>();
@@ -55,6 +60,14 @@ function onReorderBuckets({ fromId, toId, edge }: SortablePayload) {
     (bucket) => bucket.id,
   );
 }
+function onMoveBucket({ id, direction }: SortableMovePayload) {
+  buckets.value = moveByOffset(
+    buckets.value,
+    id,
+    direction,
+    (bucket) => bucket.id,
+  );
+}
 
 async function save() {
   if (saving.value) return;
@@ -82,7 +95,7 @@ async function save() {
         Sem metas ainda. Crie baldes ou use o modelo de integralização.
       </div>
 
-      <UISortable @reorder="onReorderBuckets">
+      <UISortable @reorder="onReorderBuckets" @move="onMoveBucket">
         <UISortableItem
           v-for="bucket in buckets"
           :id="bucket.id"

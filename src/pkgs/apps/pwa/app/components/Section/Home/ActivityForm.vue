@@ -6,7 +6,12 @@ import {
   Recurrence,
   Root,
 } from "@meu-caderno/core";
-import { reorderByEdge, type SortablePayload } from "~/utils/sortable";
+import {
+  moveByOffset,
+  reorderByEdge,
+  type SortableMovePayload,
+  type SortablePayload,
+} from "~/utils/sortable";
 
 const props = defineProps<{ subjects: Subject[]; activity?: Activity }>();
 const emit = defineEmits<{ done: []; cancel: [] }>();
@@ -64,6 +69,14 @@ function onReorderSubtasks({ fromId, toId, edge }: SortablePayload) {
     fromId,
     toId,
     edge,
+    (task) => task.id,
+  );
+}
+function onMoveSubtask({ id, direction }: SortableMovePayload) {
+  subtasks.value = moveByOffset(
+    subtasks.value,
+    id,
+    direction,
     (task) => task.id,
   );
 }
@@ -130,7 +143,7 @@ async function save() {
 
       <UIField label="Subtarefas">
         <div class="af__subtasks">
-          <UISortable @reorder="onReorderSubtasks">
+          <UISortable @reorder="onReorderSubtasks" @move="onMoveSubtask">
             <UISortableItem
               v-for="task in subtasks"
               :id="task.id"

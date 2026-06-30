@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import { HOME_WIDGETS, useLayout } from "~/composables/useLayout";
 import { NAV_ITEMS, PINNED_NAV_KEYS } from "~/composables/useNav";
-import { reorderByEdge, type SortablePayload } from "~/utils/sortable";
+import {
+  reorderByEdge,
+  type SortableMovePayload,
+  type SortablePayload,
+} from "~/utils/sortable";
 
 const {
   homeWidgets,
@@ -56,6 +60,15 @@ function onReorderTabs({ fromId, toId, edge }: SortablePayload) {
 function onReorderRail({ fromId, toId, edge }: SortablePayload) {
   reorderRail(reorderByEdge(rails.value.visible, fromId, toId, edge, same));
 }
+function onMoveWidget({ id, direction }: SortableMovePayload) {
+  moveWidget(id, widgetKeys, direction);
+}
+function onMoveTab({ id, direction }: SortableMovePayload) {
+  moveTab(id, navKeys, direction);
+}
+function onMoveRail({ id, direction }: SortableMovePayload) {
+  moveRail(id, navKeys, direction);
+}
 </script>
 
 <template>
@@ -65,7 +78,7 @@ function onReorderRail({ fromId, toId, edge }: SortablePayload) {
   >
     <div class="layout-card__group">
       <span class="pt-eyebrow">Widgets da Home</span>
-      <UISortable @reorder="onReorderWidgets">
+      <UISortable @reorder="onReorderWidgets" @move="onMoveWidget">
         <UISortableItem
           v-for="(key, index) in widgets.visible"
           :id="key"
@@ -115,7 +128,7 @@ function onReorderRail({ fromId, toId, edge }: SortablePayload) {
 
     <div class="layout-card__group">
       <span class="pt-eyebrow">Barra do celular</span>
-      <UISortable @reorder="onReorderTabs">
+      <UISortable @reorder="onReorderTabs" @move="onMoveTab">
         <UISortableItem
           v-for="(key, index) in tabs.visible"
           :id="key"
@@ -166,7 +179,7 @@ function onReorderRail({ fromId, toId, edge }: SortablePayload) {
 
     <div class="layout-card__group">
       <span class="pt-eyebrow">Barra lateral (desktop)</span>
-      <UISortable @reorder="onReorderRail">
+      <UISortable @reorder="onReorderRail" @move="onMoveRail">
         <UISortableItem
           v-for="(key, index) in rails.visible"
           :id="key"

@@ -8,9 +8,15 @@ export interface SortablePayload {
   edge: SortableEdge;
 }
 
+export interface SortableMovePayload {
+  id: string;
+  direction: -1 | 1;
+}
+
 export interface SortableContext {
   instanceId: symbol;
   emit: (payload: SortablePayload) => void;
+  emitMove: (payload: SortableMovePayload) => void;
 }
 
 export const SORTABLE_KEY: InjectionKey<SortableContext> =
@@ -36,5 +42,23 @@ export function reorderByEdge<T>(
   }
   const insertAt = edge === "bottom" ? targetIndex + 1 : targetIndex;
   next.splice(insertAt, 0, moved);
+  return next;
+}
+
+export function moveByOffset<T>(
+  items: readonly T[],
+  id: string,
+  direction: -1 | 1,
+  keyOf: (item: T) => string,
+): T[] {
+  const fromIndex = items.findIndex((item) => keyOf(item) === id);
+  const toIndex = fromIndex + direction;
+  if (fromIndex < 0 || toIndex < 0 || toIndex >= items.length) {
+    return items.slice();
+  }
+  const next = items.slice();
+  const [moved] = next.splice(fromIndex, 1);
+  if (moved === undefined) return items.slice();
+  next.splice(toIndex, 0, moved);
   return next;
 }

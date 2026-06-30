@@ -19,6 +19,10 @@ const handle = ref<HTMLElement | null>(null);
 const edge = ref<Edge | null>(null);
 const dragging = ref(false);
 
+function moveBy(direction: -1 | 1) {
+  context?.emitMove({ id: props.id, direction });
+}
+
 let cleanup = () => {};
 
 onMounted(() => {
@@ -79,13 +83,16 @@ onUnmounted(() => cleanup());
     class="uisortable-item"
     :class="{ 'uisortable-item--dragging': dragging }"
   >
-    <span
+    <button
       ref="handle"
+      type="button"
       class="uisortable-item__handle"
-      aria-label="Arrastar para reordenar"
+      aria-label="Arrastar ou usar setas para reordenar"
+      @keydown.up.prevent="moveBy(-1)"
+      @keydown.down.prevent="moveBy(1)"
     >
       <UIIcon icon="more-horizontal" :size="16" />
-    </span>
+    </button>
     <div class="uisortable-item__body">
       <slot />
     </div>
@@ -117,7 +124,9 @@ onUnmounted(() => cleanup());
   justify-content: center;
   width: 26px;
   height: 26px;
+  border: none;
   border-radius: var(--pt-radius-sm);
+  background: none;
   color: var(--pt-ink-faint);
   cursor: grab;
 }
