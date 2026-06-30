@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import type { Node } from "@meu-caderno/core";
-import { Aspect, children } from "@meu-caderno/core";
+import {
+  ActivityKind,
+  ActivityStatus,
+  Aspect,
+  children,
+  Root,
+} from "@meu-caderno/core";
 import type { NoteLink } from "~/composables/useNotebook";
 
 const props = defineProps<{ node: Node; nodes: Node[]; links: NoteLink[] }>();
@@ -11,6 +17,9 @@ const emit = defineEmits<{
   select: [node: Node];
 }>();
 
+const { service, ids } = useCadernoService();
+const { toast } = useToast();
+
 const ASPECT_LABEL: Record<Aspect, string> = {
   [Aspect.NOTE]: "Nota",
   [Aspect.CONCEPT]: "Conceito",
@@ -19,6 +28,22 @@ const ASPECT_LABEL: Record<Aspect, string> = {
 };
 
 const kids = computed(() => children(props.nodes, props.node.id));
+
+async function promoteToActivity() {
+  const result = await service.upsertActivity({
+    id: await ids.newId(),
+    title: props.node.title,
+    kind: ActivityKind.TASK,
+    status: ActivityStatus.OPEN,
+    root: Root.CONTEXT,
+    subjectId: props.node.subjectId,
+    contextId: props.node.contextId,
+  });
+  if (result.ok) {
+    toast({ title: `“${props.node.title}” virou atividade` });
+    emit("close");
+  }
+}
 </script>
 
 <template>
@@ -64,6 +89,12 @@ const kids = computed(() => children(props.nodes, props.node.id));
           @click="emit('delete')"
         />
         <div class="note-detail__spacer" />
+        <UIButton
+          variant="leve"
+          icon="check"
+          label="Virar atividade"
+          @click="promoteToActivity"
+        />
         <UIButton
           variant="primal"
           icon="pencil"

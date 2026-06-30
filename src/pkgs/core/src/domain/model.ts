@@ -220,6 +220,8 @@ export interface Node {
   day?: DayIso;
   status?: ActivityStatus;
   mastery?: Mastery;
+  subjectId?: Id;
+  contextId?: Id;
   origin?: Origin;
 }
 

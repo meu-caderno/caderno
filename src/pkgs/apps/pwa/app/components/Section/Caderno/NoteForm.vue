@@ -1,13 +1,27 @@
 <script setup lang="ts">
-import type { Id, Node } from "@meu-caderno/core";
+import type { Id, Node, Subject } from "@meu-caderno/core";
 import { Aspect, descendants } from "@meu-caderno/core";
 
 const props = defineProps<{ node?: Node; nodes: Node[]; parentId?: Id }>();
 const emit = defineEmits<{ done: []; cancel: []; delete: [] }>();
 
-const { service } = useCadernoService();
+const { service, store } = useCadernoService();
 
 const editing = computed(() => props.node != null);
+
+const subjects = useLiveQuery(
+  ["subjects"],
+  () => store.subjects.list(),
+  [] as Subject[],
+);
+const subjectOptions = computed(() => [
+  { value: "", label: "— sem disciplina —" },
+  ...subjects.value.map((subject) => ({
+    value: subject.id as string,
+    label: subject.name,
+  })),
+]);
+const anchorSubject = ref<string>(props.node?.subjectId ?? "");
 
 const ASPECT_OPTIONS = [
   { value: Aspect.NOTE, label: "Nota" },
@@ -46,6 +60,7 @@ async function save() {
     body: body.value.trim() || undefined,
     aspects: aspects.value as Aspect[],
     parentId: parent.value ? (parent.value as Id) : undefined,
+    subjectId: anchorSubject.value ? (anchorSubject.value as Id) : undefined,
   };
   const res = props.node
     ? await service.updateNode({ ...props.node, ...fields })
@@ -79,6 +94,9 @@ async function save() {
       </UIField>
       <UIField label="Nota-mãe">
         <UISelect v-model="parent" :options="parentOptions" />
+      </UIField>
+      <UIField label="Pertence a (disciplina)">
+        <UISelect v-model="anchorSubject" :options="subjectOptions" />
       </UIField>
 
       <div class="note-form__actions">

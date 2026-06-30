@@ -35,11 +35,14 @@ Status: [ ] aberto · [~] em debate · [x] decidido · [-] descartado
 - **A debater:** atualizar docs existentes vs novo ADR/decision-log; granularidade.
 - **Decisão:** _(pendente)_
 
-### [ ] #4 — Oplog sem leitor
+### [x] #4 — Oplog sem leitor
 - **Estado:** serviço gera oplog append-only; nada consome (sem sync/replay/backup que use).
 - **Por que importa:** custo de manutenção sem valor até existir um consumidor.
 - **A debater:** manter como seam de futuro vs ligar a backup/undo agora vs remover.
-- **Decisão:** _(pendente)_
+- **Decisão (2026-06-30):** **manter como está** — oplog leve (`{timestamp,entity,op,id}`) segue só como
+  seam para a sync futura (#14/#16); **sem undo global** agora. A reversibilidade da Constituição continua
+  atendida pontualmente pelo undo via toast (`completeActivity`, exclusões). Quando a sync entrar, reavaliar
+  gravar `before/after` no oplog e um `UndoService` que o leia.
 
 ### [ ] #5 — Estado de git solto
 - **Estado:** 117 deletions (zod) + ~50 arquivos novos misturados (`A`/`??`), nada commitado.
@@ -150,6 +153,23 @@ Status: [ ] aberto · [~] em debate · [x] decidido · [-] descartado
   - **Partição por contexto (sharding):** `StorageProvider.openContext(contextId)`; DEK/cursor por contexto; alinha com federação (`future.ts`).
   - **Escala extrema / estrutura cifrada:** árvore de manifestos cifrada content-addressed ("mapa → mapas") **ou** **SQLCipher-WASM + FTS5** (banco cifrado com índice em disco, sem decrypt-all) atrás do mesmo `StorageProvider`.
 - **Seams já reservados:** observable seam (#1), `StorageProvider` async + `SyncTransport` (#14), porta `Cipher` (#6/#7). Falta reservar (quando entrar): `SearchIndex`, `openContext`, ponteiro de manifesto.
+
+### [~] #17 — Paridade com o Claude Design (Tier 4 + deferidos)
+Comparação 1:1 em [DESIGN-PARITY-BACKLOG.md](./DESIGN-PARITY-BACKLOG.md). Tiers 1–3 implementados.
+Decisões fechadas (2026-06-30) para o restante:
+- **Workbench desktop (Epic C):** **fazer o completo** (sidebar-árvore + abas + split + bancadas com
+  layout + painel contextual), usando **reka-ui `Splitter` + `Tabs`**. Só em telas largas; mobile segue
+  coluna única. É a maior peça → em etapas.
+- **Grafo do Caderno (B5):** **Cytoscape + dagre**, carregado por **import dinâmico** só ao abrir a aba
+  Grafo (fora do bundle base).
+- **Mapas (B7):** **fazer** — entidade nova **`StudyMap`** (`Map` colide com o global JS):
+  `StudyMap { id, name, items: MapItem[] }`, `MapItem = { kind: SECTION|REF, label?, nodeId? }`. Nova
+  coleção no `ContextStore` (segue o padrão de `ENTITY_COLLECTIONS` + CRUD no service + zod + backup).
+- **Undo/oplog (#4):** **C — manter** (ver #4).
+- **Rename `Record`→`AttendanceRecord` / `Node`→`NotebookNode`:** **fazer inline** (não em PR isolado);
+  por último, sobre o código já pronto.
+- **#18 editor:** **promover item de checklist → Activity** + **âncora "pertence a"** via campo leve
+  `Node.subjectId?`/`contextId?` (não edge cross-domínio).
 
 ---
 

@@ -232,6 +232,8 @@ export const NodeSchema = z.object({
   day: DayIsoSchema.optional(),
   status: ActivityStatusSchema.optional(),
   mastery: MasterySchema.optional(),
+  subjectId: IdSchema.optional(),
+  contextId: IdSchema.optional(),
   origin: OriginSchema.optional(),
 });
 
