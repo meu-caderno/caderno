@@ -6,8 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 # Arquitetura
 
 Este documento dá uma visão geral de como o Caderno é organizado. Para rodar e
-desenvolver, veja o [DEVELOPMENT.md](./DEVELOPMENT.md). O log de decisões de
-implementação está em [DECISIONS.md](./DECISIONS.md).
+desenvolver, veja o [DEVELOPMENT.md](./DEVELOPMENT.md).
 
 ## Visão geral
 

@@ -75,6 +75,31 @@ describe("nextRecurrence", () => {
     ).toBeNull();
   });
 
+  it("stops the series once the next date passes recurrenceUntil", () => {
+    expect(
+      nextRecurrence(
+        act({
+          dueDate: asDay("2026-03-02"),
+          recurrence: Recurrence.WEEKLY,
+          recurrenceUntil: asDay("2026-03-08"),
+        }),
+        id("gen"),
+      ),
+    ).toBeNull();
+  });
+
+  it("keeps generating while within recurrenceUntil", () => {
+    const next = nextRecurrence(
+      act({
+        dueDate: asDay("2026-03-02"),
+        recurrence: Recurrence.WEEKLY,
+        recurrenceUntil: asDay("2026-03-09"),
+      }),
+      id("gen"),
+    );
+    expect(next?.dueDate).toBe("2026-03-09");
+  });
+
   it("resets subtasks on the next occurrence", () => {
     const next = nextRecurrence(
       act({

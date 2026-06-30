@@ -194,6 +194,7 @@ export interface Activity {
   gapDays?: number;
   seriesId?: Id;
   recurrence?: Recurrence;
+  recurrenceUntil?: DayIso;
   origin?: Origin;
 }
 

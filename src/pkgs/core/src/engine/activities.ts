@@ -77,10 +77,14 @@ export function nextRecurrence(
     activity.recurrence === Recurrence.BIWEEKLY
       ? BIWEEKLY_INTERVAL_DAYS
       : WEEKLY_INTERVAL_DAYS;
+  const nextDue = addDays(activity.dueDate, interval);
+  if (activity.recurrenceUntil && nextDue > activity.recurrenceUntil) {
+    return null;
+  }
   return {
     ...activity,
     id: nextId,
-    dueDate: addDays(activity.dueDate, interval),
+    dueDate: nextDue,
     seriesId: activity.seriesId ?? activity.id,
     status: ActivityStatus.OPEN,
     subtasks: activity.subtasks?.map((subtask) => ({

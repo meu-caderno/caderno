@@ -225,6 +225,7 @@ export const ActivitySchema = z.object({
   gapDays: z.number().int().optional(),
   seriesId: IdSchema.optional(),
   recurrence: RecurrenceSchema.optional(),
+  recurrenceUntil: DayIsoSchema.optional(),
   origin: OriginSchema.optional(),
 });
 

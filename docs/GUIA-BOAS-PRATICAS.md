@@ -15,12 +15,12 @@
   correção. Use em revisões de PR e antes de abrir refatorações.
 - Cada regra diz **quem a pega**: `[Biome]`, `[tsc]`, `[purity.spec]`, `[teste]` ou `[convenção]`
   (não automatizada — depende de você e da revisão).
-- Hierarquia de autoridade: **`CONSTITUTION.md` (raiz) > `docs/ARCHITECTURE.md` > `docs/DECISIONS.md` >
-  este guia**. Se algo aqui conflitar com a Constituição, a Constituição ganha.
+- Hierarquia de autoridade: **`CONSTITUTION.md` (raiz) > `docs/ARCHITECTURE.md` > este guia**. Se algo
+  aqui conflitar com a Constituição, a Constituição ganha.
 - Não duplica os docs: a Constituição diz **o quê/por quê**; este guia diz **como escrever o código**.
 
-> Nota de docs: `CONSTITUTION.md` está na **raiz** (não em `docs/`). O log de decisões é
-> `docs/DECISIONS.md` (não existe `BACKLOG.md`). Há também `docs/DEVELOPMENT.md`.
+> Nota de docs: `CONSTITUTION.md` está na **raiz** (não em `docs/`). Há também `docs/DEVELOPMENT.md` e
+> `docs/ARCHITECTURE.md`.
 
 ---
 

@@ -215,16 +215,12 @@ async function promoteToActivity() {
           @click="addSubpage"
         />
       </div>
-      <button
+      <SectionCadernoNoteSubpageRow
         v-for="kid in kids"
         :key="kid.id"
-        type="button"
-        class="note-page__sub"
-        @click="emit('open', kid.id)"
-      >
-        <span class="note-page__sub-title">{{ kid.title }}</span>
-        <UIIcon icon="chevron-right" :size="15" />
-      </button>
+        :node="kid"
+        @open="emit('open', $event)"
+      />
       <p v-if="!kids.length" class="note-page__empty">Sem subpáginas.</p>
     </section>
 
@@ -375,27 +371,6 @@ async function promoteToActivity() {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-}
-.note-page__sub {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 9px 11px;
-  border-radius: var(--pt-radius-sm);
-  border: 1.5px solid var(--pt-border-faint);
-  background: var(--pt-card);
-  color: var(--pt-ink);
-  font-family: inherit;
-  font-size: calc(14px * var(--pt-text-scale));
-  text-align: left;
-  cursor: pointer;
-}
-.note-page__sub-title {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .note-page__empty {
   margin: 0;

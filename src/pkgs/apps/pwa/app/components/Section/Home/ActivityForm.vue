@@ -56,6 +56,7 @@ const subjectId = ref<string>(props.activity?.subjectId ?? "");
 const kind = ref<string>(props.activity?.kind ?? ActivityKind.TASK);
 const due = ref(props.activity?.dueDate ?? "");
 const recurrence = ref<string>(props.activity?.recurrence ?? Recurrence.NONE);
+const recurrenceUntil = ref(props.activity?.recurrenceUntil ?? "");
 const subtasks = ref<Subtask[]>([...(props.activity?.subtasks ?? [])]);
 const newSubtask = ref("");
 const saving = ref(false);
@@ -122,6 +123,10 @@ function editableFields() {
       recurrence.value === Recurrence.NONE
         ? undefined
         : (recurrence.value as Recurrence),
+    recurrenceUntil:
+      recurrence.value !== Recurrence.NONE && recurrenceUntil.value
+        ? (recurrenceUntil.value as DayIso)
+        : undefined,
     subtasks: subtasks.value.length ? subtasks.value : undefined,
     preparesId: prepares ? (preparesId.value as Id) : undefined,
     gapDays: prepares ? gapDays.value : undefined,
@@ -187,6 +192,18 @@ async function save() {
             @click="recurrence = option.value"
           />
         </div>
+      </UIField>
+      <UIField
+        v-if="due && recurrence !== Recurrence.NONE"
+        label="Repete até"
+        hint="Deixe em branco para repetir sem fim."
+      >
+        <input
+          v-model="recurrenceUntil"
+          class="af__input"
+          type="date"
+          :min="due"
+        />
       </UIField>
 
       <UIField label="Subtarefas">
