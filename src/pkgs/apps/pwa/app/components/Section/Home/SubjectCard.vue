@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import type { SubjectStats } from "~/composables/useCaderno";
 import { useTheme } from "~/composables/useTheme";
+import type { SubjectStats } from "~/utils/caderno-stats";
 
 const props = defineProps<{ stat: SubjectStats }>();
 const emit = defineEmits<{ notas: []; detail: [] }>();

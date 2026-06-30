@@ -107,14 +107,17 @@
   `LayoutCard`.
 - [ ] **`useLayout.ts:81-130`** — `toggle*/move*/reorder*` triplicados por `{homeWidgets,tabItems,railItems}`
   (9 funções quase idênticas) → parametrizar por `(listRef, prefKey)`, reduzindo a 3 genéricas.
-- [ ] **`useCaderno.ts` (308 l) god-composable** — mistura presença, gamificação (`:234-263`), atividades,
-  roll (`:201-219`), `mark`/`completeActivity` (`:265-288`), contexto, + helpers puros exportados
-  (`deriveStats`, `STATUS_BY_RISK`, `HEAT_BY_STATUS`, `formatDay`) → quebrar em
-  `useAttendanceStats`/`useGamification`/`useActivities`; mover helpers puros para `utils/`.
-- [ ] **`pages/index.vue` (304 l) página gorda** — ~13 flags de modal (`:40-52`), mapa `quickActions`
-  (`:87-109`), handlers de subject (`:65-85`), atalho de teclado (`:111-118`), computeds
-  `headerMeta`/`period` (`:120-135`) → extrair `useHomeDialogs()` e mover `period`/`headerMeta` p/ o
-  composable; página só despacha.
+- [x] **`useCaderno.ts` god-composable** — **FEITO** (330→140 l): helpers puros (`deriveStats`,
+  `STATUS_BY_RISK`, `HEAT_BY_STATUS`, `statusFromSummary`, `formatDay`, `daysFromToday`, tipos
+  `SubjectStats`/`StatusSpec`/`SubjectCounts`/`TodayClass`) movidos para `utils/caderno-stats.ts` (puro,
+  auto-importado); gamificação → `useGamification.ts`; roll → `useDailyRoll.ts`; `mark`/`completeActivity`
+  → `useAttendanceActions.ts`. `useCaderno` agora só faz seleção de contexto, coleções, `subjects`/`stats`
+  e compõe os sub-composables. Os ~13 importadores dos puros foram repontados para `~/utils/caderno-stats`
+  (sem re-export, evitando conflito de auto-import).
+- [x] **`pages/index.vue` página gorda** — **FEITO** (304→251 l): 12 flags de modal + `notasSubject`/
+  `detailStat` + fluxo editar/excluir disciplina + mapa `quickActions` extraídos para
+  `composables/useHomeDialogs.ts` (recebe `subjects`/`stats`). Página só despacha estado e eventos.
+  `headerMeta`/`period` mantidos na página (derivam direto de `context`/`stats`, sem estado de modal).
 
 ### Código morto
 - [ ] **`plugins/vue-query.ts` + dependência `@tanstack/vue-query`** (`pwa/package.json`) — nenhum

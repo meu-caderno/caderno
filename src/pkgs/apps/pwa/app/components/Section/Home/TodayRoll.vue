@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { AttendanceStatus } from "@meu-caderno/core";
-import type { TodayClass } from "~/composables/useCaderno";
+import type { TodayClass } from "~/utils/caderno-stats";
 
 defineProps<{ roll: TodayClass[]; dateLabel: string }>();
 const emit = defineEmits<{

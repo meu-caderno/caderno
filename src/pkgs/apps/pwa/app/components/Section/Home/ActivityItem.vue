@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Activity } from "@meu-caderno/core";
 import { ActivityKind, Recurrence } from "@meu-caderno/core";
-import { daysFromToday, formatDay } from "~/composables/useCaderno";
+import { daysFromToday, formatDay } from "~/utils/caderno-stats";
 
 type DueTone = "perigo" | "atencao" | "neutro";
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { simulateAbsences } from "@meu-caderno/core";
-import type { SubjectStats } from "~/composables/useCaderno";
+import type { SubjectStats } from "~/utils/caderno-stats";
 
 const props = defineProps<{ stat: SubjectStats }>();
 

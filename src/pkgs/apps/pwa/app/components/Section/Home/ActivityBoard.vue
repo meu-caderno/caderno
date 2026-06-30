@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Activity, DayIso, Subject } from "@meu-caderno/core";
 import { DueBucket, groupByDue } from "@meu-caderno/core";
-import type { SubjectStats } from "~/composables/useCaderno";
+import type { SubjectStats } from "~/utils/caderno-stats";
 
 const props = defineProps<{
   activities: Activity[];

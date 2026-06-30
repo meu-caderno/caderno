@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { AttendanceStatus } from "@meu-caderno/core";
-import { formatDay, type SubjectStats } from "~/composables/useCaderno";
+import { formatDay, type SubjectStats } from "~/utils/caderno-stats";
 
 const props = defineProps<{ stat: SubjectStats }>();
 const emit = defineEmits<{ close: []; notas: []; edit: []; delete: [] }>();

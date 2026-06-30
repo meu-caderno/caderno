@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { AttendanceStatus } from "@meu-caderno/core";
-import type { TodayClass } from "~/composables/useCaderno";
+import type { TodayClass } from "~/utils/caderno-stats";
 
 defineProps<{ item: TodayClass }>();
 const emit = defineEmits<{ mark: [status: AttendanceStatus] }>();

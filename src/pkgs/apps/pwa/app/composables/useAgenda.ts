@@ -1,6 +1,7 @@
 import type { Activity, DayIso, TimeBlock } from "@meu-caderno/core";
 import { addDays, expandSchedule } from "@meu-caderno/core";
-import { formatDay, useCaderno } from "~/composables/useCaderno";
+import { useCaderno } from "~/composables/useCaderno";
+import { formatDay } from "~/utils/caderno-stats";
 
 export interface AgendaSession {
   subjectId: string;

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { Activity, Subject } from "@meu-caderno/core";
-import type { SubjectStats } from "~/composables/useCaderno";
 import { useTheme } from "~/composables/useTheme";
+import type { SubjectStats } from "~/utils/caderno-stats";
 
 const props = defineProps<{
   activities: Activity[];

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Id } from "@meu-caderno/core";
-import type { SubjectStats } from "~/composables/useCaderno";
+import type { SubjectStats } from "~/utils/caderno-stats";
 
 const props = defineProps<{ stats: SubjectStats[] }>();
 const emit = defineEmits<{ detail: [subjectId: Id] }>();
