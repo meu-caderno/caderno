@@ -65,6 +65,7 @@ export function createInMemoryBlobStore(): BlobStore {
     library: createBlobRepo(),
     nodes: createBlobRepo(),
     edges: createBlobRepo(),
+    maps: createBlobRepo(),
   };
   const oplog = createBlobLog();
   const tx: BlobTx = { ...repos, oplog };

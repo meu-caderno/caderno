@@ -26,6 +26,7 @@ import type {
   Profile,
   Repository,
   StorageProvider,
+  StudyMap,
   Subject,
   Timestamp,
 } from "@meu-caderno/core";
@@ -86,6 +87,7 @@ export function createDexieContextStore(name = "caderno"): ContextStore {
     library: "id",
     nodes: "id, parentId",
     edges: "id, from, to",
+    maps: "id",
     oplog: "++seq, id, ts",
   });
 
@@ -123,6 +125,7 @@ export function createDexieContextStore(name = "caderno"): ContextStore {
     records: repo(db.table<AttendanceRecord, string>("records")),
     activities: repo(db.table<Activity, string>("activities")),
     library: repo(db.table<LibraryItem, string>("library")),
+    maps: repo(db.table<StudyMap, string>("maps")),
     graph,
     oplog,
   };

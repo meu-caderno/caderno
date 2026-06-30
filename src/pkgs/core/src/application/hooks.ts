@@ -8,6 +8,7 @@ import type {
   Id,
   LibraryItem,
   Node,
+  StudyMap,
   Subject,
 } from "../domain";
 
@@ -24,6 +25,8 @@ export interface CadernoHooks {
   "activity:deleted": (id: Id) => void;
   "library:changed": (item: LibraryItem) => void;
   "library:deleted": (id: Id) => void;
+  "map:changed": (map: StudyMap) => void;
+  "map:deleted": (id: Id) => void;
   "node:upserted": (node: Node) => void;
   "node:deleted": (id: Id) => void;
   "edge:upserted": (edge: Edge) => void;

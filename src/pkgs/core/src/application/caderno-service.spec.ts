@@ -17,6 +17,7 @@ import {
   EdgeKind,
   Goal,
   Link,
+  MapItemKind,
   Root,
 } from "../domain";
 import {
@@ -300,6 +301,40 @@ describe("CadernoService", () => {
     const result = await svc.updateLibraryItem({
       id: "ghost" as Id,
       title: "X",
+    });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error.code).toBe(DomainErrorCode.NOT_FOUND);
+  });
+
+  it("creates, updates and deletes a study map", async () => {
+    const { store, svc } = await service();
+    const created = await svc.createMap({
+      name: "Trilha de Cálculo",
+      items: [{ kind: MapItemKind.SECTION, label: "Limites" }],
+    });
+    expect(created.ok).toBe(true);
+    if (!created.ok) return;
+    expect(await store.maps.list()).toHaveLength(1);
+    expect(await store.oplog.forId(created.value.id)).toHaveLength(1);
+    const updated = await svc.updateMap({
+      ...created.value,
+      items: [
+        ...created.value.items,
+        { kind: MapItemKind.REF, nodeId: "n1" as Id },
+      ],
+    });
+    expect(updated.ok).toBe(true);
+    expect((await store.maps.get(created.value.id))?.items).toHaveLength(2);
+    await svc.deleteMap(created.value.id);
+    expect(await store.maps.list()).toHaveLength(0);
+  });
+
+  it("rejects updating a missing study map", async () => {
+    const { svc } = await service();
+    const result = await svc.updateMap({
+      id: "ghost" as Id,
+      name: "X",
+      items: [],
     });
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error.code).toBe(DomainErrorCode.NOT_FOUND);

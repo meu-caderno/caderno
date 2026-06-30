@@ -18,6 +18,7 @@ import type {
   Profile,
   Repository,
   StorageProvider,
+  StudyMap,
   Subject,
   Timestamp,
 } from "../domain";
@@ -59,6 +60,7 @@ export function createInMemoryContextStore(): ContextStore {
   const records = createRepo<AttendanceRecord>();
   const activities = createRepo<Activity>();
   const library = createRepo<LibraryItem>();
+  const maps = createRepo<StudyMap>();
   const nodes = createRepo<Node>();
   const edges = createRepo<Edge>();
 
@@ -98,6 +100,7 @@ export function createInMemoryContextStore(): ContextStore {
     records,
     activities,
     library,
+    maps,
     nodes,
     edges,
   ];
@@ -108,6 +111,7 @@ export function createInMemoryContextStore(): ContextStore {
     records,
     activities,
     library,
+    maps,
     graph,
     oplog,
   };

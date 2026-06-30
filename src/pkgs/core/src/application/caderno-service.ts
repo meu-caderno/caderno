@@ -14,6 +14,7 @@ import type {
   LibraryItem,
   Node,
   Repository,
+  StudyMap,
   Subject,
 } from "../domain";
 import { type EdgeKind, EntityName, OpKind } from "../domain";
@@ -60,6 +61,11 @@ export interface CadernoService {
     item: LibraryItem,
   ): Promise<Result<LibraryItem, DomainError>>;
   deleteLibraryItem(id: Id): Promise<Result<void, DomainError>>;
+  createMap(
+    input: Omit<StudyMap, "id">,
+  ): Promise<Result<StudyMap, DomainError>>;
+  updateMap(map: StudyMap): Promise<Result<StudyMap, DomainError>>;
+  deleteMap(id: Id): Promise<Result<void, DomainError>>;
   createNode(input: Omit<Node, "id">): Promise<Result<Node, DomainError>>;
   updateNode(node: Node): Promise<Result<Node, DomainError>>;
   deleteNode(id: Id): Promise<Result<void, DomainError>>;
@@ -362,6 +368,46 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
       }
       await commitDelete((tx) => tx.library, EntityName.LIBRARY, id);
       await hooks?.callHook("library:deleted", id);
+      return ok(undefined);
+    },
+
+    async createMap(input) {
+      if (input.contextId && !(await store.contexts.get(input.contextId))) {
+        return fail(
+          DomainErrorCode.INVARIANT_FK_MISSING,
+          { contextId: input.contextId },
+          EntityName.MAP,
+        );
+      }
+      const map: StudyMap = { ...input, id: await ids.newId() };
+      await commitPut((tx) => tx.maps, EntityName.MAP, map);
+      await hooks?.callHook("map:changed", map);
+      return ok(map);
+    },
+
+    async updateMap(map) {
+      if (!(await store.maps.get(map.id))) {
+        return fail(DomainErrorCode.NOT_FOUND, { id: map.id }, EntityName.MAP);
+      }
+      if (map.contextId && !(await store.contexts.get(map.contextId))) {
+        return fail(
+          DomainErrorCode.INVARIANT_FK_MISSING,
+          { contextId: map.contextId },
+          EntityName.MAP,
+        );
+      }
+      await commitPut((tx) => tx.maps, EntityName.MAP, map);
+      await hooks?.callHook("map:changed", map);
+      return ok(map);
+    },
+
+    async deleteMap(id) {
+      const map = await store.maps.get(id);
+      if (!map) {
+        return fail(DomainErrorCode.NOT_FOUND, { id }, EntityName.MAP);
+      }
+      await commitDelete((tx) => tx.maps, EntityName.MAP, id);
+      await hooks?.callHook("map:deleted", id);
       return ok(undefined);
     },
 

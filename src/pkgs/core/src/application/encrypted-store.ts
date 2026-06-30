@@ -85,6 +85,7 @@ function encryptedTx(blob: BlobTx, cipher: Cipher): ContextTx {
     records: encryptedRepo(blob.records, cipher),
     activities: encryptedRepo(blob.activities, cipher),
     library: encryptedRepo(blob.library, cipher),
+    maps: encryptedRepo(blob.maps, cipher),
     graph,
     oplog: encryptedOpLog(blob.oplog, cipher),
   };

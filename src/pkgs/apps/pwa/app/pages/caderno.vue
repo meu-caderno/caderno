@@ -4,17 +4,27 @@ import type { Id, Node } from "@meu-caderno/core";
 import { reviewQueue } from "@meu-caderno/core";
 import { concepts } from "~/utils/concepts";
 
-const { nodes, roots, linksOf } = useNotebook();
+const { nodes, edges, roots, linksOf } = useNotebook();
+const { effectiveId } = useActiveContext();
 const { service } = useCadernoService();
 const { toast } = useToast();
 
-type CadernoView = "tree" | "list" | "board" | "table" | "review";
+type CadernoView =
+  | "tree"
+  | "list"
+  | "board"
+  | "table"
+  | "review"
+  | "grafo"
+  | "mapas";
 const VIEWS: { value: CadernoView; label: string; icon: string }[] = [
   { value: "tree", label: "Árvore", icon: "🌳" },
   { value: "list", label: "Lista", icon: "📋" },
   { value: "board", label: "Board", icon: "🗂️" },
   { value: "table", label: "Tabela", icon: "▦" },
   { value: "review", label: "Revisão", icon: "🔁" },
+  { value: "grafo", label: "Grafo", icon: "🕸️" },
+  { value: "mapas", label: "Mapas", icon: "🗺️" },
 ];
 const view = ref<CadernoView>("tree");
 const conceptNodes = computed(() => concepts(nodes.value));
@@ -138,6 +148,15 @@ async function confirmDelete() {
         v-if="view === 'review'"
         :queue="reviewNodes"
         @select="select"
+      />
+      <SectionCadernoConceptGraph
+        v-else-if="view === 'grafo'"
+        :nodes="nodes"
+        :edges="edges"
+      />
+      <SectionCadernoMapEditor
+        v-else-if="view === 'mapas'"
+        :context-id="effectiveId ?? undefined"
       />
       <UIEmptyState
         v-else-if="view !== 'tree' && !conceptNodes.length"

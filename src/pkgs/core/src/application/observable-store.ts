@@ -41,6 +41,7 @@ function recordingTx(tx: ContextTx, touched: Set<EntityKey>): ContextTx {
     records: recordingRepo(tx.records, "records", touched),
     activities: recordingRepo(tx.activities, "activities", touched),
     library: recordingRepo(tx.library, "library", touched),
+    maps: recordingRepo(tx.maps, "maps", touched),
     graph: {
       nodes: recordingRepo(tx.graph.nodes, "nodes", touched),
       edges: recordingRepo(tx.graph.edges, "edges", touched),
@@ -85,6 +86,7 @@ export function createObservableStore(
     records: topRepo(inner.records, "records"),
     activities: topRepo(inner.activities, "activities"),
     library: topRepo(inner.library, "library"),
+    maps: topRepo(inner.maps, "maps"),
     graph: {
       nodes: topRepo(inner.graph.nodes, "nodes"),
       edges: topRepo(inner.graph.edges, "edges"),

@@ -11,12 +11,14 @@ import type {
   Grade,
   Id,
   LibraryItem,
+  MapItem,
   Modules,
   Mood,
   Node,
   OpLogEntry,
   Profile,
   Schedule,
+  StudyMap,
   Subject,
   Term,
   Timestamp,
@@ -36,6 +38,7 @@ import {
   Immersion,
   LibraryState,
   Link,
+  MapItemKind,
   Mastery,
   OpKind,
   OriginKind,
@@ -82,6 +85,7 @@ export const RecurrenceSchema = z.enum(Recurrence);
 export const AspectSchema = z.enum(Aspect);
 export const MasterySchema = z.enum(Mastery);
 export const LibraryStateSchema = z.enum(LibraryState);
+export const MapItemKindSchema = z.enum(MapItemKind);
 export const EdgeKindSchema = z.enum(EdgeKind);
 export const DensitySchema = z.enum(Density);
 export const ImmersionSchema = z.enum(Immersion);
@@ -260,6 +264,19 @@ export const LibraryItemSchema = z.object({
   reviews: z.array(LibraryReviewSchema).optional(),
 });
 
+export const MapItemSchema = z.object({
+  kind: MapItemKindSchema,
+  label: z.string().optional(),
+  nodeId: IdSchema.optional(),
+});
+
+export const StudyMapSchema = z.object({
+  id: IdSchema,
+  name: z.string(),
+  items: z.array(MapItemSchema),
+  contextId: IdSchema.optional(),
+});
+
 export const WidgetPrefSchema = z.object({
   widget: z.string(),
   visible: z.boolean(),
@@ -343,6 +360,8 @@ export type _Edge = Expect<Equal<z.infer<typeof EdgeSchema>, Edge>>;
 export type _LibraryItem = Expect<
   Equal<z.infer<typeof LibraryItemSchema>, LibraryItem>
 >;
+export type _MapItem = Expect<Equal<z.infer<typeof MapItemSchema>, MapItem>>;
+export type _StudyMap = Expect<Equal<z.infer<typeof StudyMapSchema>, StudyMap>>;
 export type _Mood = Expect<Equal<z.infer<typeof MoodSchema>, Mood>>;
 export type _Profile = Expect<Equal<z.infer<typeof ProfileSchema>, Profile>>;
 export type _OpLogEntry = Expect<

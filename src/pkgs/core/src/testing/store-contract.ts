@@ -4,10 +4,18 @@ import type {
   Context,
   ContextStore,
   Id,
+  StudyMap,
   Subject,
   Timestamp,
 } from "../domain";
-import { AbsenceStance, EntityName, Goal, Link, OpKind } from "../domain";
+import {
+  AbsenceStance,
+  EntityName,
+  Goal,
+  Link,
+  MapItemKind,
+  OpKind,
+} from "../domain";
 import { makeOp } from "../engine";
 
 const id = (value: string) => value as Id;
@@ -76,4 +84,15 @@ export async function runStoreContract(
 
   await store.subjects.delete(id("subj"));
   expect(await store.subjects.get(id("subj"))).toBeUndefined();
+
+  const map: StudyMap = {
+    id: id("map"),
+    name: "Roteiro",
+    items: [{ kind: MapItemKind.SECTION, label: "Introdução" }],
+  };
+  await store.maps.put(map);
+  expect(await store.maps.get(map.id)).toEqual(map);
+  expect(await store.maps.list()).toHaveLength(1);
+  await store.maps.delete(map.id);
+  expect(await store.maps.get(map.id)).toBeUndefined();
 }

@@ -261,6 +261,24 @@ export interface LibraryItem {
   reviews?: LibraryReview[];
 }
 
+export enum MapItemKind {
+  SECTION = "SECTION",
+  REF = "REF",
+}
+
+export interface MapItem {
+  kind: MapItemKind;
+  label?: string;
+  nodeId?: Id;
+}
+
+export interface StudyMap {
+  id: Id;
+  name: string;
+  items: MapItem[];
+  contextId?: Id;
+}
+
 export enum Density {
   MINIMAL = "MINIMAL",
   NORMAL = "NORMAL",

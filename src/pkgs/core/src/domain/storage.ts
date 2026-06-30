@@ -10,6 +10,7 @@ import type {
   OpLogEntry,
   Preferences,
   Profile,
+  StudyMap,
   Subject,
 } from "./model";
 import type { Id, Timestamp } from "./values";
@@ -22,6 +23,7 @@ export enum EntityName {
   NODE = "NODE",
   EDGE = "EDGE",
   LIBRARY = "LIBRARY",
+  MAP = "MAP",
   PROFILE = "PROFILE",
   MOOD = "MOOD",
 }
@@ -34,6 +36,7 @@ export const ENTITY_COLLECTIONS = [
   "library",
   "nodes",
   "edges",
+  "maps",
 ] as const;
 
 export type EntityCollection = (typeof ENTITY_COLLECTIONS)[number];
@@ -71,6 +74,7 @@ export interface ContextTx {
   records: Repository<AttendanceRecord>;
   activities: Repository<Activity>;
   library: Repository<LibraryItem>;
+  maps: Repository<StudyMap>;
   graph: GraphRepository;
   oplog: OpLogStore;
 }
@@ -104,6 +108,7 @@ export interface ReadonlyContextStore {
   records: ReadonlyRepository<AttendanceRecord>;
   activities: ReadonlyRepository<Activity>;
   library: ReadonlyRepository<LibraryItem>;
+  maps: ReadonlyRepository<StudyMap>;
   graph: ReadonlyGraphRepository;
   oplog: ReadonlyOpLog;
 }
@@ -145,6 +150,7 @@ export interface BlobTx {
   library: BlobRepository;
   nodes: BlobRepository;
   edges: BlobRepository;
+  maps: BlobRepository;
   oplog: BlobLog;
 }
 
