@@ -40,13 +40,14 @@ Esforço: **P** (horas) · **M** (1–2 dias) · **G** (vários dias). Valor: **
 15. [x] **F · Command palette ⌘K** — feito: `useSearch` (contextos/disciplinas/atividades/notas/acervo) + `UI/CommandPalette.vue` (teclado ↑/↓/enter/esc); ⌘K global no layout (a captura saiu do ⌘K — segue no QuickMenu/QuickStats). _(F0: ⌘K = busca.)_
 16. [x] **B6 · Modo Revisão** — feito: `engine/notebook.reviewQueue` (+spec, core 136) + `Section/Caderno/ReviewMode.vue` + chip "Revisão".
 17. [x] **D5 · Horário (timetable)** — feito: `Section/Agenda/{Timetable,TimetableCell}.vue` + visão "Horário".
-18. [ ] **A7+A8 · Âncora "pertence a" + promover-tarefa** — `M`/`M`, depende de A. _(editor)_ — adiado (extensão do editor).
+18. [x] **A7+A8 · Âncora "pertence a" + promover-tarefa** — feito: `Node.subjectId?/contextId?` (core); NoteForm "Pertence a (disciplina)"; NoteDetail "Virar atividade".
 19. [x] **H3 · Acervo: estado + resenhas** — feito: core `LibraryState`/`LibraryReview` + zod; `useLibrary.groups`; `ItemForm`/`ItemCard`/`acervo.vue` por estado + resenha do contexto.
 
 ### 🔴 Tier 4 — Pesado e/ou bloqueado por decisão (🔒)
-20. [ ] **B5 · Grafo visual (Cytoscape)** — `G`/`A`, 🔒 escolha da lib. _(`Section/Caderno/ConceptGraph.vue`)_
-21. [ ] **B7 · Mapas (entidade nova)** — `G`/`M`, 🔒 coleção + sync/backup. _(core + `Section/Caderno/MapEditor.vue`)_
-22. [ ] **C · Moldura desktop / workbench** — `G`/`M`, 🔒 contraria "coluna única". _(shell)_
+20. [x] **B5 · Grafo visual (Cytoscape lazy)** — feito: `ConceptGraph.vue` + `utils/graph.ts`, import dinâmico.
+21. [x] **B7 · Mapas (StudyMap)** — feito: entidade `StudyMap` no core (coleção `maps`) + `MapEditor.vue`; fora do backup por ora.
+22. [ ] **C · Moldura desktop / workbench** — `G`/`M` (decisão: **fazer o completo** com reka-ui Splitter/Tabs). _(shell)_ — **em aberto** (maior peça).
++ [ ] **Rename `Record`/`Node`** → `AttendanceRecord`/`NotebookNode` — inline (em andamento).
 
 ### 🚫 Fora de escopo (local-first mono-usuário)
 - **G4 · Membros / convidar / backend remoto** — placeholder visual apenas, até existir a camada de sync.
