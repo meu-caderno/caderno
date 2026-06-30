@@ -53,7 +53,9 @@ function encryptedOpLog(blob: BlobLog, cipher: Cipher): OpLogStore {
       blob
         .list()
         .then((list) => Promise.all(list.map(decode)))
-        .then((entries) => entries.filter((entry) => entry.ts >= timestamp)),
+        .then((entries) =>
+          entries.filter((entry) => entry.timestamp >= timestamp),
+        ),
     forId: (id) =>
       blob
         .list()

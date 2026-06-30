@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Color, Id, Timestamp } from "../domain";
-import { OpKind } from "../domain";
+import { EntityName, OpKind } from "../domain";
 import {
   createInMemoryBlobStore,
   reversibleCipher,
@@ -43,8 +43,8 @@ describe("createEncryptedContextStore", () => {
     const blob = createInMemoryBlobStore();
     const store = createEncryptedContextStore(blob, reversibleCipher);
     await store.oplog.append({
-      ts: 5 as Timestamp,
-      entity: "SUBJECT",
+      timestamp: 5 as Timestamp,
+      entity: EntityName.SUBJECT,
       op: OpKind.PUT,
       id: "s1" as Id,
     });

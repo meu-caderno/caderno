@@ -1,3 +1,4 @@
+import type { EntityName } from "./storage";
 import type { Color, DayIso, Grade, Id, Timestamp } from "./values";
 
 export enum Goal {
@@ -325,8 +326,8 @@ export enum OpKind {
 }
 
 export interface OpLogEntry {
-  ts: Timestamp;
-  entity: string;
+  timestamp: Timestamp;
+  entity: EntityName;
   op: OpKind;
   id: Id;
 }

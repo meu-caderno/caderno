@@ -31,6 +31,7 @@ import {
   ContextMode,
   Density,
   EdgeKind,
+  EntityName,
   Goal,
   Immersion,
   Link,
@@ -276,8 +277,8 @@ export const ProfileSchema = z.object({
 });
 
 export const OpLogEntrySchema = z.object({
-  ts: TimestampSchema,
-  entity: z.string(),
+  timestamp: TimestampSchema,
+  entity: z.nativeEnum(EntityName),
   op: OpKindSchema,
   id: IdSchema,
 });

@@ -45,9 +45,11 @@
   saem do engine para `app/utils/achievements.ts` (UI resolve).
 - **`Snapshotable` compartilhado** (`a4aeefa`): `testing/snapshot.ts` remove a duplicata nos fakes in-memory.
 
-> Pendente de decisão: o **campo público `OpLogEntry.ts`** (e `RemoteChange.ts`) segue como `ts` — renomear
-> para `timestamp` é mudança coordenada de tipo de domínio + zod schema + mapeamento Dexie + serialização.
-> Avise se quer expandir também.
+- **`OpLogEntry`: `ts`→`timestamp` + `entity: string`→`EntityName`** (decisão segura, sem migração de DB):
+  o campo de domínio foi renomeado/brandado; a **coluna Dexie permanece `ts`/string**, mapeada na fronteira
+  (`toRow`/`toEntry`). Sem impacto em backups (oplog não é serializado). Schema zod
+  (`OpLogEntrySchema`) atualizado e verificado pela asserção `Equal<z.infer, OpLogEntry>`. `RemoteChange`
+  (seam de sync) fica como está até a decisão #4. Specs `oplog`/`encrypted-store` ajustados.
 
 ## Reconciliação de estado (autoritativa)
 
@@ -69,8 +71,8 @@ já era `timeLabel`.
 **Adiado — decisões de produto/arquitetura (precisam de você):**
 - Oplog sem payload nem leitor real × `engine/undo.ts` (🟠) — decidir se o oplog grava `before/after` e
   vira fonte de undo/sync, ou se o service passa a registrar `Reversible`.
-- `OpLogEntry.ts`/`RemoteChange.ts`: `ts`→`timestamp` e `entity: string`→`EntityName` — migração
-  coordenada (domain + zod + Dexie + serialização); pode rejeitar backups antigos.
+- `RemoteChange.ts` (seam de sync, `domain/sync.ts`): `entity: string` + `ts` seguem como estão até a
+  decisão #4 (oplog/undo/sync) ser fechada — fazem parte daquele desenho.
 
 **Adiado — refactor maior de risco médio (a combinar):**
 - Renomear `interface Record`/`Node` do domínio (🟡) → `AttendanceRecord`/`NotebookNode`: toca dezenas de

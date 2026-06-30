@@ -1,12 +1,12 @@
-import type { Id, OpKind, OpLogEntry, Timestamp } from "../domain";
+import type { EntityName, Id, OpKind, OpLogEntry, Timestamp } from "../domain";
 
 export function makeOp(
-  entity: string,
+  entity: EntityName,
   op: OpKind,
   id: Id,
   timestamp: Timestamp,
 ): OpLogEntry {
-  return { ts: timestamp, entity, op, id };
+  return { timestamp, entity, op, id };
 }
 
 export function appendOp(
@@ -18,7 +18,7 @@ export function appendOp(
 
 export function opsForEntity(
   log: readonly OpLogEntry[],
-  entity: string,
+  entity: EntityName,
 ): OpLogEntry[] {
   return log.filter((entry) => entry.entity === entity);
 }

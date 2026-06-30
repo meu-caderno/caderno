@@ -11,7 +11,7 @@ const LIMIT = 60;
 async function refresh() {
   const all = await store.oplog.since(0 as Timestamp);
   entries.value = [...all]
-    .sort((left, right) => right.ts - left.ts)
+    .sort((left, right) => right.timestamp - left.timestamp)
     .slice(0, LIMIT);
 }
 
@@ -56,7 +56,7 @@ onUnmounted(store.subscribe(() => refresh()));
     <div v-else class="oplog-card__list">
       <div
         v-for="(entry, index) in entries"
-        :key="`${entry.ts}-${entry.id}-${index}`"
+        :key="`${entry.timestamp}-${entry.id}-${index}`"
         class="oplog-card__row"
       >
         <span
@@ -70,7 +70,7 @@ onUnmounted(store.subscribe(() => refresh()));
           {{ entry.op === OpKind.DELETE ? "−" : "+" }}
         </span>
         <span class="oplog-card__entity">{{ label(entry.entity) }}</span>
-        <span class="oplog-card__time">{{ when(entry.ts) }}</span>
+        <span class="oplog-card__time">{{ when(entry.timestamp) }}</span>
       </div>
     </div>
   </SectionSettingsCard>

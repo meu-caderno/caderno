@@ -12,6 +12,7 @@ import type {
   ContextTx,
   Edge,
   EntityCollection,
+  EntityName,
   GraphRepository,
   Id,
   Identified,
@@ -59,15 +60,20 @@ function repo<T extends Identified>(table: Table<T, string>): Repository<T> {
 
 function toEntry(row: OpLogRow): OpLogEntry {
   return {
-    ts: row.ts as Timestamp,
-    entity: row.entity,
+    timestamp: row.ts as Timestamp,
+    entity: row.entity as EntityName,
     op: row.op as OpKind,
     id: row.id as Id,
   };
 }
 
 function toRow(entry: OpLogEntry): OpLogRow {
-  return { ts: entry.ts, entity: entry.entity, op: entry.op, id: entry.id };
+  return {
+    ts: entry.timestamp,
+    entity: entry.entity,
+    op: entry.op,
+    id: entry.id,
+  };
 }
 
 export function createDexieContextStore(name = "caderno"): ContextStore {
