@@ -1,9 +1,24 @@
 <script setup lang="ts">
+import type { IconName } from "~/components/UI/Icon.vue";
+import { NAV_ITEMS } from "~/composables/useNav";
+
+interface TabMenuItem {
+  value: string;
+  label: string;
+  icon?: IconName;
+  danger?: boolean;
+}
+
 const route = useRoute();
-const { items, activate, close } = useWorkbenchTabs();
+const { items, activate, close, reorder, closeOthers, closeAll } =
+  useWorkbenchTabs();
 const searching = useState("shell:search", () => false);
+const dockScreen = useState<string | null>("shell:dock", () => null);
+const isWide = useMediaQuery("(min-width: 1100px)");
 
 const stripEl = ref<HTMLElement | null>(null);
+const dragPath = ref<string | null>(null);
+
 watch(
   () => route.path,
   async () => {
@@ -13,6 +28,31 @@ watch(
       ?.scrollIntoView({ inline: "nearest", block: "nearest" });
   },
 );
+
+function dockable(path: string): boolean {
+  return isWide.value && NAV_ITEMS.some((item) => item.to === path);
+}
+function menuItems(path: string): TabMenuItem[] {
+  const entries: TabMenuItem[] = [];
+  if (dockable(path)) {
+    entries.push({ value: "side", label: "Abrir ao lado", icon: "list" });
+  }
+  entries.push({ value: "close", label: "Fechar aba", icon: "x" });
+  entries.push({ value: "others", label: "Fechar outras" });
+  entries.push({ value: "all", label: "Fechar todas", danger: true });
+  return entries;
+}
+function onMenu(value: string, path: string) {
+  if (value === "side") dockScreen.value = path;
+  else if (value === "close") close(path);
+  else if (value === "others") closeOthers(path);
+  else if (value === "all") closeAll();
+}
+
+function onDrop(toPath: string) {
+  if (dragPath.value) reorder(dragPath.value, toPath);
+  dragPath.value = null;
+}
 </script>
 
 <template>
@@ -21,7 +61,15 @@ watch(
       v-for="tab in items"
       :key="tab.path"
       class="tabstrip__tab"
-      :class="{ 'tabstrip__tab--on': tab.path === route.path }"
+      :class="{
+        'tabstrip__tab--on': tab.path === route.path,
+        'tabstrip__tab--drag': tab.path === dragPath,
+      }"
+      draggable="true"
+      @dragstart="dragPath = tab.path"
+      @dragover.prevent
+      @drop.prevent="onDrop(tab.path)"
+      @dragend="dragPath = null"
     >
       <button
         type="button"
@@ -32,6 +80,17 @@ watch(
         <span class="tabstrip__icon">{{ tab.icon }}</span>
         <span class="tabstrip__label">{{ tab.label }}</span>
       </button>
+      <UIMenu :items="menuItems(tab.path)" @select="onMenu($event, tab.path)">
+        <template #trigger>
+          <button
+            type="button"
+            class="tabstrip__more"
+            aria-label="Ações da aba"
+          >
+            ⋯
+          </button>
+        </template>
+      </UIMenu>
       <button
         type="button"
         class="tabstrip__close"
@@ -67,7 +126,7 @@ watch(
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  max-width: 200px;
+  max-width: 210px;
   border-radius: var(--pt-radius-sm) var(--pt-radius-sm) 0 0;
   background: transparent;
   color: var(--pt-ink-muted);
@@ -77,12 +136,15 @@ watch(
   color: var(--pt-ink);
   box-shadow: var(--pt-shadow);
 }
+.tabstrip__tab--drag {
+  opacity: 0.5;
+}
 .tabstrip__main {
   display: flex;
   align-items: center;
   gap: 6px;
   min-width: 0;
-  padding: 7px 4px 8px 11px;
+  padding: 7px 2px 8px 11px;
   border: none;
   background: none;
   color: inherit;
@@ -99,21 +161,26 @@ watch(
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.tabstrip__more,
 .tabstrip__close {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 18px;
   height: 18px;
-  margin-right: 6px;
   border: none;
   border-radius: 5px;
   background: none;
   color: var(--pt-ink-faint);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1;
   cursor: pointer;
 }
+.tabstrip__close {
+  margin-right: 6px;
+  font-size: 15px;
+}
+.tabstrip__more:hover,
 .tabstrip__close:hover {
   background: var(--pt-linen);
   color: var(--pt-ink);

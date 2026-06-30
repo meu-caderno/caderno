@@ -56,5 +56,33 @@ export function useWorkbenchTabs() {
     tabs.value = [...paths];
   }
 
-  return { tabs, items, activate, close, setTabs };
+  function reorder(fromPath: string, toPath: string) {
+    const next = [...tabs.value];
+    const from = next.indexOf(fromPath);
+    const to = next.indexOf(toPath);
+    if (from < 0 || to < 0 || from === to) return;
+    const [moved] = next.splice(from, 1);
+    if (moved) next.splice(to, 0, moved);
+    tabs.value = next;
+  }
+
+  function closeOthers(path: string) {
+    tabs.value = [path];
+    if (route.path !== path) void navigateTo(path);
+  }
+
+  function closeAll() {
+    tabs.value = [route.path];
+  }
+
+  return {
+    tabs,
+    items,
+    activate,
+    close,
+    setTabs,
+    reorder,
+    closeOthers,
+    closeAll,
+  };
 }
