@@ -8,8 +8,8 @@
     "pkgs/core"
   ],
   "devDependencies": {
-    "@biomejs/biome": "2.5.0",
-    "nx": "23.0.0"
+    "@biomejs/biome": "2.5.1",
+    "nx": "23.0.1"
   },
   "scripts": {
     "format:check": "nx run @meu-caderno/src:format:check",
