@@ -72,12 +72,7 @@ async function save() {
         />
       </UIField>
       <UIField label="Conteúdo">
-        <textarea
-          v-model="body"
-          class="note-form__input note-form__textarea"
-          rows="4"
-          placeholder="Anote aqui…"
-        />
+        <UIRichTextEditor v-model="body" placeholder="Anote aqui…" />
       </UIField>
       <UIField label="Aspectos">
         <UIToggleGroup v-model="aspects" :options="ASPECT_OPTIONS" multiple />

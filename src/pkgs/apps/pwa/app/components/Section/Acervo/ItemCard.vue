@@ -8,6 +8,8 @@ const progressPct = computed(() =>
   Math.round((props.item.progress ?? 0) * 100),
 );
 const stars = computed(() => props.item.stars ?? 0);
+const stateLabel = computed(() => LIBRARY_STATE_LABEL[stateOf(props.item)]);
+const reviewCount = computed(() => props.item.reviews?.length ?? 0);
 </script>
 
 <template>
@@ -19,11 +21,15 @@ const stars = computed(() => props.item.stars ?? 0);
         {{ item.synopsis }}
       </div>
       <div class="item-card__meta">
+        <span class="item-card__badge">{{ stateLabel }}</span>
         <span v-if="stars" class="item-card__stars">
           {{ "★".repeat(stars) }}
         </span>
         <span v-if="progressPct" class="item-card__progress">
           {{ progressPct }}%
+        </span>
+        <span v-if="reviewCount" class="item-card__progress">
+          {{ reviewCount }} resenha{{ reviewCount > 1 ? "s" : "" }}
         </span>
       </div>
     </div>
@@ -79,6 +85,16 @@ const stars = computed(() => props.item.stars ?? 0);
   gap: 10px;
   margin-top: 6px;
   font-size: calc(12px * var(--pt-text-scale));
+}
+.item-card__badge {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: calc(10px * var(--pt-text-scale));
+  color: var(--pt-ink-muted);
+  background: var(--pt-paper-2);
+  padding: 2px 8px;
+  border-radius: var(--pt-radius-pill);
 }
 .item-card__stars {
   color: var(--pt-warn);

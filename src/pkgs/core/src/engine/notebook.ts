@@ -1,4 +1,5 @@
-import type { Aspect, Edge, EdgeKind, Id, Node } from "../domain";
+import type { Edge, EdgeKind, Id, Node } from "../domain";
+import { Aspect, Mastery } from "../domain";
 
 export function children(nodes: ReadonlyArray<Node>, parentId: Id): Node[] {
   return nodes.filter((node) => node.parentId === parentId);
@@ -103,4 +104,26 @@ export function orphanEdges(
 ): Edge[] {
   const ids = new Set(nodes.map((node) => node.id));
   return edges.filter((edge) => !ids.has(edge.from) || !ids.has(edge.to));
+}
+
+const REVIEW_RANK: Partial<Record<Mastery, number>> = {
+  [Mastery.UNKNOWN]: 0,
+  [Mastery.STUDYING]: 1,
+};
+
+function reviewRank(node: Node): number | undefined {
+  return REVIEW_RANK[node.mastery ?? Mastery.UNKNOWN];
+}
+
+/**
+ * Pure review queue: concepts not yet mastered (UNKNOWN or STUDYING),
+ * ordered with UNKNOWN before STUDYING. No clock/random — engine purity.
+ */
+export function reviewQueue(nodes: ReadonlyArray<Node>): Node[] {
+  return nodes
+    .filter(
+      (node) =>
+        node.aspects.includes(Aspect.CONCEPT) && reviewRank(node) !== undefined,
+    )
+    .sort((a, b) => (reviewRank(a) ?? 0) - (reviewRank(b) ?? 0));
 }

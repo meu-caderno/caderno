@@ -1,5 +1,5 @@
 <script setup lang="ts">
-type AgendaView = "lista" | "dia" | "semana" | "mes";
+type AgendaView = "lista" | "dia" | "semana" | "mes" | "horario";
 
 interface ViewOption {
   id: AgendaView;
@@ -13,6 +13,7 @@ const VIEWS: ViewOption[] = [
   { id: "dia", label: "Dia", icon: "▦", subtitle: "Um dia por vez" },
   { id: "semana", label: "Semana", icon: "▤", subtitle: "A semana inteira" },
   { id: "mes", label: "Mês", icon: "▥", subtitle: "Visão do mês" },
+  { id: "horario", label: "Horário", icon: "▦", subtitle: "Grade semanal" },
 ];
 
 const { days, booting, ready } = useAgenda();
@@ -50,6 +51,7 @@ const subtitle = computed(
     </template>
     <SectionAgendaDayView v-else-if="view === 'dia'" />
     <SectionAgendaWeekView v-else-if="view === 'semana'" />
+    <SectionAgendaTimetable v-else-if="view === 'horario'" />
     <SectionAgendaMonthGrid v-else />
   </div>
 </template>

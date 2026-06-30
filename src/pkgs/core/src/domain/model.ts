@@ -237,6 +237,17 @@ export interface Edge {
   kind: EdgeKind;
 }
 
+export enum LibraryState {
+  WANT = "WANT",
+  CONSUMING = "CONSUMING",
+  DONE = "DONE",
+}
+
+export interface LibraryReview {
+  contextId: Id;
+  text: string;
+}
+
 export interface LibraryItem {
   id: Id;
   title: string;
@@ -244,6 +255,8 @@ export interface LibraryItem {
   synopsis?: string;
   progress?: number;
   stars?: number;
+  state?: LibraryState;
+  reviews?: LibraryReview[];
 }
 
 export enum Density {

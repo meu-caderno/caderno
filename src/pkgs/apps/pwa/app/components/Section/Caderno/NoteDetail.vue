@@ -32,7 +32,12 @@ const kids = computed(() => children(props.nodes, props.node.id));
         />
       </div>
 
-      <p v-if="node.body" class="note-detail__body">{{ node.body }}</p>
+      <!-- biome-ignore lint/security/noDangerouslySetInnerHtml: conteúdo local do próprio usuário, gerado pelo editor TipTap (sem fonte externa). -->
+      <div
+        v-if="node.body"
+        class="note-detail__body tiptap-content"
+        v-html="node.body"
+      />
       <p v-else class="note-detail__empty">Sem conteúdo.</p>
 
       <div v-if="kids.length" class="note-detail__children">
@@ -82,9 +87,6 @@ const kids = computed(() => children(props.nodes, props.node.id));
   gap: 6px;
 }
 .note-detail__body {
-  font-size: calc(14px * var(--pt-text-scale));
-  line-height: 1.6;
-  white-space: pre-wrap;
   margin: 0;
 }
 .note-detail__empty {

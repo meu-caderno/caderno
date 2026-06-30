@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Edge, Id, Node } from "../domain";
-import { Aspect, EdgeKind } from "../domain";
+import { Aspect, EdgeKind, Mastery } from "../domain";
 import {
   ancestors,
   canReparent,
@@ -12,6 +12,7 @@ import {
   orphanEdges,
   orphans,
   reparent,
+  reviewQueue,
 } from "./notebook";
 
 const id = (value: string) => value as Id;
@@ -82,3 +83,43 @@ describe("orphans / aspects / edges", () => {
     expect(edgesByKind(edges, EdgeKind.PART_OF)).toHaveLength(1);
   });
 });
+
+describe("reviewQueue", () => {
+  const concept = (i: string, mastery?: Mastery): Node => ({
+    ...node(i, undefined, [Aspect.CONCEPT]),
+    mastery,
+  });
+
+  it("keeps only concepts not yet mastered", () => {
+    const queue = reviewQueue([
+      concept("studying", Mastery.STUDYING),
+      concept("mastered", Mastery.MASTERED),
+      concept("unknown", Mastery.UNKNOWN),
+      node("plain-note", undefined, [Aspect.NOTE]),
+      { ...node("note-studying"), mastery: Mastery.STUDYING },
+    ]);
+    expect(queue.map((n) => n.id)).toEqual(["unknown", "studying"]);
+  });
+
+  it("treats missing mastery as UNKNOWN and orders it first", () => {
+    const queue = reviewQueue([
+      concept("studying", Mastery.STUDYING),
+      concept("no-mastery"),
+    ]);
+    expect(queue.map((n) => n.id)).toEqual(["no-mastery", "studying"]);
+  });
+
+  it("orders UNKNOWN before STUDYING", () => {
+    const queue = reviewQueue([
+      concept("s1", Mastery.STUDYING),
+      concept("u1", Mastery.UNKNOWN),
+      concept("s2", Mastery.STUDYING),
+      concept("u2", Mastery.UNKNOWN),
+    ]);
+    expect(queue.map((n) => masteryRank(n.mastery))).toEqual([0, 0, 1, 1]);
+  });
+});
+
+function masteryRank(mastery?: Mastery): number {
+  return mastery === Mastery.STUDYING ? 1 : 0;
+}

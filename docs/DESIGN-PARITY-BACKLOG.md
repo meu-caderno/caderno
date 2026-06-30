@@ -31,17 +31,17 @@ Esforço: **P** (horas) · **M** (1–2 dias) · **G** (vários dias). Valor: **
 8. [x] **E2 · Página Presenças & Faltas** — feito (`usePresences` + `utils/presences.ts` (+spec) + `pages/presencas.vue`).
 9. [x] **E3 · Página Atividades + lote** — feito (`utils/activities-filter.ts` (+spec) + `pages/atividades.vue`, seleção + barra de lote).
 10. [x] **E5 · Nav das telas novas** — feito (4 rotas em `NAV_ITEMS`; `DEFAULT_TAB_KEYS` mantém a tab bar enxuta; rail mostra todas).
-11. [ ] **B0–B4 · Conhecimento sem canvas** (maestria no `Node` + Lista/Board/Tabela) — `M`/`A`, B0 core pequeno. _(`domain/model.ts`, `pages/caderno.vue`, `Section/Caderno/*`)_
-12. [ ] **G1+G2 · Dashboard de contexto + integralização** — `M`/`M`, reusa `GoalsManager`/`ContextModules`. _(`pages/contexto/[id].vue`)_
-13. [ ] **D1–D4 · Agenda multi-visão** (Lista/Dia/Semana/Mês) — `M`/`A`, `expandSchedule` já existe. _(`pages/agenda.vue`, `Section/Agenda/*`)_
+11. [x] **B0–B4 · Conhecimento sem canvas** — feito: core `Mastery` + `Node.mastery`; `pages/caderno.vue` com Árvore/Lista/Board/Tabela; `utils/concepts.ts` (+spec) + `ConceptList/Board/Table`.
+12. [x] **G1+G2 · Dashboard de contexto** — feito: `pages/contexto/[id].vue` (stats/módulos/integralização/edital/atalhos) + `Section/Contexto/{StatsRow,ModulesRow}`.
+13. [x] **D1–D4 · Agenda multi-visão** — feito: `useAgenda.daysInRange` + `pages/agenda.vue` (Lista/Dia/Semana/Mês) + `Section/Agenda/{DayPills,DayView,WeekView,MonthGrid,MonthCell}`.
 
 ### 🟠 Tier 3 — Núcleo (alto valor, esforço médio-alto)
-14. [ ] **A1–A6 · Editor de Notas rich-text** (TipTap StarterKit + toolbar + autosave) — `G`/`A`, **é o "Caderno"**. _(`UI/RichTextEditor.vue`, `Section/Caderno/NoteForm.vue`)_
+14. [x] **A1–A6 · Editor de Notas rich-text** — feito: `UI/RichTextEditor.vue` (TipTap StarterKit + Link + Placeholder + TaskList) + toolbar + `assets/css/tiptap.css`; `NoteForm` usa o editor, `NoteDetail` renderiza o HTML.
 15. [ ] **F · Command palette ⌘K** — `M`/`A`, `useSearch` + componente; decisão F0 leve. _(`UI/CommandPalette.vue`)_
-16. [ ] **B6 · Modo Revisão** — `M`/`M`, selector `reviewQueue` + UI. _(`engine/notebook.ts`, `Section/Caderno/ReviewMode.vue`)_
-17. [ ] **D5 · Horário (timetable)** — `M`/`M`, grade a partir de `schedule.blocks`. _(`Section/Agenda/Timetable.vue`)_
-18. [ ] **A7+A8 · Âncora "pertence a" + promover-tarefa** — `M`/`M`, depende de A. _(editor)_
-19. [ ] **H3 · Acervo: estado + resenhas** — `M`/`M`, **core** (`LibraryItem.state/reviews`). _(`domain/model.ts`, `Section/Acervo/*`)_
+16. [x] **B6 · Modo Revisão** — feito: `engine/notebook.reviewQueue` (+spec, core 136) + `Section/Caderno/ReviewMode.vue` + chip "Revisão".
+17. [x] **D5 · Horário (timetable)** — feito: `Section/Agenda/{Timetable,TimetableCell}.vue` + visão "Horário".
+18. [ ] **A7+A8 · Âncora "pertence a" + promover-tarefa** — `M`/`M`, depende de A. _(editor)_ — adiado (extensão do editor).
+19. [x] **H3 · Acervo: estado + resenhas** — feito: core `LibraryState`/`LibraryReview` + zod; `useLibrary.groups`; `ItemForm`/`ItemCard`/`acervo.vue` por estado + resenha do contexto.
 
 ### 🔴 Tier 4 — Pesado e/ou bloqueado por decisão (🔒)
 20. [ ] **B5 · Grafo visual (Cytoscape)** — `G`/`A`, 🔒 escolha da lib. _(`Section/Caderno/ConceptGraph.vue`)_

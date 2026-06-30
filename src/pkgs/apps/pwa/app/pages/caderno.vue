@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import type { Id, Node } from "@meu-caderno/core";
+import { reviewQueue } from "@meu-caderno/core";
 import { concepts } from "~/utils/concepts";
 
 const { nodes, roots, linksOf } = useNotebook();
 const { service } = useCadernoService();
 const { toast } = useToast();
 
-type CadernoView = "tree" | "list" | "board" | "table";
+type CadernoView = "tree" | "list" | "board" | "table" | "review";
 const VIEWS: { value: CadernoView; label: string; icon: string }[] = [
   { value: "tree", label: "Árvore", icon: "🌳" },
   { value: "list", label: "Lista", icon: "📋" },
   { value: "board", label: "Board", icon: "🗂️" },
   { value: "table", label: "Tabela", icon: "▦" },
+  { value: "review", label: "Revisão", icon: "🔁" },
 ];
 const view = ref<CadernoView>("tree");
 const conceptNodes = computed(() => concepts(nodes.value));
+const reviewNodes = computed(() => reviewQueue(nodes.value));
 
 const treeEl = ref<HTMLElement | null>(null);
 const rootOver = ref(false);
@@ -131,8 +134,13 @@ async function confirmDelete() {
         />
       </div>
 
+      <SectionCadernoReviewMode
+        v-if="view === 'review'"
+        :queue="reviewNodes"
+        @select="select"
+      />
       <UIEmptyState
-        v-if="view !== 'tree' && !conceptNodes.length"
+        v-else-if="view !== 'tree' && !conceptNodes.length"
         icon="💡"
         title="Sem conceitos"
         subtitle="Marque notas com o aspecto Conceito para acompanhar a maestria."

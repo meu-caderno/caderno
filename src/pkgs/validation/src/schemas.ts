@@ -34,6 +34,7 @@ import {
   EntityName,
   Goal,
   Immersion,
+  LibraryState,
   Link,
   Mastery,
   OpKind,
@@ -80,6 +81,7 @@ export const RootSchema = z.enum(Root);
 export const RecurrenceSchema = z.enum(Recurrence);
 export const AspectSchema = z.enum(Aspect);
 export const MasterySchema = z.enum(Mastery);
+export const LibraryStateSchema = z.enum(LibraryState);
 export const EdgeKindSchema = z.enum(EdgeKind);
 export const DensitySchema = z.enum(Density);
 export const ImmersionSchema = z.enum(Immersion);
@@ -240,6 +242,11 @@ export const EdgeSchema = z.object({
   kind: EdgeKindSchema,
 });
 
+export const LibraryReviewSchema = z.object({
+  contextId: IdSchema,
+  text: z.string(),
+});
+
 export const LibraryItemSchema = z.object({
   id: IdSchema,
   title: z.string(),
@@ -247,6 +254,8 @@ export const LibraryItemSchema = z.object({
   synopsis: z.string().optional(),
   progress: z.number().min(0).max(1).optional(),
   stars: z.number().int().min(1).max(5).optional(),
+  state: LibraryStateSchema.optional(),
+  reviews: z.array(LibraryReviewSchema).optional(),
 });
 
 export const WidgetPrefSchema = z.object({

@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import type { LibraryItem } from "@meu-caderno/core";
+import type { Id, LibraryItem, LibraryReview } from "@meu-caderno/core";
+import { LibraryState } from "@meu-caderno/core";
 
 const props = defineProps<{ item?: LibraryItem }>();
 const emit = defineEmits<{ done: []; cancel: []; delete: [] }>();
 
 const { service } = useCadernoService();
+const { effectiveId } = useActiveContext();
 
 const editing = computed(() => props.item != null);
 
@@ -12,21 +14,43 @@ const title = ref(props.item?.title ?? "");
 const synopsis = ref(props.item?.synopsis ?? "");
 const stars = ref(props.item?.stars ?? 0);
 const progress = ref(Math.round((props.item?.progress ?? 0) * 100));
+const state = ref<string>(props.item?.state ?? LibraryState.WANT);
 const saving = ref(false);
+
+const currentReview = computed(() =>
+  props.item?.reviews?.find((entry) => entry.contextId === effectiveId.value),
+);
+const review = ref(currentReview.value?.text ?? "");
 
 function setStars(value: number) {
   stars.value = stars.value === value ? 0 : value;
+}
+
+function buildReviews(
+  contextId: Id,
+  text: string,
+): LibraryReview[] | undefined {
+  const others = (props.item?.reviews ?? []).filter(
+    (entry) => entry.contextId !== contextId,
+  );
+  const next = text ? [...others, { contextId, text }] : others;
+  return next.length ? next : undefined;
 }
 
 async function save() {
   const trimmed = title.value.trim();
   if (!trimmed || saving.value) return;
   saving.value = true;
+  const contextId = effectiveId.value;
   const fields = {
     title: trimmed,
     synopsis: synopsis.value.trim() || undefined,
     stars: stars.value > 0 ? stars.value : undefined,
     progress: progress.value > 0 ? progress.value / 100 : undefined,
+    state: state.value as LibraryState,
+    reviews: contextId
+      ? buildReviews(contextId, review.value.trim())
+      : props.item?.reviews,
   };
   const res = props.item
     ? await service.updateLibraryItem({ ...props.item, ...fields })
@@ -58,6 +82,21 @@ async function save() {
           class="item-form__input item-form__textarea"
           rows="3"
           placeholder="Notas, descrição…"
+        />
+      </UIField>
+      <UIField label="Estado">
+        <UISelect
+          v-model="state"
+          :options="LIBRARY_STATE_OPTIONS"
+          placeholder="Estado…"
+        />
+      </UIField>
+      <UIField label="Resenha do contexto">
+        <textarea
+          v-model="review"
+          class="item-form__input item-form__textarea"
+          rows="3"
+          placeholder="Sua resenha neste contexto…"
         />
       </UIField>
       <UIField label="Avaliação">

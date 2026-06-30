@@ -17,7 +17,7 @@ export default defineNuxtConfig({
 
   srcDir: "./app",
 
-  css: ["~/assets/css/papel-tinta.css"],
+  css: ["~/assets/css/papel-tinta.css", "~/assets/css/tiptap.css"],
 
   modules: [
     "@vite-pwa/nuxt",

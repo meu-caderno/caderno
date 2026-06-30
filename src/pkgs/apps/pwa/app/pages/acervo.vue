@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { LibraryItem } from "@meu-caderno/core";
 
-const { items } = useLibrary();
+const { items, groups } = useLibrary();
 const { service } = useCadernoService();
 const { toast } = useToast();
 
@@ -40,13 +40,26 @@ async function confirmDelete() {
       action-label="Adicionar item"
       @action="creating = true"
     />
-    <div v-else class="acervo__grid">
-      <SectionAcervoItemCard
-        v-for="item in items"
-        :key="item.id"
-        :item="item"
-        @edit="editingItem = item"
-      />
+    <div v-else class="acervo__board">
+      <section
+        v-for="group in groups"
+        v-show="group.items.length"
+        :key="group.state"
+        class="acervo__group"
+      >
+        <header class="acervo__group-head">
+          <span class="acervo__group-title">{{ group.label }}</span>
+          <span class="acervo__group-count">{{ group.items.length }}</span>
+        </header>
+        <div class="acervo__grid">
+          <SectionAcervoItemCard
+            v-for="item in group.items"
+            :key="item.id"
+            :item="item"
+            @edit="editingItem = item"
+          />
+        </div>
+      </section>
     </div>
 
     <SectionAcervoItemForm
@@ -82,6 +95,36 @@ async function confirmDelete() {
   flex-direction: column;
   gap: calc(16px * var(--pt-density));
   container-type: inline-size;
+}
+.acervo__board {
+  display: flex;
+  flex-direction: column;
+  gap: calc(20px * var(--pt-density));
+}
+.acervo__group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.acervo__group-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.acervo__group-title {
+  font-size: calc(12px * var(--pt-text-scale));
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--pt-ink-muted);
+}
+.acervo__group-count {
+  font-size: calc(11px * var(--pt-text-scale));
+  font-weight: 700;
+  color: var(--pt-ink-muted);
+  background: var(--pt-card);
+  padding: 1px 7px;
+  border-radius: var(--pt-radius-pill);
 }
 .acervo__grid {
   display: grid;

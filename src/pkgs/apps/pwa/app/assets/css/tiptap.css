@@ -1,0 +1,91 @@
+.tiptap-content .tiptap {
+  outline: none;
+  min-height: 120px;
+}
+.tiptap-content,
+.tiptap-content .tiptap {
+  font-family: var(--pt-font-read);
+  font-size: calc(16px * var(--pt-text-scale));
+  line-height: 1.6;
+  color: var(--pt-ink);
+  word-break: break-word;
+}
+.tiptap-content > * + *,
+.tiptap-content .tiptap > * + * {
+  margin-top: 0.6em;
+}
+.tiptap-content h1 {
+  font-family: var(--pt-heading-font);
+  font-size: calc(23px * var(--pt-text-scale));
+  font-weight: 700;
+  margin: 0;
+}
+.tiptap-content h2 {
+  font-family: var(--pt-heading-font);
+  font-size: calc(19px * var(--pt-text-scale));
+  font-weight: 700;
+  margin: 0;
+}
+.tiptap-content h3 {
+  font-family: var(--pt-heading-font);
+  font-size: calc(17px * var(--pt-text-scale));
+  font-weight: 600;
+  margin: 0;
+}
+.tiptap-content ul,
+.tiptap-content ol {
+  padding-left: 1.4em;
+  margin: 0;
+}
+.tiptap-content blockquote {
+  border-left: 3px solid var(--pt-border);
+  padding-left: 12px;
+  font-style: italic;
+  color: var(--pt-ink-soft);
+  margin: 0;
+}
+.tiptap-content pre {
+  background: var(--pt-ink);
+  color: var(--pt-on-ink);
+  padding: 10px 12px;
+  border-radius: var(--pt-radius-sm);
+  font-size: calc(13px * var(--pt-text-scale));
+  overflow: auto;
+}
+.tiptap-content code {
+  background: var(--pt-linen);
+  padding: 1px 5px;
+  border-radius: 5px;
+  font-size: 0.92em;
+}
+.tiptap-content pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+.tiptap-content a {
+  color: var(--pt-info);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.tiptap-content ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0.2em;
+}
+.tiptap-content ul[data-type="taskList"] li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.tiptap-content ul[data-type="taskList"] li > div {
+  flex: 1;
+  min-width: 0;
+}
+.tiptap-content p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  color: var(--pt-ink-faint);
+  font-style: italic;
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
