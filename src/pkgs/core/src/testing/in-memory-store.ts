@@ -22,11 +22,7 @@ import type {
   Timestamp,
 } from "../domain";
 import { CapabilityImpact, OriginKind } from "../domain";
-
-interface Snapshotable {
-  snapshot(): unknown;
-  restore(state: unknown): void;
-}
+import type { Snapshotable } from "./snapshot";
 
 type MemRepo<T extends Identified> = Repository<T> & Snapshotable;
 

@@ -6,11 +6,7 @@ import type {
   BlobTx,
   Cipher,
 } from "../domain";
-
-interface Snapshotable {
-  snapshot(): unknown;
-  restore(state: unknown): void;
-}
+import type { Snapshotable } from "./snapshot";
 
 type MemBlobRepository = BlobRepository & Snapshotable;
 type MemBlobLog = BlobLog & Snapshotable;
