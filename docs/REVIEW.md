@@ -26,6 +26,9 @@
   parametrizado (9 funções → factory `makeListControls`).
 - **DnD por teclado** (`20c8573`): alça do `UISortableItem` focável + ↑/↓ (`moveByOffset`), cobrindo
   subtarefas (`ActivityForm`), baldes (`GoalsManager`) e o `LayoutCard`.
+- **Complexidade cognitiva no CI** (`47de74d`): regra `noExcessiveCognitiveComplexity` (limite 15)
+  habilitada no `biome.json`; `expandSchedule`/`writeBackup`/`linksOf` simplificados (extração de helpers);
+  resíduo de `y`/`m`/`d` em `schedule.ts` corrigido.
 
 > Pendente de decisão: o **campo público `OpLogEntry.ts`** (e `RemoteChange.ts`) segue como `ts` — renomear
 > para `timestamp` é mudança coordenada de tipo de domínio + zod schema + mapeamento Dexie + serialização.
@@ -205,9 +208,9 @@
 
 ## Lacuna de tooling reconfirmada
 
-- [ ] Habilitar `complexity.noExcessiveCognitiveComplexity` (limite ~15) no `biome.json` — vários achados
-  de tamanho/complexidade (`useCaderno`, `index.vue`, `SubjectCard`, `upsertActivity`) escapam hoje por não
-  haver regra (§8 do guia).
+- [x] **`complexity.noExcessiveCognitiveComplexity` (limite 15) habilitado** (`47de74d`) — 3 violações
+  encontradas e corrigidas; CI agora barra funções acima do limite. (Nota: o limite mede funções
+  individuais; god-composables/páginas grandes por **nº de membros** ainda não são pegos — ver itens de SRP.)
 
 ---
 
