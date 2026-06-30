@@ -75,7 +75,7 @@ function onOpenChange(id: number, open: boolean) {
   color: var(--pt-paper);
   padding: 12px 14px;
   border-radius: var(--pt-radius-md);
-  box-shadow: 0 10px 30px rgba(44, 42, 39, 0.3);
+  box-shadow: 0 10px 30px rgba(var(--pt-ink-rgb), 0.3);
 }
 .uitoast__body {
   flex: 1;

@@ -55,7 +55,7 @@ const emit = defineEmits<{ select: [value: string] }>();
   background: var(--pt-card);
   border: 1.5px solid var(--pt-border-muted);
   border-radius: var(--pt-radius-md);
-  box-shadow: 0 12px 28px rgba(44, 42, 39, 0.16);
+  box-shadow: 0 12px 28px rgba(var(--pt-ink-rgb), 0.16);
   padding: 6px;
 }
 .uimenu__item {

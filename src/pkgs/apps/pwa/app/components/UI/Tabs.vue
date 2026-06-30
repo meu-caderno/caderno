@@ -49,6 +49,6 @@ defineProps<{ tabs: Tab[] }>();
 .uitabs__tab[data-state="active"] {
   background: var(--pt-paper);
   color: var(--pt-ink);
-  box-shadow: 0 1px 3px rgba(44, 42, 39, 0.1);
+  box-shadow: 0 1px 3px rgba(var(--pt-ink-rgb), 0.1);
 }
 </style>

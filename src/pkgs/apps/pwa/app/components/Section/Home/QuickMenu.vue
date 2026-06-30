@@ -39,7 +39,7 @@ const items = [
   background: var(--pt-ink);
   color: var(--pt-paper);
   cursor: pointer;
-  box-shadow: 0 8px 24px rgba(44, 42, 39, 0.3);
+  box-shadow: 0 8px 24px rgba(var(--pt-ink-rgb), 0.3);
   display: inline-flex;
   align-items: center;
   justify-content: center;

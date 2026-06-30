@@ -26,30 +26,31 @@ async function confirmRemove() {
     subtitle="Define o tom do papel, a cor de destaque e a densidade."
   >
     <div class="moods-card__grid">
-      <button
-        v-for="mood in allMoods"
-        :key="mood.key"
-        type="button"
-        class="moods-card__mood"
-        :class="{ 'moods-card__mood--on': mood.key === moodKey }"
-        @click="choose(mood.key)"
-      >
-        <span class="moods-card__emoji">{{ mood.emoji }}</span>
-        <span class="moods-card__label">{{ mood.label }}</span>
-        <span class="moods-card__blurb">{{ mood.blurb }}</span>
-        <span class="moods-card__accent" :style="{ background: mood.accent }" />
-        <span
+      <div v-for="mood in allMoods" :key="mood.key" class="moods-card__cell">
+        <button
+          type="button"
+          class="moods-card__mood"
+          :class="{ 'moods-card__mood--on': mood.key === moodKey }"
+          @click="choose(mood.key)"
+        >
+          <span class="moods-card__emoji">{{ mood.emoji }}</span>
+          <span class="moods-card__label">{{ mood.label }}</span>
+          <span class="moods-card__blurb">{{ mood.blurb }}</span>
+          <span
+            class="moods-card__accent"
+            :style="{ background: mood.accent }"
+          />
+        </button>
+        <button
           v-if="mood.custom"
+          type="button"
           class="moods-card__remove"
-          role="button"
-          tabindex="0"
           aria-label="Remover perfil"
-          @click.stop="removing = mood.key"
-          @keydown.enter.stop="removing = mood.key"
+          @click="removing = mood.key"
         >
           <UIIcon icon="trash" :size="13" />
-        </span>
-      </button>
+        </button>
+      </div>
     </div>
 
     <UIButton
@@ -82,11 +83,15 @@ async function confirmRemove() {
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   gap: 10px;
 }
+.moods-card__cell {
+  position: relative;
+}
 .moods-card__mood {
   position: relative;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  width: 100%;
   text-align: left;
   font-family: inherit;
   padding: 12px 14px;
@@ -128,6 +133,7 @@ async function confirmRemove() {
   justify-content: center;
   width: 24px;
   height: 24px;
+  border: none;
   border-radius: var(--pt-radius-sm);
   background: var(--pt-paper-2);
   color: var(--pt-ink-muted);

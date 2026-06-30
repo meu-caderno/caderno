@@ -50,7 +50,7 @@ defineProps<{ min?: number; max?: number; step?: number }>();
   border-radius: 50%;
   background: var(--pt-paper);
   border: 2px solid var(--pt-ink);
-  box-shadow: 0 1px 3px rgba(44, 42, 39, 0.2);
+  box-shadow: 0 1px 3px rgba(var(--pt-ink-rgb), 0.2);
 }
 .uisl__thumb:focus-visible {
   outline: 2px solid var(--pt-ink);

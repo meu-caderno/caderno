@@ -55,7 +55,7 @@ function onOpenChange(value: boolean) {
   position: fixed;
   inset: 0;
   z-index: 55;
-  background: rgba(44, 42, 39, 0.4);
+  background: rgba(var(--pt-ink-rgb), 0.4);
 }
 .uiad__sheet {
   position: fixed;
@@ -69,7 +69,7 @@ function onOpenChange(value: boolean) {
   border: 2px solid var(--pt-ink);
   border-radius: 16px;
   padding: 22px;
-  box-shadow: 0 18px 50px rgba(44, 42, 39, 0.28);
+  box-shadow: 0 18px 50px rgba(var(--pt-ink-rgb), 0.28);
 }
 .uiad__title {
   font-size: calc(21px * var(--pt-text-scale));

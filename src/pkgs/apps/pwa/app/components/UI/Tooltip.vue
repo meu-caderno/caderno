@@ -38,7 +38,7 @@ defineProps<{ text: string }>();
   background: var(--pt-ink);
   padding: 7px 10px;
   border-radius: var(--pt-radius-sm);
-  box-shadow: 0 6px 18px rgba(44, 42, 39, 0.24);
+  box-shadow: 0 6px 18px rgba(var(--pt-ink-rgb), 0.24);
 }
 .uitt__arrow {
   fill: var(--pt-ink);

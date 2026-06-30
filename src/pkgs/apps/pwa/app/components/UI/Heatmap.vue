@@ -45,7 +45,7 @@ const items = computed(() =>
         borderRadius: `${props.radius}px`,
         background: PAL[st] ?? PAL.none,
         border: known
-          ? "1.5px solid rgba(44,42,39,0.12)"
+          ? "1.5px solid rgba(var(--pt-ink-rgb), 0.12)"
           : "1.5px dashed #d8d2c4",
       },
     };

@@ -1,3 +1,8 @@
+import type { Preferences } from "@meu-caderno/core";
+import type { Ref } from "vue";
+
+type ListPreferenceKey = "homeWidgets" | "tabItems" | "railItems";
+
 export interface HomeWidget {
   key: string;
   label: string;
@@ -69,56 +74,26 @@ export function useLayout() {
     return current;
   }
 
-  async function toggleWidget(key: string, allKeys: string[]) {
-    const next = nextList(homeWidgets.value, allKeys, key, []);
-    homeWidgets.value = next;
-    await persist({ homeWidgets: next });
+  function makeListControls(
+    listRef: Ref<VisibilityList>,
+    prefKey: ListPreferenceKey,
+  ) {
+    async function commit(next: string[]) {
+      listRef.value = next;
+      await persist({ [prefKey]: next } as Partial<Preferences>);
+    }
+    return {
+      toggle: (key: string, allKeys: string[], pinned: string[] = []) =>
+        commit(nextList(listRef.value, allKeys, key, pinned)),
+      move: (key: string, allKeys: string[], direction: -1 | 1) =>
+        commit(movedList(listRef.value, allKeys, key, direction)),
+      reorder: (visibleOrder: string[]) => commit(visibleOrder),
+    };
   }
 
-  async function toggleTab(key: string, allKeys: string[], pinned: string[]) {
-    const next = nextList(tabItems.value, allKeys, key, pinned);
-    tabItems.value = next;
-    await persist({ tabItems: next });
-  }
-
-  async function toggleRail(key: string, allKeys: string[], pinned: string[]) {
-    const next = nextList(railItems.value, allKeys, key, pinned);
-    railItems.value = next;
-    await persist({ railItems: next });
-  }
-
-  async function moveWidget(key: string, allKeys: string[], direction: -1 | 1) {
-    const next = movedList(homeWidgets.value, allKeys, key, direction);
-    homeWidgets.value = next;
-    await persist({ homeWidgets: next });
-  }
-
-  async function moveTab(key: string, allKeys: string[], direction: -1 | 1) {
-    const next = movedList(tabItems.value, allKeys, key, direction);
-    tabItems.value = next;
-    await persist({ tabItems: next });
-  }
-
-  async function moveRail(key: string, allKeys: string[], direction: -1 | 1) {
-    const next = movedList(railItems.value, allKeys, key, direction);
-    railItems.value = next;
-    await persist({ railItems: next });
-  }
-
-  async function reorderWidgets(visibleOrder: string[]) {
-    homeWidgets.value = visibleOrder;
-    await persist({ homeWidgets: visibleOrder });
-  }
-
-  async function reorderTabs(visibleOrder: string[]) {
-    tabItems.value = visibleOrder;
-    await persist({ tabItems: visibleOrder });
-  }
-
-  async function reorderRail(visibleOrder: string[]) {
-    railItems.value = visibleOrder;
-    await persist({ railItems: visibleOrder });
-  }
+  const widgetControls = makeListControls(homeWidgets, "homeWidgets");
+  const tabControls = makeListControls(tabItems, "tabItems");
+  const railControls = makeListControls(railItems, "railItems");
 
   return {
     homeWidgets,
@@ -127,14 +102,20 @@ export function useLayout() {
     hydrate,
     isVisible,
     ordered,
-    toggleWidget,
-    toggleTab,
-    toggleRail,
-    moveWidget,
-    moveTab,
-    moveRail,
-    reorderWidgets,
-    reorderTabs,
-    reorderRail,
+    toggleWidget: (key: string, allKeys: string[]) =>
+      widgetControls.toggle(key, allKeys),
+    toggleTab: (key: string, allKeys: string[], pinned: string[]) =>
+      tabControls.toggle(key, allKeys, pinned),
+    toggleRail: (key: string, allKeys: string[], pinned: string[]) =>
+      railControls.toggle(key, allKeys, pinned),
+    moveWidget: (key: string, allKeys: string[], direction: -1 | 1) =>
+      widgetControls.move(key, allKeys, direction),
+    moveTab: (key: string, allKeys: string[], direction: -1 | 1) =>
+      tabControls.move(key, allKeys, direction),
+    moveRail: (key: string, allKeys: string[], direction: -1 | 1) =>
+      railControls.move(key, allKeys, direction),
+    reorderWidgets: widgetControls.reorder,
+    reorderTabs: tabControls.reorder,
+    reorderRail: railControls.reorder,
   };
 }

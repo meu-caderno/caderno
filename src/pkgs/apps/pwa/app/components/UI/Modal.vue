@@ -46,7 +46,7 @@ function onOpenChange(value: boolean) {
   position: fixed;
   inset: 0;
   z-index: 50;
-  background: rgba(44, 42, 39, 0.4);
+  background: rgba(var(--pt-ink-rgb), 0.4);
 }
 .modal__sheet {
   position: fixed;
@@ -62,7 +62,7 @@ function onOpenChange(value: boolean) {
   background: var(--pt-paper);
   border: 2px solid var(--pt-ink);
   border-radius: 18px 18px 0 0;
-  box-shadow: 0 -8px 40px rgba(44, 42, 39, 0.24);
+  box-shadow: 0 -8px 40px rgba(var(--pt-ink-rgb), 0.24);
 }
 @media (min-width: 560px) {
   .modal__sheet {
@@ -70,7 +70,7 @@ function onOpenChange(value: boolean) {
     bottom: auto;
     transform: translate(-50%, -50%);
     border-radius: 18px;
-    box-shadow: 0 18px 50px rgba(44, 42, 39, 0.28);
+    box-shadow: 0 18px 50px rgba(var(--pt-ink-rgb), 0.28);
   }
 }
 .modal__head {
