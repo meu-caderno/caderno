@@ -35,6 +35,7 @@ import {
   Goal,
   Immersion,
   Link,
+  Mastery,
   OpKind,
   OriginKind,
   Recurrence,
@@ -78,6 +79,7 @@ export const ActivityKindSchema = z.enum(ActivityKind);
 export const RootSchema = z.enum(Root);
 export const RecurrenceSchema = z.enum(Recurrence);
 export const AspectSchema = z.enum(Aspect);
+export const MasterySchema = z.enum(Mastery);
 export const EdgeKindSchema = z.enum(EdgeKind);
 export const DensitySchema = z.enum(Density);
 export const ImmersionSchema = z.enum(Immersion);
@@ -227,6 +229,7 @@ export const NodeSchema = z.object({
   root: RootSchema.optional(),
   day: DayIsoSchema.optional(),
   status: ActivityStatusSchema.optional(),
+  mastery: MasterySchema.optional(),
   origin: OriginSchema.optional(),
 });
 

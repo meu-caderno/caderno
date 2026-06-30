@@ -1,5 +1,10 @@
 import type { Activity, DayIso, TimeBlock } from "@meu-caderno/core";
-import { addDays, expandSchedule } from "@meu-caderno/core";
+import {
+  addDays,
+  daysBetween,
+  expandSchedule,
+  weekdayOf,
+} from "@meu-caderno/core";
 import { useCaderno } from "~/composables/useCaderno";
 import { formatDay } from "~/utils/caderno-stats";
 
@@ -44,21 +49,30 @@ export function useAgenda() {
     return activities.value.filter((activity) => activity.dueDate === day);
   }
 
+  function buildDay(day: DayIso, todayDay: DayIso): AgendaDay {
+    return {
+      day,
+      weekdayLabel: WEEKDAY_LABELS[weekdayOf(day)] ?? "",
+      dayLabel: formatDay(day),
+      isToday: day === todayDay,
+      sessions: sessionsOnDay(day),
+      activities: activitiesOnDay(day),
+    };
+  }
+
+  function daysInRange(from: DayIso, to: DayIso): AgendaDay[] {
+    const span = daysBetween(from, to);
+    if (span < 0) return [];
+    const todayDay = today.value as DayIso;
+    return Array.from({ length: span + 1 }, (_, offset) =>
+      buildDay(addDays(from, offset), todayDay),
+    );
+  }
+
   const days = computed<AgendaDay[]>(() => {
     const start = today.value as DayIso;
-    return Array.from({ length: HORIZON_DAYS }, (_, offset) => {
-      const day = addDays(start, offset);
-      const weekday = new Date(`${day}T00:00:00`).getDay();
-      return {
-        day,
-        weekdayLabel: WEEKDAY_LABELS[weekday] ?? "",
-        dayLabel: formatDay(day),
-        isToday: offset === 0,
-        sessions: sessionsOnDay(day),
-        activities: activitiesOnDay(day),
-      };
-    });
+    return daysInRange(start, addDays(start, HORIZON_DAYS - 1));
   });
 
-  return { days, booting, ready };
+  return { days, daysInRange, today, booting, ready };
 }

@@ -26,11 +26,11 @@ Esforço: **P** (horas) · **M** (1–2 dias) · **G** (vários dias). Valor: **
 5. [ ] **H2 · SubjectForm campos avançados** (modelo de grade, forma de presença, eixo) — **adiado**: exige campos novos no `Subject` (core); não é quick win. Move p/ a camada de core.
 
 ### 🟡 Tier 2 — Wins médios (1–2 dias, pouco/zero core)
-6. [ ] **E1 · Página Disciplinas** (agrupada por contexto) — `M`/`A`, reusa `SubjectCard` + novo `useSubjects`. _(`pages/disciplinas.vue`)_
-7. [ ] **E4 · Página Contextos** (grade de cards) — `M`/`M`, reusa `ContextSwitcher`/`ContextDetail`. _(`pages/contextos.vue`)_
-8. [ ] **E2 · Página Presenças & Faltas** (filtros + agrupar) — `M`/`A`, selectors sobre `store.records`, sem core. _(`pages/presencas.vue`)_
-9. [ ] **E3 · Página Atividades + modo seleção/lote** — `M`/`A`, reusa `ActivityItem`/`Board` + loop no service. _(`pages/atividades.vue`)_
-10. [ ] **E5 · Nav das telas novas** (itens ocultáveis no rail/Home) — `P`/`M`. _(`useNav.ts`, `useLayout.ts`)_
+6. [x] **E1 · Página Disciplinas** — feito (`useSubjects` + `pages/disciplinas.vue`, agrupada por contexto).
+7. [x] **E4 · Página Contextos** — feito (`Section/Contextos/ContextCard` + `pages/contextos.vue`).
+8. [x] **E2 · Página Presenças & Faltas** — feito (`usePresences` + `utils/presences.ts` (+spec) + `pages/presencas.vue`).
+9. [x] **E3 · Página Atividades + lote** — feito (`utils/activities-filter.ts` (+spec) + `pages/atividades.vue`, seleção + barra de lote).
+10. [x] **E5 · Nav das telas novas** — feito (4 rotas em `NAV_ITEMS`; `DEFAULT_TAB_KEYS` mantém a tab bar enxuta; rail mostra todas).
 11. [ ] **B0–B4 · Conhecimento sem canvas** (maestria no `Node` + Lista/Board/Tabela) — `M`/`A`, B0 core pequeno. _(`domain/model.ts`, `pages/caderno.vue`, `Section/Caderno/*`)_
 12. [ ] **G1+G2 · Dashboard de contexto + integralização** — `M`/`M`, reusa `GoalsManager`/`ContextModules`. _(`pages/contexto/[id].vue`)_
 13. [ ] **D1–D4 · Agenda multi-visão** (Lista/Dia/Semana/Mês) — `M`/`A`, `expandSchedule` já existe. _(`pages/agenda.vue`, `Section/Agenda/*`)_

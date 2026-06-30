@@ -1,10 +1,21 @@
 <script setup lang="ts">
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import type { Id, Node } from "@meu-caderno/core";
+import { concepts } from "~/utils/concepts";
 
 const { nodes, roots, linksOf } = useNotebook();
 const { service } = useCadernoService();
 const { toast } = useToast();
+
+type CadernoView = "tree" | "list" | "board" | "table";
+const VIEWS: { value: CadernoView; label: string; icon: string }[] = [
+  { value: "tree", label: "Árvore", icon: "🌳" },
+  { value: "list", label: "Lista", icon: "📋" },
+  { value: "board", label: "Board", icon: "🗂️" },
+  { value: "table", label: "Tabela", icon: "▦" },
+];
+const view = ref<CadernoView>("tree");
+const conceptNodes = computed(() => concepts(nodes.value));
 
 const treeEl = ref<HTMLElement | null>(null);
 const rootOver = ref(false);
@@ -93,20 +104,55 @@ async function confirmDelete() {
       action-label="Nova nota"
       @action="openCreate"
     />
-    <div
-      v-else
-      ref="treeEl"
-      class="caderno__tree"
-      :class="{ 'caderno__tree--over': rootOver }"
-    >
-      <SectionCadernoNoteRow
-        v-for="node in roots"
-        :key="node.id"
-        :node="node"
-        :nodes="nodes"
+    <template v-else>
+      <div class="caderno__views">
+        <UIChip
+          v-for="option in VIEWS"
+          :key="option.value"
+          :label="option.label"
+          :icon="option.icon"
+          :selected="view === option.value"
+          @click="view = option.value"
+        />
+      </div>
+
+      <div
+        v-show="view === 'tree'"
+        ref="treeEl"
+        class="caderno__tree"
+        :class="{ 'caderno__tree--over': rootOver }"
+      >
+        <SectionCadernoNoteRow
+          v-for="node in roots"
+          :key="node.id"
+          :node="node"
+          :nodes="nodes"
+          @select="select"
+        />
+      </div>
+
+      <UIEmptyState
+        v-if="view !== 'tree' && !conceptNodes.length"
+        icon="💡"
+        title="Sem conceitos"
+        subtitle="Marque notas com o aspecto Conceito para acompanhar a maestria."
+      />
+      <SectionCadernoConceptList
+        v-else-if="view === 'list'"
+        :concepts="conceptNodes"
         @select="select"
       />
-    </div>
+      <SectionCadernoConceptBoard
+        v-else-if="view === 'board'"
+        :concepts="conceptNodes"
+        @select="select"
+      />
+      <SectionCadernoConceptTable
+        v-else-if="view === 'table'"
+        :concepts="conceptNodes"
+        @select="select"
+      />
+    </template>
 
     <SectionCadernoNoteForm
       v-if="creating"
@@ -156,6 +202,12 @@ async function confirmDelete() {
   display: flex;
   flex-direction: column;
   gap: calc(16px * var(--pt-density));
+  container-type: inline-size;
+}
+.caderno__views {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 .caderno__tree {
   display: flex;

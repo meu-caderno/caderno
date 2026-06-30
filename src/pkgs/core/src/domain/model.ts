@@ -204,6 +204,12 @@ export enum Aspect {
   WORK = "WORK",
 }
 
+export enum Mastery {
+  UNKNOWN = "UNKNOWN",
+  STUDYING = "STUDYING",
+  MASTERED = "MASTERED",
+}
+
 export interface Node {
   id: Id;
   aspects: Aspect[];
@@ -213,6 +219,7 @@ export interface Node {
   root?: Root;
   day?: DayIso;
   status?: ActivityStatus;
+  mastery?: Mastery;
   origin?: Origin;
 }
 

@@ -1,5 +1,25 @@
 <script setup lang="ts">
+type AgendaView = "lista" | "dia" | "semana" | "mes";
+
+interface ViewOption {
+  id: AgendaView;
+  label: string;
+  icon: string;
+  subtitle: string;
+}
+
+const VIEWS: ViewOption[] = [
+  { id: "lista", label: "Lista", icon: "≣", subtitle: "Próximos 7 dias" },
+  { id: "dia", label: "Dia", icon: "▦", subtitle: "Um dia por vez" },
+  { id: "semana", label: "Semana", icon: "▤", subtitle: "A semana inteira" },
+  { id: "mes", label: "Mês", icon: "▥", subtitle: "Visão do mês" },
+];
+
 const { days, booting, ready } = useAgenda();
+const view = ref<AgendaView>("lista");
+const subtitle = computed(
+  () => VIEWS.find((option) => option.id === view.value)?.subtitle ?? "",
+);
 </script>
 
 <template>
@@ -12,8 +32,25 @@ const { days, booting, ready } = useAgenda();
     />
   </div>
   <div v-else class="agenda">
-    <SectionPageHeader title="Agenda" subtitle="Próximos 7 dias" />
-    <SectionAgendaDayRow v-for="day in days" :key="day.day" :day="day" />
+    <SectionPageHeader title="Agenda" :subtitle="subtitle" />
+
+    <nav class="agenda__tabs">
+      <UIChip
+        v-for="option in VIEWS"
+        :key="option.id"
+        :icon="option.icon"
+        :label="option.label"
+        :selected="view === option.id"
+        @click="view = option.id"
+      />
+    </nav>
+
+    <template v-if="view === 'lista'">
+      <SectionAgendaDayRow v-for="day in days" :key="day.day" :day="day" />
+    </template>
+    <SectionAgendaDayView v-else-if="view === 'dia'" />
+    <SectionAgendaWeekView v-else-if="view === 'semana'" />
+    <SectionAgendaMonthGrid v-else />
   </div>
 </template>
 
@@ -30,5 +67,10 @@ const { days, booting, ready } = useAgenda();
   padding: 64px 16px;
   text-align: center;
   color: var(--pt-ink-muted);
+}
+.agenda__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 </style>
