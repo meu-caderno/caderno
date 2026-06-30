@@ -36,6 +36,7 @@ import {
   EntityName,
   Goal,
   Immersion,
+  LibraryKind,
   LibraryState,
   Link,
   MapItemKind,
@@ -85,6 +86,7 @@ export const RecurrenceSchema = z.enum(Recurrence);
 export const AspectSchema = z.enum(Aspect);
 export const MasterySchema = z.enum(Mastery);
 export const LibraryStateSchema = z.enum(LibraryState);
+export const LibraryKindSchema = z.enum(LibraryKind);
 export const MapItemKindSchema = z.enum(MapItemKind);
 export const EdgeKindSchema = z.enum(EdgeKind);
 export const DensitySchema = z.enum(Density);
@@ -261,6 +263,9 @@ export const LibraryItemSchema = z.object({
   progress: z.number().min(0).max(1).optional(),
   stars: z.number().int().min(1).max(5).optional(),
   state: LibraryStateSchema.optional(),
+  kind: LibraryKindSchema.optional(),
+  personalNote: z.string().optional(),
+  contextIds: z.array(IdSchema).optional(),
   reviews: z.array(LibraryReviewSchema).optional(),
 });
 

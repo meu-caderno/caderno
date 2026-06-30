@@ -245,6 +245,15 @@ export enum LibraryState {
   DONE = "DONE",
 }
 
+export enum LibraryKind {
+  BOOK = "BOOK",
+  ARTICLE = "ARTICLE",
+  VIDEO = "VIDEO",
+  SERIES = "SERIES",
+  COURSE = "COURSE",
+  OTHER = "OTHER",
+}
+
 export interface LibraryReview {
   contextId: Id;
   text: string;
@@ -258,6 +267,9 @@ export interface LibraryItem {
   progress?: number;
   stars?: number;
   state?: LibraryState;
+  kind?: LibraryKind;
+  personalNote?: string;
+  contextIds?: Id[];
   reviews?: LibraryReview[];
 }
 
