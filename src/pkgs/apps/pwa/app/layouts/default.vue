@@ -3,6 +3,17 @@ import { useTheme } from "~/composables/useTheme";
 
 const { zen, setZen } = useTheme();
 const { focusing, close: closeFocus } = useFocus();
+
+const searching = ref(false);
+
+function onKeydown(event: KeyboardEvent) {
+  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+    event.preventDefault();
+    searching.value = !searching.value;
+  }
+}
+onMounted(() => window.addEventListener("keydown", onKeydown));
+onUnmounted(() => window.removeEventListener("keydown", onKeydown));
 </script>
 
 <template>
@@ -21,6 +32,7 @@ const { focusing, close: closeFocus } = useFocus();
       <UIIcon icon="x" :size="16" /> sair do foco
     </button>
     <SectionHomePomodoroOverlay v-if="focusing" @close="closeFocus" />
+    <UICommandPalette v-if="searching" @close="searching = false" />
   </div>
 </template>
 

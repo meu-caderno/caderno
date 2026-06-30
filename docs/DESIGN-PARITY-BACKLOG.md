@@ -37,7 +37,7 @@ Esforço: **P** (horas) · **M** (1–2 dias) · **G** (vários dias). Valor: **
 
 ### 🟠 Tier 3 — Núcleo (alto valor, esforço médio-alto)
 14. [x] **A1–A6 · Editor de Notas rich-text** — feito: `UI/RichTextEditor.vue` (TipTap StarterKit + Link + Placeholder + TaskList) + toolbar + `assets/css/tiptap.css`; `NoteForm` usa o editor, `NoteDetail` renderiza o HTML.
-15. [ ] **F · Command palette ⌘K** — `M`/`A`, `useSearch` + componente; decisão F0 leve. _(`UI/CommandPalette.vue`)_
+15. [x] **F · Command palette ⌘K** — feito: `useSearch` (contextos/disciplinas/atividades/notas/acervo) + `UI/CommandPalette.vue` (teclado ↑/↓/enter/esc); ⌘K global no layout (a captura saiu do ⌘K — segue no QuickMenu/QuickStats). _(F0: ⌘K = busca.)_
 16. [x] **B6 · Modo Revisão** — feito: `engine/notebook.reviewQueue` (+spec, core 136) + `Section/Caderno/ReviewMode.vue` + chip "Revisão".
 17. [x] **D5 · Horário (timetable)** — feito: `Section/Agenda/{Timetable,TimetableCell}.vue` + visão "Horário".
 18. [ ] **A7+A8 · Âncora "pertence a" + promover-tarefa** — `M`/`M`, depende de A. _(editor)_ — adiado (extensão do editor).

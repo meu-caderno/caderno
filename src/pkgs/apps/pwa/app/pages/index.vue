@@ -56,15 +56,6 @@ const {
   onQuickAction,
 } = useHomeDialogs({ subjects, stats });
 
-function onKeydown(event: KeyboardEvent) {
-  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
-    event.preventDefault();
-    capturing.value = true;
-  }
-}
-onMounted(() => window.addEventListener("keydown", onKeydown));
-onUnmounted(() => window.removeEventListener("keydown", onKeydown));
-
 const headerMeta = computed(() => {
   const term = context.value?.terms?.[0]?.label;
   const count = `${subjects.value.length} disciplinas`;
