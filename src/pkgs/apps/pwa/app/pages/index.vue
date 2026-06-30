@@ -13,6 +13,7 @@ const {
   pendingActivities,
   inboxItems,
   gamification,
+  activities,
   subjects,
   today,
   todayLabel,
@@ -122,8 +123,15 @@ const period = computed(() => {
       :badges="gamification.badges"
     />
     <template v-for="key in orderedWidgets" :key="key">
+      <SectionHomeQuickStats
+        v-if="key === 'stats'"
+        :period="period"
+        :pending="pendingActivities.length"
+        :today-classes="roll.length"
+        @action="onQuickAction"
+      />
       <SectionHomeTodayRoll
-        v-if="key === 'roll'"
+        v-else-if="key === 'roll'"
         :roll="roll"
         :date-label="todayLabel"
         @mark="mark"
@@ -156,6 +164,7 @@ const period = computed(() => {
         @create="creatingActivity = true"
         @edit="editingActivity = $event"
       />
+      <SectionHomePomodoroWidget v-else-if="key === 'pomodoro'" />
     </template>
 
     <SectionHomeSubjectForm
@@ -172,12 +181,14 @@ const period = computed(() => {
     <SectionHomeActivityForm
       v-if="creatingActivity"
       :subjects="subjects"
+      :activities="activities"
       @done="creatingActivity = false"
       @cancel="creatingActivity = false"
     />
     <SectionHomeActivityForm
       v-if="editingActivity"
       :subjects="subjects"
+      :activities="activities"
       :activity="editingActivity"
       @done="editingActivity = null"
       @cancel="editingActivity = null"

@@ -13,7 +13,11 @@ import {
   type SortablePayload,
 } from "~/utils/sortable";
 
-const props = defineProps<{ subjects: Subject[]; activity?: Activity }>();
+const props = defineProps<{
+  subjects: Subject[];
+  activity?: Activity;
+  activities?: Activity[];
+}>();
 const emit = defineEmits<{ done: []; cancel: [] }>();
 
 const { service, ids } = useCadernoService();
@@ -50,6 +54,23 @@ const subtasks = ref<Subtask[]>([...(props.activity?.subtasks ?? [])]);
 const newSubtask = ref("");
 const saving = ref(false);
 
+const isPreparation = ref(props.activity?.preparesId != null);
+const preparesId = ref<string>(props.activity?.preparesId ?? "");
+const gapDays = ref<number>(props.activity?.gapDays ?? 3);
+
+const preparationTargets = computed(() => [
+  { value: "", label: "— escolha a atividade —" },
+  ...(props.activities ?? [])
+    .filter(
+      (candidate) =>
+        candidate.id !== props.activity?.id && candidate.dueDate != null,
+    )
+    .map((candidate) => ({
+      value: candidate.id as string,
+      label: candidate.title,
+    })),
+]);
+
 async function addSubtask() {
   const text = newSubtask.value.trim();
   if (!text) return;
@@ -81,6 +102,22 @@ function onMoveSubtask({ id, direction }: SortableMovePayload) {
   );
 }
 
+function editableFields() {
+  const prepares = isPreparation.value && preparesId.value;
+  return {
+    subjectId: subjectId.value ? (subjectId.value as Id) : undefined,
+    kind: kind.value as ActivityKind,
+    dueDate: due.value ? (due.value as DayIso) : undefined,
+    recurrence:
+      recurrence.value === Recurrence.NONE
+        ? undefined
+        : (recurrence.value as Recurrence),
+    subtasks: subtasks.value.length ? subtasks.value : undefined,
+    preparesId: prepares ? (preparesId.value as Id) : undefined,
+    gapDays: prepares ? gapDays.value : undefined,
+  };
+}
+
 async function save() {
   const trimmed = title.value.trim();
   if (!trimmed || saving.value) return;
@@ -94,14 +131,7 @@ async function save() {
   const res = await service.upsertActivity({
     ...base,
     title: trimmed,
-    subjectId: subjectId.value ? (subjectId.value as Id) : undefined,
-    kind: kind.value as ActivityKind,
-    dueDate: due.value ? (due.value as DayIso) : undefined,
-    recurrence:
-      recurrence.value === Recurrence.NONE
-        ? undefined
-        : (recurrence.value as Recurrence),
-    subtasks: subtasks.value.length ? subtasks.value : undefined,
+    ...editableFields(),
   });
   saving.value = false;
   if (res.ok) emit("done");
@@ -183,6 +213,20 @@ async function save() {
           </div>
         </div>
       </UIField>
+
+      <UISwitch
+        v-model="isPreparation"
+        label="📚 É preparação para outra atividade"
+        hint="vincula esta tarefa a uma entrega futura (ler antes da prova, etc.)"
+      />
+      <template v-if="isPreparation">
+        <UIField label="Para qual atividade">
+          <UISelect v-model="preparesId" :options="preparationTargets" />
+        </UIField>
+        <UIField label="Dias antes do prazo">
+          <UINumberField v-model="gapDays" :min="0" :max="60" :step="1" />
+        </UIField>
+      </template>
 
       <div class="af__actions">
         <UIButton variant="fantasma" label="Cancelar" @click="emit('cancel')" />

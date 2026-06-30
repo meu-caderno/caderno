@@ -9,11 +9,13 @@ export interface HomeWidget {
 }
 
 export const HOME_WIDGETS: HomeWidget[] = [
+  { key: "stats", label: "Resumo & atalhos" },
   { key: "roll", label: "Aulas de hoje" },
   { key: "risk", label: "Alerta de risco" },
   { key: "goals", label: "Metas" },
   { key: "subjects", label: "Disciplinas" },
   { key: "activities", label: "Atividades" },
+  { key: "pomodoro", label: "Pausa (Pomodoro)" },
 ];
 
 type VisibilityList = string[] | null;
