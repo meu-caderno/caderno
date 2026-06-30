@@ -4,27 +4,26 @@ const emit = defineEmits<{ "create-context": [] }>();
 const { context } = useActiveContext();
 const { moodKey } = useTheme();
 const { hasConsent, toggleConsent } = useConsent();
+const { read, patch } = usePreferences();
 
-const STORAGE_KEY = "caderno:banners:dismissed";
+const dismissed = useState<string[]>("caderno:banners:dismissed", () => []);
+const hydrated = useState<boolean>(
+  "caderno:banners:dismissed:hydrated",
+  () => false,
+);
 
-function readDismissed(): string[] {
-  if (!import.meta.client) return [];
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    return raw ? (JSON.parse(raw) as string[]) : [];
-  } catch {
-    return [];
-  }
-}
+onMounted(async () => {
+  if (hydrated.value) return;
+  hydrated.value = true;
+  const prefs = await read();
+  dismissed.value = prefs?.dismissedBanners ?? [];
+});
 
-const dismissed = ref<string[]>(readDismissed());
-
-function dismiss(key: string) {
+async function dismiss(key: string) {
   if (dismissed.value.includes(key)) return;
-  dismissed.value = [...dismissed.value, key];
-  if (import.meta.client) {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(dismissed.value));
-  }
+  const next = [...dismissed.value, key];
+  dismissed.value = next;
+  await patch({ dismissedBanners: next });
 }
 
 const isDemo = computed(() =>
@@ -47,11 +46,11 @@ const anyVisible = computed(
 );
 
 function createMine() {
-  dismiss("demo");
+  void dismiss("demo");
   emit("create-context");
 }
 function personalize() {
-  dismiss("mood");
+  void dismiss("mood");
   void navigateTo("/ajustes");
 }
 function enableGamification() {

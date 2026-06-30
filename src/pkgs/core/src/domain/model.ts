@@ -367,6 +367,7 @@ export interface Preferences {
   tabItems?: string[];
   railItems?: string[];
   consents?: string[];
+  dismissedBanners?: string[];
   lastSeenDay?: string;
   workbenches?: Workbench[];
   pomodoroFocus?: number;
