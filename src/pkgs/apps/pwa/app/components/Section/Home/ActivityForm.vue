@@ -17,7 +17,7 @@ const props = defineProps<{ subjects: Subject[]; activity?: Activity }>();
 const emit = defineEmits<{ done: []; cancel: [] }>();
 
 const { service, ids } = useCadernoService();
-const { activeId } = useActiveContext();
+const { effectiveId } = useActiveContext();
 
 const editing = computed(() => props.activity != null);
 
@@ -87,7 +87,7 @@ async function save() {
   saving.value = true;
   const base = props.activity ?? {
     id: await ids.newId(),
-    contextId: activeId.value ?? undefined,
+    contextId: effectiveId.value ?? undefined,
     status: ActivityStatus.OPEN,
     root: Root.CONTEXT,
   };

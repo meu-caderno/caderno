@@ -3,7 +3,7 @@ import type { Id, Workbench } from "@meu-caderno/core";
 export function useWorkbenches() {
   const { ids } = useCadernoService();
   const { read, patch } = usePreferences();
-  const { activeId, setActive } = useActiveContext();
+  const { effectiveId, setActive } = useActiveContext();
   const route = useRoute();
   const benches = useState<Workbench[]>("caderno:workbenches", () => []);
   const hydrated = useState<boolean>(
@@ -30,7 +30,7 @@ export function useWorkbenches() {
       id: await ids.newId(),
       name: trimmed,
       route: route.path,
-      contextId: activeId.value ?? undefined,
+      contextId: effectiveId.value ?? undefined,
     };
     await persist([...benches.value, bench]);
   }

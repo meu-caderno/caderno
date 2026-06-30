@@ -6,7 +6,7 @@ const props = defineProps<{ items: Activity[]; subjects: Subject[] }>();
 const emit = defineEmits<{ close: [] }>();
 
 const { service } = useCadernoService();
-const { activeId } = useActiveContext();
+const { effectiveId } = useActiveContext();
 
 const picks = reactive<Record<string, string>>({});
 
@@ -23,7 +23,7 @@ async function promote(item: Activity) {
   await service.upsertActivity({
     ...item,
     root: Root.CONTEXT,
-    contextId: activeId.value ?? undefined,
+    contextId: effectiveId.value ?? undefined,
     subjectId: subjectId ? (subjectId as Id) : undefined,
     kind: ActivityKind.TASK,
   });

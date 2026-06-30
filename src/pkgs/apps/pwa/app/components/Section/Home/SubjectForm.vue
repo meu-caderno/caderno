@@ -6,7 +6,7 @@ const props = defineProps<{ subject?: Subject }>();
 const emit = defineEmits<{ done: []; cancel: [] }>();
 
 const { service } = useCadernoService();
-const { activeId } = useActiveContext();
+const { effectiveId } = useActiveContext();
 
 const colors = [
   "#c0392b",
@@ -39,7 +39,7 @@ function toggleDay(weekday: number) {
 
 async function save() {
   const trimmed = name.value.trim();
-  if (!trimmed || saving.value || !activeId.value) return;
+  if (!trimmed || saving.value || !effectiveId.value) return;
   saving.value = true;
   const schedule = weekdays.value.length
     ? {
@@ -60,7 +60,7 @@ async function save() {
   const res = props.subject
     ? await service.updateSubject({ ...props.subject, ...fields })
     : await service.createSubject({
-        contextId: activeId.value,
+        contextId: effectiveId.value,
         hoursPerClass: 1,
         classesPerSession: 2,
         ...fields,
