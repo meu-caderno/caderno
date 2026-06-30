@@ -26,6 +26,18 @@ export enum EntityName {
   MOOD = "MOOD",
 }
 
+export const ENTITY_COLLECTIONS = [
+  "contexts",
+  "subjects",
+  "records",
+  "activities",
+  "library",
+  "nodes",
+  "edges",
+] as const;
+
+export type EntityCollection = (typeof ENTITY_COLLECTIONS)[number];
+
 export interface Identified {
   id: Id;
 }

@@ -46,27 +46,35 @@ export interface DirectedEdge {
   to: Id;
 }
 
-export function createsCycle(
-  edges: readonly DirectedEdge[],
-  from: Id,
-  to: Id,
-): boolean {
-  if (from === to) return true;
+function buildAdjacency(edges: readonly DirectedEdge[]): Map<Id, Id[]> {
   const adjacency = new Map<Id, Id[]>();
   for (const edge of edges) {
     const targets = adjacency.get(edge.from) ?? [];
     targets.push(edge.to);
     adjacency.set(edge.from, targets);
   }
+  return adjacency;
+}
+
+function reachable(adjacency: Map<Id, Id[]>, source: Id, target: Id): boolean {
   const seen = new Set<Id>();
-  const stack: Id[] = [to];
+  const stack: Id[] = [source];
   while (stack.length > 0) {
     const node = stack.pop();
     if (node === undefined) break;
-    if (node === from) return true;
+    if (node === target) return true;
     if (seen.has(node)) continue;
     seen.add(node);
     for (const next of adjacency.get(node) ?? []) stack.push(next);
   }
   return false;
+}
+
+export function createsCycle(
+  edges: readonly DirectedEdge[],
+  from: Id,
+  to: Id,
+): boolean {
+  if (from === to) return true;
+  return reachable(buildAdjacency(edges), to, from);
 }

@@ -24,6 +24,42 @@ const TONES: Record<Exclude<Tone, "custom">, ToneSpec> = {
   externa: { bg: "transparent", bd: "#7aa7d8", tx: "#3f5f80", dashed: true },
 };
 
+interface ResolvedTone {
+  background: string;
+  borderColor: string;
+  textColor: string;
+  dashed: boolean;
+  hasBorder: boolean;
+}
+
+const CUSTOM_TEXT_FALLBACK = "#8a8780";
+const CUSTOM_BORDER_FALLBACK = "#c4beb0";
+
+function customTone(
+  color: string | undefined,
+  background: string | undefined,
+  bordered: boolean,
+): ResolvedTone {
+  return {
+    textColor: color ?? CUSTOM_TEXT_FALLBACK,
+    background: background ?? "transparent",
+    borderColor: color ?? CUSTOM_BORDER_FALLBACK,
+    dashed: false,
+    hasBorder: bordered,
+  };
+}
+
+function presetTone(tone: Tone): ResolvedTone {
+  const toneStyle = TONES[tone as Exclude<Tone, "custom">] ?? TONES.neutro;
+  return {
+    background: toneStyle.bg,
+    borderColor: toneStyle.bd,
+    textColor: toneStyle.tx,
+    dashed: toneStyle.dashed === true,
+    hasBorder: true,
+  };
+}
+
 const props = withDefaults(
   defineProps<{
     label?: string;
@@ -38,39 +74,25 @@ const props = withDefaults(
 );
 
 const spec = computed(() => {
-  const sm = props.size === "sm";
+  const small = props.size === "sm";
   const isCustom = props.tone === "custom" || props.color != null;
-  let bg: string;
-  let bd: string;
-  let tx: string;
-  let dashed = false;
-  let hasBorder: boolean;
-  if (isCustom) {
-    tx = props.color ?? "#8a8780";
-    bg = props.bg ?? "transparent";
-    bd = props.color ?? "#c4beb0";
-    hasBorder = props.bordered;
-  } else {
-    const toneStyle =
-      TONES[props.tone as Exclude<Tone, "custom">] ?? TONES.neutro;
-    bg = toneStyle.bg;
-    bd = toneStyle.bd;
-    tx = toneStyle.tx;
-    dashed = !!toneStyle.dashed;
-    hasBorder = true;
-  }
-  const border = hasBorder
-    ? `${sm ? "1px" : "1.5px"} ${dashed ? "dashed" : "solid"} ${bd}`
+  const resolved = isCustom
+    ? customTone(props.color, props.bg, props.bordered)
+    : presetTone(props.tone);
+  const borderWidth = small ? "1px" : "1.5px";
+  const borderStyle = resolved.dashed ? "dashed" : "solid";
+  const border = resolved.hasBorder
+    ? `${borderWidth} ${borderStyle} ${resolved.borderColor}`
     : "none";
   return {
     badge: {
-      fontSize: sm ? "10px" : "11px",
-      padding: sm ? "3px 9px" : "3px 10px",
-      background: bg,
+      fontSize: small ? "10px" : "11px",
+      padding: small ? "3px 9px" : "3px 10px",
+      background: resolved.background,
       border,
-      color: tx,
+      color: resolved.textColor,
     },
-    dot: bd,
+    dot: resolved.borderColor,
   };
 });
 </script>

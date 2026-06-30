@@ -104,6 +104,16 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
     });
   };
 
+  const activityFormsCycle = async (activity: Activity): Promise<boolean> => {
+    if (!activity.preparesId) return false;
+    const edges = (await store.activities.list())
+      .filter(
+        (other) => other.id !== activity.id && other.preparesId !== undefined,
+      )
+      .map((other) => ({ from: other.id, to: other.preparesId as Id }));
+    return createsCycle(edges, activity.id, activity.preparesId);
+  };
+
   return {
     async createContext(input) {
       const context: Context = { ...input, id: await ids.newId() };
@@ -262,20 +272,12 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
           EntityName.ACTIVITY,
         );
       }
-      if (activity.preparesId) {
-        const edges = (await store.activities.list())
-          .filter(
-            (other) =>
-              other.id !== activity.id && other.preparesId !== undefined,
-          )
-          .map((other) => ({ from: other.id, to: other.preparesId as Id }));
-        if (createsCycle(edges, activity.id, activity.preparesId)) {
-          return fail(
-            DomainErrorCode.INVARIANT_CYCLE,
-            { activityId: activity.id, preparesId: activity.preparesId },
-            EntityName.ACTIVITY,
-          );
-        }
+      if (await activityFormsCycle(activity)) {
+        return fail(
+          DomainErrorCode.INVARIANT_CYCLE,
+          { activityId: activity.id, preparesId: activity.preparesId },
+          EntityName.ACTIVITY,
+        );
       }
       await commitPut((tx) => tx.activities, EntityName.ACTIVITY, activity);
       await hooks?.callHook("activity:upserted", activity);

@@ -1,21 +1,12 @@
 import type {
   ContextStore,
   ContextTx,
+  EntityCollection,
   Identified,
   Repository,
 } from "../domain";
 
-const ENTITY_KEYS = [
-  "contexts",
-  "subjects",
-  "records",
-  "activities",
-  "library",
-  "nodes",
-  "edges",
-] as const;
-
-export type EntityKey = (typeof ENTITY_KEYS)[number];
+export type EntityKey = EntityCollection;
 export type StoreChange = ReadonlySet<EntityKey>;
 export type ChangeListener = (changed: StoreChange) => void;
 

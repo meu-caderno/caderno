@@ -29,6 +29,13 @@
 - **Complexidade cognitiva no CI** (`47de74d`): regra `noExcessiveCognitiveComplexity` (limite 15)
   habilitada no `biome.json`; `expandSchedule`/`writeBackup`/`linksOf` simplificados (extração de helpers);
   resíduo de `y`/`m`/`d` em `schedule.ts` corrigido.
+- **Limite de complexidade 15 → 10** (pendente de commit): 6 funções acima do novo teto refatoradas por
+  extração de helpers — `upsertActivity` (`activityFormsCycle`), `createsCycle`
+  (`buildAdjacency`+`reachable`), `dexie-store.buffered` (`mergeBuffer`/`bufferedRepo`/`flushBuffer`),
+  `Badge.spec` (`customTone`/`presetTone`), `useTheme.hydrate` (`if` → `??`).
+- **Fonte única de nomes de coleção** (pendente de commit): `ENTITY_COLLECTIONS`/`EntityCollection` no
+  `domain/storage.ts` consumidos por `observable-store` e `dexie-store` (removidos `ENTITY_KEYS` e
+  `BLOB_COLLECTIONS` locais).
 
 > Pendente de decisão: o **campo público `OpLogEntry.ts`** (e `RemoteChange.ts`) segue como `ts` — renomear
 > para `timestamp` é mudança coordenada de tipo de domínio + zod schema + mapeamento Dexie + serialização.
@@ -48,11 +55,14 @@
 
 ## 🔗 Temas transversais (atacar 1× resolve em várias camadas)
 
-- [ ] **Fonte única de nomes de coleção** (§4.2) — duplicada em ≥6 lugares: `core/src/domain/storage.ts`,
-  `application/observable-store.ts:8` (`ENTITY_KEYS`), `adapters/persistence-dexie/src/dexie-store.ts`
-  (3 formas: `:70-79`, `:125`, `:147-155`), `core/src/testing/in-memory-store.ts:60-67` +
-  `in-memory-blob-store.ts:64-72`, `app/composables/useBackup.ts:30-63,91-105`,
-  `validation/src/backup.ts:16` → **uma constante única exportada pelo core**, consumida por todos.
+- [x] **Fonte única de nomes de coleção** (§4.2) — **FEITO**: `ENTITY_COLLECTIONS` + tipo
+  `EntityCollection` exportados de `core/src/domain/storage.ts`, consumidos por
+  `application/observable-store.ts` (`EntityKey = EntityCollection`, removido o `ENTITY_KEYS` local) e por
+  `adapters/persistence-dexie/src/dexie-store.ts` (removido o `BLOB_COLLECTIONS`/`BlobCollection` local).
+  Restantes NÃO são duplicação colapsável: os campos de `ContextTx`/`Collections`/`BlobTx` e a construção
+  explícita em `testing/in-memory-*` são listas tipadas por interface (precisam nomear cada campo); o
+  schema Dexie `.stores()` carrega specs de índice; `useBackup`/`validation/backup.ts` usam um shape mais
+  largo (9 coleções, incluindo `profiles`/`moods` do config).
 - [ ] **`usePreferences()`** (§4.2) — extrair `read()`/`patch()` + dono único de `PREF_ID`, eliminando o
   par `persist(patch: Partial<Preferences>)` + `const PREF_ID = "default" as Id` repetido em 7
   composables: `useTheme.ts:4,256`, `useLayout.ts:3,39`, `useConsent.ts:3,55`, `usePomodoro.ts:3,103`,

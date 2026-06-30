@@ -257,12 +257,12 @@ export function useTheme() {
     if (hydrated.value) return;
     await reloadProfiles();
     const prefs = await read();
-    if (prefs?.homeProfile) moodKey.value = prefs.homeProfile;
-    if (prefs?.textScale) textScale.value = prefs.textScale;
-    if (prefs?.headingFont) headingFont.value = prefs.headingFont;
-    if (prefs?.screenDensity) screenDensity.value = prefs.screenDensity;
-    if (prefs?.zen != null) zen.value = prefs.zen;
-    if (prefs?.activityView) activityView.value = prefs.activityView;
+    moodKey.value = prefs?.homeProfile ?? moodKey.value;
+    textScale.value = prefs?.textScale ?? textScale.value;
+    headingFont.value = prefs?.headingFont ?? headingFont.value;
+    screenDensity.value = prefs?.screenDensity ?? screenDensity.value;
+    zen.value = prefs?.zen ?? zen.value;
+    activityView.value = prefs?.activityView ?? activityView.value;
     hydrated.value = true;
   }
 

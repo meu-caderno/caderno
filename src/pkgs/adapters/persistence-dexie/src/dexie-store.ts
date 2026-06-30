@@ -11,6 +11,7 @@ import type {
   ContextStore,
   ContextTx,
   Edge,
+  EntityCollection,
   GraphRepository,
   Id,
   Identified,
@@ -27,7 +28,11 @@ import type {
   Subject,
   Timestamp,
 } from "@meu-caderno/core";
-import { CapabilityImpact, OriginKind } from "@meu-caderno/core";
+import {
+  CapabilityImpact,
+  ENTITY_COLLECTIONS,
+  OriginKind,
+} from "@meu-caderno/core";
 import Dexie, { type Table } from "dexie";
 
 interface OpLogRow {
@@ -146,23 +151,52 @@ function blobRepo(table: Table<BlobRow, string>): BlobRepository {
   };
 }
 
-const BLOB_COLLECTIONS = [
-  "contexts",
-  "subjects",
-  "records",
-  "activities",
-  "library",
-  "nodes",
-  "edges",
-] as const;
-
-type BlobCollection = (typeof BLOB_COLLECTIONS)[number];
 type WriteBuffer = Map<string, BlobRow | null>;
+
+function mergeBuffer(rows: readonly BlobRow[], buffer: WriteBuffer): BlobRow[] {
+  const merged = new Map(rows.map((row) => [row.id, row]));
+  for (const [id, row] of buffer) {
+    if (row) merged.set(id, row);
+    else merged.delete(id);
+  }
+  return [...merged.values()];
+}
+
+function bufferedRepo(
+  source: Table<BlobRow, string>,
+  buffer: WriteBuffer,
+): BlobRepository {
+  return {
+    get: (id) =>
+      buffer.has(id)
+        ? Promise.resolve(buffer.get(id) ?? undefined)
+        : source.get(id),
+    list: () => source.toArray().then((rows) => mergeBuffer(rows, buffer)),
+    put: (row) => {
+      buffer.set(row.id, row);
+      return Promise.resolve();
+    },
+    delete: (id) => {
+      buffer.set(id, null);
+      return Promise.resolve();
+    },
+  };
+}
+
+function flushBuffer(
+  source: Table<BlobRow, string>,
+  buffer: WriteBuffer,
+): void {
+  for (const [id, row] of buffer) {
+    if (row) source.put(row);
+    else source.delete(id);
+  }
+}
 
 export function createDexieBlobStore(name = "caderno-enc"): BlobStore {
   const db = new Dexie(name);
   const stores: Record<string, string> = { oplog: "++seq" };
-  for (const collection of BLOB_COLLECTIONS) stores[collection] = "id";
+  for (const collection of ENTITY_COLLECTIONS) stores[collection] = "id";
   db.version(1).stores(stores);
 
   const oplogTable = db.table<BlobLogRow, number>("oplog");
@@ -184,43 +218,14 @@ export function createDexieBlobStore(name = "caderno-enc"): BlobStore {
   };
 
   const base = { oplog } as BlobTx;
-  for (const collection of BLOB_COLLECTIONS) {
+  for (const collection of ENTITY_COLLECTIONS) {
     base[collection] = blobRepo(table(collection));
   }
 
   const buffered = <R>(work: (tx: BlobTx) => Promise<R>): Promise<R> => {
-    const writes = {} as Record<BlobCollection, WriteBuffer>;
-    for (const collection of BLOB_COLLECTIONS) writes[collection] = new Map();
+    const writes = {} as Record<EntityCollection, WriteBuffer>;
+    for (const collection of ENTITY_COLLECTIONS) writes[collection] = new Map();
     const appended: string[] = [];
-
-    const overlayRepo = (collection: BlobCollection): BlobRepository => {
-      const buffer = writes[collection];
-      return {
-        get: (id) =>
-          buffer.has(id)
-            ? Promise.resolve(buffer.get(id) ?? undefined)
-            : table(collection).get(id),
-        list: () =>
-          table(collection)
-            .toArray()
-            .then((rows) => {
-              const merged = new Map(rows.map((row) => [row.id, row]));
-              for (const [id, row] of buffer) {
-                if (row) merged.set(id, row);
-                else merged.delete(id);
-              }
-              return [...merged.values()];
-            }),
-        put: (row) => {
-          buffer.set(row.id, row);
-          return Promise.resolve();
-        },
-        delete: (id) => {
-          buffer.set(id, null);
-          return Promise.resolve();
-        },
-      };
-    };
 
     const overlayOplog: BlobLog = {
       append: (data) => {
@@ -234,17 +239,13 @@ export function createDexieBlobStore(name = "caderno-enc"): BlobStore {
       list: () => readOplog().then((existing) => [...existing, ...appended]),
     };
     const overlay = { oplog: overlayOplog } as BlobTx;
-    for (const collection of BLOB_COLLECTIONS) {
-      overlay[collection] = overlayRepo(collection);
+    for (const collection of ENTITY_COLLECTIONS) {
+      overlay[collection] = bufferedRepo(table(collection), writes[collection]);
     }
 
     const flush = () => {
-      for (const collection of BLOB_COLLECTIONS) {
-        const target = table(collection);
-        for (const [id, row] of writes[collection]) {
-          if (row) target.put(row);
-          else target.delete(id);
-        }
+      for (const collection of ENTITY_COLLECTIONS) {
+        flushBuffer(table(collection), writes[collection]);
       }
       for (const data of appended) oplogTable.add({ data });
     };
