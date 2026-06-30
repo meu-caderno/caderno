@@ -136,10 +136,11 @@ Status: [ ] aberto · [~] em debate · [x] decidido · [-] descartado
   2. **Porta `SyncTransport` reservada** em `domain/sync.ts` (`RemoteChange`, `SyncCursor`, `SyncPull`, `SyncState`, `SyncTransport`) — não exportada do barrel (convenção "reservado", como `future.ts`).
 - **Adiado (DEFER #13), com seams já no lugar:** a sync engine; cursor monotônico/HLC no `oplog` (hoje `since(ts)`/`forId` + `++seq` no Dexie); CRDT/merge; `ConfigStore` remoto.
 
-### [ ] #15 — Disciplina de dados derivados (view vs materialized)
+### [x] #15 — Disciplina de dados derivados (view vs materialized)
 - **Princípio:** fonte normalizada (FK por id); agregado dono de VOs; **derivado = selector puro (view)**; **materialized view (cache)** só se quente/caro, **reconstruível**, invalidado pelo observable seam. **Nunca guardar derivado como fonte.**
 - **Smell concreto:** `Subject.records?` é embutido **mas** a fonte é a coleção `records` (o serviço grava lá). Deveria virar **view** (`recordsOf = records.where(subjectId)`).
-- **Decisão:** princípio aceito. **Normalizar `Subject.records?` → view** é o passo pequeno NOW (resto adiado). _(implementação pendente)_
+- **Decisão:** princípio aceito. **Normalizar `Subject.records?` → view** é o passo pequeno NOW (resto adiado).
+- **Implementado:** o funil de escrita (`createSubject`/`updateSubject`) passa por `stripDerivedRecords` e **nunca persiste `records` no row do `Subject`**; a fonte canônica é `store.records` (top-level, gravado por `markAttendance`/cascata). O campo `Subject.records?` permanece no tipo apenas como **hidratação de view** (a `useCaderno.subjects` anexa via `recordsOf`; engine `attendance`/`rollcall` leem o campo hidratado). `assessments` **continua canônico no `Subject`** (não há coleção top-level). Teste de regressão "never persists records onto the subject row". Gate verde (core 133).
 
 ### [ ] #16 — Notebook cifrado escalável (ÉPICO, DEFER — só quando o notebook crescer)
 - **Problema real (presente quando há muitas notas):** o full-blob encrypted store faz `decrypt-all` por query na main thread → trava. MVP1 segue com full-blob (notebook pequeno).

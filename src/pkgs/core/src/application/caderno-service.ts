@@ -104,6 +104,11 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
     });
   };
 
+  const stripDerivedRecords = (subject: Subject): Subject => {
+    const { records, ...persistable } = subject;
+    return persistable;
+  };
+
   const activityFormsCycle = async (activity: Activity): Promise<boolean> => {
     if (!activity.preparesId) return false;
     const edges = (await store.activities.list())
@@ -143,7 +148,10 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
           EntityName.SUBJECT,
         );
       }
-      const subject: Subject = { ...input, id: await ids.newId() };
+      const subject: Subject = stripDerivedRecords({
+        ...input,
+        id: await ids.newId(),
+      });
       await commitPut((tx) => tx.subjects, EntityName.SUBJECT, subject);
       await hooks?.callHook("subject:created", subject);
       return ok(subject);
@@ -165,11 +173,10 @@ export function createCadernoService(deps: CadernoDeps): CadernoService {
           EntityName.SUBJECT,
         );
       }
-      const merged: Subject = {
+      const merged: Subject = stripDerivedRecords({
         ...subject,
         assessments: subject.assessments ?? existing.assessments,
-        records: subject.records ?? existing.records,
-      };
+      });
       await commitPut((tx) => tx.subjects, EntityName.SUBJECT, merged);
       await hooks?.callHook("subject:updated", merged);
       return ok(merged);

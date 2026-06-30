@@ -61,9 +61,12 @@ scrim token + `useLayout` parametrizado (`a1aa6a9`), DnD por teclado (`20c8573`)
 `cipher`→`sodium` (`f03a8a9`), tipos nomeados + genéricos `Identified` (`5f43a3e`); `usePomodoro.clock`
 já era `timeLabel`.
 
+**Resolvido — decisão de arquitetura `#15` (DECISIONS.md):**
+- `Subject.records` derivado-como-fonte — **FEITO**: funil de escrita passa por `stripDerivedRecords`;
+  `records` nunca é persistido no `Subject` (fonte canônica = `store.records`); campo fica só como
+  hidratação de view. `assessments` permanece canônico no `Subject`. + teste de regressão (core 133).
+
 **Adiado — decisões de produto/arquitetura (precisam de você):**
-- `Subject.records`/`assessments` derivado-como-fonte (🟠) — não persistir no `Subject`, derivar via
-  `recordsOf`. Mexe em `updateSubject`/`addAssessment` e na forma serializada.
 - Oplog sem payload nem leitor real × `engine/undo.ts` (🟠) — decidir se o oplog grava `before/after` e
   vira fonte de undo/sync, ou se o service passa a registrar `Reversible`.
 - `OpLogEntry.ts`/`RemoteChange.ts`: `ts`→`timestamp` e `entity: string`→`EntityName` — migração
@@ -129,10 +132,9 @@ perderia a chave silenciosamente); TOCTOU em app local mono-usuário é aceitáv
 ## 🟠 Major
 
 ### Decisões de arquitetura (discutir + registrar em `DECISIONS.md`)
-- [ ] **`Subject.records`/`assessments` derivado-como-fonte** — `application/caderno-service.ts:148`
-  (`updateSubject` faz `records: subject.records ?? existing.records`), mas o repositório canônico é
-  `store.records` (top-level); `markAttendance` grava lá, nunca no `Subject`. Campo embarcado pode
-  dessincronizar → não persistir `records` no `Subject`; derivar via `recordsOf` quando precisar.
+- [x] **`Subject.records` derivado-como-fonte** — **FEITO** (decisão `#15`): `stripDerivedRecords` no
+  funil de escrita; `records` nunca persiste no `Subject` (fonte = `store.records`); `assessments` segue
+  canônico no `Subject`. Teste de regressão "never persists records onto the subject row".
 - [ ] **Oplog sem payload nem leitor real** — `caderno-service.ts:90` apenda `{ts,entity,op,id}` (sem
   `before/after`); único consumidor é `Section/Settings/OplogCard.vue` (exibição); o undo real vive em
   `engine/undo.ts` (com `before/after`) e **não** é alimentado pelo service. Decidir: oplog grava payload

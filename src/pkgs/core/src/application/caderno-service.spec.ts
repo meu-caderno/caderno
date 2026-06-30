@@ -107,6 +107,29 @@ describe("CadernoService", () => {
     ).toHaveLength(1);
   });
 
+  it("never persists records onto the subject row", async () => {
+    const { store, svc } = await service();
+    const created = await svc.createSubject(subjectInput());
+    if (!created.ok) throw new Error("setup failed");
+    const updated = await svc.updateSubject({
+      ...created.value,
+      name: "Cálculo II",
+      records: [
+        {
+          id: "rec-attached" as Id,
+          subjectId: created.value.id,
+          day: "2026-03-02" as DayIso,
+          status: AttendanceStatus.PRESENT,
+        },
+      ],
+    });
+    expect(updated.ok).toBe(true);
+    if (updated.ok) expect(updated.value.records).toBeUndefined();
+    const stored = await store.subjects.get(created.value.id);
+    expect(stored?.records).toBeUndefined();
+    expect(await store.records.get("rec-attached" as Id)).toBeUndefined();
+  });
+
   it("rejects updating a missing subject", async () => {
     const { svc } = await service();
     const result = await svc.updateSubject({
