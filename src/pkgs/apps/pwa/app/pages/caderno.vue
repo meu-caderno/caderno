@@ -4,14 +4,14 @@ import type { Id, NotebookNode } from "@meu-caderno/core";
 import { reviewQueue } from "@meu-caderno/core";
 import { concepts } from "~/utils/concepts";
 
-const { nodes, edges, roots, linksOf } = useNotebook();
+const { nodes, edges, roots } = useNotebook();
 const { effectiveId } = useActiveContext();
 const { service } = useCadernoService();
-const { toast } = useToast();
 
 type CadernoView =
   | "tree"
   | "list"
+  | "index"
   | "board"
   | "table"
   | "review"
@@ -20,6 +20,7 @@ type CadernoView =
 const VIEWS: { value: CadernoView; label: string; icon: string }[] = [
   { value: "tree", label: "Árvore", icon: "🌳" },
   { value: "list", label: "Lista", icon: "📋" },
+  { value: "index", label: "Índice", icon: "☰" },
   { value: "board", label: "Board", icon: "🗂️" },
   { value: "table", label: "Tabela", icon: "▦" },
   { value: "review", label: "Revisão", icon: "🔁" },
@@ -29,6 +30,7 @@ const VIEWS: { value: CadernoView; label: string; icon: string }[] = [
 const view = ref<CadernoView>("tree");
 const conceptNodes = computed(() => concepts(nodes.value));
 const reviewNodes = computed(() => reviewQueue(nodes.value));
+const openNoteId = ref<Id | null>(null);
 
 const treeEl = ref<HTMLElement | null>(null);
 const rootOver = ref(false);
@@ -65,34 +67,13 @@ onUnmounted(() => cleanupTree());
 
 const creating = ref(false);
 const createParentId = ref<Id | undefined>(undefined);
-const selectedId = ref<Id | null>(null);
-const editing = ref(false);
-const deleting = ref(false);
-
-const selected = computed(
-  () => nodes.value.find((node) => node.id === selectedId.value) ?? null,
-);
-const selectedLinks = computed(() =>
-  selected.value ? linksOf(selected.value.id) : [],
-);
 
 function openCreate() {
   createParentId.value = undefined;
   creating.value = true;
 }
 function select(node: NotebookNode) {
-  selectedId.value = node.id;
-  editing.value = false;
-  deleting.value = false;
-}
-
-async function confirmDelete() {
-  const node = selected.value;
-  deleting.value = false;
-  selectedId.value = null;
-  if (!node) return;
-  const res = await service.deleteNode(node.id);
-  if (res.ok) toast({ title: `${node.title} excluída` });
+  openNoteId.value = node.id;
 }
 </script>
 
@@ -109,8 +90,15 @@ async function confirmDelete() {
       </template>
     </SectionPageHeader>
 
+    <SectionCadernoNotePage
+      v-if="openNoteId"
+      :key="openNoteId"
+      :node-id="openNoteId"
+      @close="openNoteId = null"
+      @open="openNoteId = $event"
+    />
     <UIEmptyState
-      v-if="!nodes.length"
+      v-else-if="!nodes.length"
       icon="🧠"
       title="Caderno vazio"
       subtitle="Notas em árvore e conhecimento conectado em rede."
@@ -158,6 +146,11 @@ async function confirmDelete() {
         v-else-if="view === 'mapas'"
         :context-id="effectiveId ?? undefined"
       />
+      <SectionCadernoNoteIndex
+        v-else-if="view === 'index'"
+        :nodes="nodes"
+        @open="openNoteId = $event"
+      />
       <UIEmptyState
         v-else-if="view !== 'tree' && !conceptNodes.length"
         icon="💡"
@@ -187,36 +180,6 @@ async function confirmDelete() {
       :parent-id="createParentId"
       @done="creating = false"
       @cancel="creating = false"
-    />
-    <SectionCadernoNoteForm
-      v-if="selected && editing"
-      :node="selected"
-      :nodes="nodes"
-      @done="editing = false"
-      @cancel="editing = false"
-      @delete="
-        editing = false;
-        deleting = true;
-      "
-    />
-    <SectionCadernoNoteDetail
-      v-if="selected && !editing && !deleting"
-      :node="selected"
-      :nodes="nodes"
-      :links="selectedLinks"
-      @close="selectedId = null"
-      @edit="editing = true"
-      @delete="deleting = true"
-      @select="select"
-    />
-    <UIConfirm
-      v-if="selected && deleting"
-      title="Excluir nota?"
-      :description="`Remove ${selected.title}. As sub-notas sobem um nível e as conexões são apagadas.`"
-      confirm-label="Excluir"
-      danger
-      @confirm="confirmDelete"
-      @cancel="deleting = false"
     />
   </div>
 </template>
