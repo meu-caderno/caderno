@@ -12,10 +12,7 @@ const { days, booting, ready } = useAgenda();
     />
   </div>
   <div v-else class="agenda">
-    <header class="agenda__head">
-      <h1 class="pt-hand agenda__title">Agenda</h1>
-      <p class="agenda__sub">Próximos 7 dias</p>
-    </header>
+    <SectionPageHeader title="Agenda" subtitle="Próximos 7 dias" />
     <SectionAgendaDayRow v-for="day in days" :key="day.day" :day="day" />
   </div>
 </template>
@@ -33,15 +30,5 @@ const { days, booting, ready } = useAgenda();
   padding: 64px 16px;
   text-align: center;
   color: var(--pt-ink-muted);
-}
-.agenda__title {
-  font-size: calc(26px * var(--pt-text-scale));
-  font-weight: 800;
-  margin: 0;
-}
-.agenda__sub {
-  font-size: calc(13px * var(--pt-text-scale));
-  color: var(--pt-ink-muted);
-  margin: 4px 0 8px;
 }
 </style>

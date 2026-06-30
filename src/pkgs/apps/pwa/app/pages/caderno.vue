@@ -74,13 +74,16 @@ async function confirmDelete() {
 
 <template>
   <div class="caderno">
-    <header class="caderno__head">
-      <div>
-        <h1 class="pt-hand caderno__title">Caderno</h1>
-        <p class="caderno__sub">{{ nodes.length }} notas em rede</p>
-      </div>
-      <UIButton variant="fantasma" icon="plus" label="Nova" @click="openCreate" />
-    </header>
+    <SectionPageHeader title="Caderno" :subtitle="`${nodes.length} notas em rede`">
+      <template #actions>
+        <UIButton
+          variant="fantasma"
+          icon="plus"
+          label="Nova"
+          @click="openCreate"
+        />
+      </template>
+    </SectionPageHeader>
 
     <UIEmptyState
       v-if="!nodes.length"
@@ -153,21 +156,6 @@ async function confirmDelete() {
   display: flex;
   flex-direction: column;
   gap: calc(16px * var(--pt-density));
-}
-.caderno__head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-}
-.caderno__title {
-  font-size: calc(26px * var(--pt-text-scale));
-  font-weight: 800;
-  margin: 0;
-}
-.caderno__sub {
-  font-size: calc(13px * var(--pt-text-scale));
-  color: var(--pt-ink-muted);
-  margin: 4px 0 0;
 }
 .caderno__tree {
   display: flex;

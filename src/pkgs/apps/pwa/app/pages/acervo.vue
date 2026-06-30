@@ -21,18 +21,16 @@ async function confirmDelete() {
 
 <template>
   <div class="acervo">
-    <header class="acervo__head">
-      <div>
-        <h1 class="pt-hand acervo__title">Acervo</h1>
-        <p class="acervo__sub">{{ items.length }} itens</p>
-      </div>
-      <UIButton
-        variant="fantasma"
-        icon="plus"
-        label="Novo"
-        @click="creating = true"
-      />
-    </header>
+    <SectionPageHeader title="Acervo" :subtitle="`${items.length} itens`">
+      <template #actions>
+        <UIButton
+          variant="fantasma"
+          icon="plus"
+          label="Novo"
+          @click="creating = true"
+        />
+      </template>
+    </SectionPageHeader>
 
     <UIEmptyState
       v-if="!items.length"
@@ -84,21 +82,6 @@ async function confirmDelete() {
   flex-direction: column;
   gap: calc(16px * var(--pt-density));
   container-type: inline-size;
-}
-.acervo__head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-}
-.acervo__title {
-  font-size: calc(26px * var(--pt-text-scale));
-  font-weight: 800;
-  margin: 0;
-}
-.acervo__sub {
-  font-size: calc(13px * var(--pt-text-scale));
-  color: var(--pt-ink-muted);
-  margin: 4px 0 0;
 }
 .acervo__grid {
   display: grid;
