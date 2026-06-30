@@ -1,9 +1,8 @@
 import type { Id, Workbench } from "@meu-caderno/core";
 
-const PREF_ID = "default" as Id;
-
 export function useWorkbenches() {
-  const { config, ids } = useCadernoService();
+  const { ids } = useCadernoService();
+  const { read, patch } = usePreferences();
   const { activeId, setActive } = useActiveContext();
   const route = useRoute();
   const benches = useState<Workbench[]>("caderno:workbenches", () => []);
@@ -14,19 +13,14 @@ export function useWorkbenches() {
 
   async function hydrate() {
     if (hydrated.value) return;
-    const prefs = await config.preferences.get(PREF_ID);
+    const prefs = await read();
     benches.value = prefs?.workbenches ?? [];
     hydrated.value = true;
   }
 
   async function persist(next: Workbench[]) {
     benches.value = next;
-    const prefs = await config.preferences.get(PREF_ID);
-    await config.preferences.put({
-      ...prefs,
-      id: PREF_ID,
-      workbenches: next,
-    });
+    await patch({ workbenches: next });
   }
 
   async function save(name: string) {

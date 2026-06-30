@@ -1,7 +1,6 @@
-import type { Color, Id, Preferences, Profile } from "@meu-caderno/core";
+import type { Color, Id, Profile } from "@meu-caderno/core";
 import { Background, ContextMode, Density } from "@meu-caderno/core";
 
-const PREF_ID = "default" as Id;
 const DEFAULT_MOOD = "calmo";
 const DEFAULT_TEXT_SCALE = 1;
 const DEFAULT_HEADING = "hand";
@@ -213,6 +212,7 @@ function applyTheme(
 
 export function useTheme() {
   const { config, ids } = useCadernoService();
+  const { read, patch: persist } = usePreferences();
   const moodKey = useState<string>("caderno:theme:mood", () => DEFAULT_MOOD);
   const customProfiles = useState<Profile[]>("caderno:theme:customs", () => []);
   const textScale = useState<number>(
@@ -253,15 +253,10 @@ export function useTheme() {
     ),
   );
 
-  async function persist(patch: Partial<Preferences>) {
-    const prefs = await config.preferences.get(PREF_ID);
-    await config.preferences.put({ ...prefs, ...patch, id: PREF_ID });
-  }
-
   async function hydrate() {
     if (hydrated.value) return;
     await reloadProfiles();
-    const prefs = await config.preferences.get(PREF_ID);
+    const prefs = await read();
     if (prefs?.homeProfile) moodKey.value = prefs.homeProfile;
     if (prefs?.textScale) textScale.value = prefs.textScale;
     if (prefs?.headingFont) headingFont.value = prefs.headingFont;

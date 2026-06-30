@@ -1,6 +1,3 @@
-import type { Id, Preferences } from "@meu-caderno/core";
-
-const PREF_ID = "default" as Id;
 const CYCLES_PER_LONG = 4;
 
 export type PomodoroPhase = "focus" | "break" | "long";
@@ -12,7 +9,7 @@ const PHASE_LABEL: Record<PomodoroPhase, string> = {
 };
 
 export function usePomodoro() {
-  const { config } = useCadernoService();
+  const { read, patch: persist } = usePreferences();
 
   const focusMin = useState<number>("caderno:pomo:focus", () => 25);
   const breakMin = useState<number>("caderno:pomo:break", () => 5);
@@ -92,17 +89,12 @@ export function usePomodoro() {
 
   async function hydrate() {
     if (hydrated.value) return;
-    const prefs = await config.preferences.get(PREF_ID);
+    const prefs = await read();
     if (prefs?.pomodoroFocus) focusMin.value = prefs.pomodoroFocus;
     if (prefs?.pomodoroBreak) breakMin.value = prefs.pomodoroBreak;
     if (prefs?.pomodoroLong) longMin.value = prefs.pomodoroLong;
     if (!running.value) remaining.value = minutesFor(phase.value) * 60;
     hydrated.value = true;
-  }
-
-  async function persist(patch: Partial<Preferences>) {
-    const prefs = await config.preferences.get(PREF_ID);
-    await config.preferences.put({ ...prefs, ...patch, id: PREF_ID });
   }
 
   async function setDurations(focus: number, brk: number, long: number) {

@@ -1,7 +1,3 @@
-import type { Id, Preferences } from "@meu-caderno/core";
-
-const PREF_ID = "default" as Id;
-
 export interface ConsentItem {
   key: string;
   label: string;
@@ -33,7 +29,7 @@ const DEFAULT_ON = CONSENTS.filter((item) => !item.optIn).map(
 );
 
 export function useConsent() {
-  const { config } = useCadernoService();
+  const { read, patch: persist } = usePreferences();
   const consents = useState<string[] | null>(
     "caderno:consent:list",
     () => null,
@@ -42,7 +38,7 @@ export function useConsent() {
 
   async function hydrate() {
     if (hydrated.value) return;
-    const prefs = await config.preferences.get(PREF_ID);
+    const prefs = await read();
     consents.value = prefs?.consents ?? null;
     hydrated.value = true;
   }
@@ -50,11 +46,6 @@ export function useConsent() {
   function hasConsent(key: string): boolean {
     if (consents.value === null) return DEFAULT_ON.includes(key);
     return consents.value.includes(key);
-  }
-
-  async function persist(patch: Partial<Preferences>) {
-    const prefs = await config.preferences.get(PREF_ID);
-    await config.preferences.put({ ...prefs, ...patch, id: PREF_ID });
   }
 
   async function toggleConsent(key: string) {

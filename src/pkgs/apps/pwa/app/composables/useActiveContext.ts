@@ -1,9 +1,7 @@
 import type { Id } from "@meu-caderno/core";
 
-const PREF_ID = "default" as Id;
-
 export function useActiveContext() {
-  const { config } = useCadernoService();
+  const { read, patch } = usePreferences();
   const activeId = useState<Id | null>("caderno:activeContext", () => null);
   const focusIds = useState<Id[]>("caderno:contextFocus", () => []);
   const hydrated = useState<boolean>(
@@ -13,7 +11,7 @@ export function useActiveContext() {
 
   async function hydrate() {
     if (hydrated.value) return;
-    const prefs = await config.preferences.get(PREF_ID);
+    const prefs = await read();
     activeId.value = prefs?.activeContextId ?? null;
     focusIds.value = prefs?.profileContexts ?? [];
     hydrated.value = true;
@@ -21,22 +19,12 @@ export function useActiveContext() {
 
   async function setActive(id: Id) {
     activeId.value = id;
-    const previous = await config.preferences.get(PREF_ID);
-    await config.preferences.put({
-      ...previous,
-      id: PREF_ID,
-      activeContextId: id,
-    });
+    await patch({ activeContextId: id });
   }
 
   async function setFocus(ids: Id[]) {
     focusIds.value = ids;
-    const previous = await config.preferences.get(PREF_ID);
-    await config.preferences.put({
-      ...previous,
-      id: PREF_ID,
-      profileContexts: ids,
-    });
+    await patch({ profileContexts: ids });
   }
 
   function toggleFocus(id: Id) {
