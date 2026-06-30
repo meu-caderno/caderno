@@ -5,6 +5,8 @@ import { NAV_ITEMS } from "~/composables/useNav";
 const { railItems, ordered } = useLayout();
 const { open: openFocus } = useFocus();
 const { benches, invoke } = useWorkbenches();
+const dockOpen = useState("shell:dock", () => false);
+const isWide = useMediaQuery("(min-width: 1100px)");
 const navKeys = NAV_ITEMS.map((item) => item.key);
 const items = computed(() =>
   ordered(railItems.value, navKeys)
@@ -36,6 +38,15 @@ function onBench(bench: Workbench) {
 
     <button type="button" class="rail__focus" @click="openFocus">
       <span class="rail__focus-icon">⏳</span> Foco
+    </button>
+    <button
+      v-if="isWide"
+      type="button"
+      class="rail__focus"
+      :class="{ 'rail__focus--on': dockOpen }"
+      @click="dockOpen = !dockOpen"
+    >
+      <span class="rail__focus-icon">🗂️</span> Notas ao lado
     </button>
 
     <div v-if="benches.length" class="rail__benches">
@@ -98,6 +109,11 @@ function onBench(bench: Workbench) {
   font-size: calc(14px * var(--pt-text-scale));
   font-weight: 600;
   cursor: pointer;
+}
+.rail__focus--on {
+  background: var(--pt-accent);
+  color: var(--pt-on-accent);
+  border-color: var(--pt-accent);
 }
 .rail__focus-icon {
   font-size: calc(17px * var(--pt-text-scale));

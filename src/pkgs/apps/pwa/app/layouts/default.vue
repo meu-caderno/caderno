@@ -1,10 +1,14 @@
 <script setup lang="ts">
+import { SplitterGroup, SplitterPanel, SplitterResizeHandle } from "reka-ui";
 import { useTheme } from "~/composables/useTheme";
 
 const { zen, setZen } = useTheme();
 const { focusing, close: closeFocus } = useFocus();
 
 const searching = ref(false);
+const dockOpen = useState("shell:dock", () => false);
+const isWide = useMediaQuery("(min-width: 1100px)");
+const showSplit = computed(() => isWide.value && dockOpen.value && !zen.value);
 
 function onKeydown(event: KeyboardEvent) {
   if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
@@ -17,11 +21,37 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
 </script>
 
 <template>
-  <div class="shell" :class="{ 'shell--zen': zen }">
+  <div class="shell" :class="{ 'shell--zen': zen, 'shell--split': showSplit }">
     <SectionShellRail v-if="!zen" class="shell__rail" />
-    <main class="shell__content">
-      <slot />
-    </main>
+    <div class="shell__area">
+      <SplitterGroup
+        v-if="showSplit"
+        direction="horizontal"
+        class="shell__split"
+      >
+        <SplitterPanel
+          :default-size="66"
+          :min-size="42"
+          class="shell__pane shell__pane--scroll"
+        >
+          <main class="shell__content">
+            <slot />
+          </main>
+        </SplitterPanel>
+        <SplitterResizeHandle class="shell__handle" />
+        <SplitterPanel
+          :default-size="34"
+          :min-size="22"
+          :max-size="48"
+          class="shell__pane"
+        >
+          <SectionShellNotesPanel @close="dockOpen = false" />
+        </SplitterPanel>
+      </SplitterGroup>
+      <main v-else class="shell__content">
+        <slot />
+      </main>
+    </div>
     <SectionShellTabBar v-if="!zen" class="shell__tabbar" />
     <button
       v-if="zen"
@@ -43,9 +73,32 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
 .shell__rail {
   display: none;
 }
+.shell__area {
+  min-width: 0;
+}
 .shell__content {
   min-width: 0;
   padding-bottom: 72px;
+}
+.shell__split {
+  height: 100vh;
+  width: 100%;
+}
+.shell__pane {
+  height: 100%;
+  min-width: 0;
+}
+.shell__pane--scroll {
+  overflow-y: auto;
+}
+.shell__handle {
+  width: 6px;
+  flex-shrink: 0;
+  background: var(--pt-border-faint);
+  cursor: col-resize;
+}
+.shell__handle:hover {
+  background: var(--pt-border-muted);
 }
 
 @media (min-width: 960px) {
@@ -61,6 +114,10 @@ onUnmounted(() => window.removeEventListener("keydown", onKeydown));
   }
   .shell:not(.shell--zen) .shell__content {
     padding-bottom: 0;
+  }
+  .shell--split .shell__area {
+    height: 100vh;
+    overflow: hidden;
   }
   .shell__tabbar {
     display: none;
