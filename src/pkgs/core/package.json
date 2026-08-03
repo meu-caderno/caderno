@@ -11,9 +11,9 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "^3.2.4",
-    "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
+    "@vitest/coverage-v8": "^4.1.10",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
   },
   "nx": {
     "includedScripts": [],
